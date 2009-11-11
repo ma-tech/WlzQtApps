@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/icons" >
+        <file>images/objects.png</file>
+        <file>images/open.png</file>
+        <file>images/transferfunction.png</file>
+        <file>images/cuttingplaneoff.png</file>
+        <file>images/cuttingplaneon.png</file>
+        <file>images/cuttingplanevisible.png</file>
+        <file>images/orthosliceoff.png</file>
+        <file>images/orthosliceon.png</file>
+    </qresource>
+</RCC>

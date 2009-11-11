@@ -1,0 +1,18 @@
+#!/bin/tcsh
+#Checks the uname information and starts up the
+#correct 32 or 64 bit Viewer interface
+
+set LPATH=`dirname $0`
+setenv COIN_FULL_INDIRECT_RENDERING 1
+
+if (`uname -i` == "x86_64") then
+  echo Starting 64 bit viewer
+  setenv LD_LIBRARY_PATH $LPATH/lib64:$LD_LIBRARY_PATH
+  set APP=Viewer
+else
+  echo Starting 32 bit viewer
+  setenv LD_LIBRARY_PATH $LPATH/libs:$LD_LIBRARY_PATH
+  set APP=Viewer32
+endif
+
+nohup $LPATH/$APP 

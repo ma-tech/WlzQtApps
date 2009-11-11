@@ -1,0 +1,8 @@
+#/bin/tcsh
+# creates dmg application package 
+
+macdeployqt MacOSX/bin/Viewer.app -dmg 
+#-no-plugins
+
+
+
