@@ -42,7 +42,7 @@ ln -s $MA_HOME/src/External/QtColorPicker/qtcolorpicker-2.6-opensource $MA_HOME/
 cvs co src/Applications/WlzQtCoinGlue
 
 #check out WlzWarp application
-cvs co src/Applications/WlzWarping
+cvs co src/Applications/WlzWarp
 
-#check out WlzViewing application
-cvs co src/Applications/WlzWarping
+#check out WlzViewer application
+cvs co src/Applications/WlzViewer
