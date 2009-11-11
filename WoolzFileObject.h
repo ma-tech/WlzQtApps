@@ -85,6 +85,16 @@ public:
   */
   virtual void open ( QString filename, WoolzObjectType type);
 
+   /*!
+  * \ingroup      Control
+  * \brief        Sets the object filename
+  * \param        filename filename from witch object is to be read
+  * \return       void
+  * \par      Source:
+  *                WoolzFileObject.cpp
+  */
+  virtual void setFileName ( QString filename);
+
  /*!
   * \ingroup      Control
   * \brief        Reloads WlzObject from a file if needed

@@ -57,9 +57,13 @@ WoolzFileObject::WoolzFileObject() : WoolzObject() {
 WoolzFileObject::~WoolzFileObject() {
 }
 
+void WoolzFileObject::setFileName ( QString filename) {
+    m_filename = QFileInfo(filename).canonicalFilePath();
+}
+
 void WoolzFileObject::open ( QString filename, WoolzObjectType type) {
-    m_filename = filename;
-    m_name = QFileInfo(filename).fileName();
+    setFileName(filename);
+    m_name = QFileInfo(m_filename).fileName();
     m_type = type;
     doUpdate();
 }
@@ -166,7 +170,7 @@ bool WoolzFileObject::saveAsXmlProperties(QXmlStreamWriter *xmlWriter) {
 
 bool WoolzFileObject::parseDOMLine(const QDomElement &element) {
   if (element.tagName() == "Filename") {
-     m_filename= element.text();
+     setFileName(element.text());
      readType(m_filename);
      return true;
   } else
