@@ -1,0 +1,58 @@
+# use patch -p0 < filename
+# created with diff -crB
+*** lib/VolumeViz/misc/CvrCLUT.h	2004-12-20 14:54:48.000000000 +0000
+--- other
+***************
+*** 72,78 ****
+    void regenerateGLColorData(void);
+  
+    struct GLContextStorage {
+!     GLContextStorage::GLContextStorage(uint32_t id)
+      {
+        this->texture1Dclut = 0;
+        this->ctxid = id;
+--- 72,78 ----
+    void regenerateGLColorData(void);
+  
+    struct GLContextStorage {
+!     GLContextStorage(uint32_t id)
+      {
+        this->texture1Dclut = 0;
+        this->ctxid = id;
+***************
+*** 83,89 ****
+    };
+    SbList<struct GLContextStorage *> contextlist;
+    struct GlobalGLContextStorage {
+!     GlobalGLContextStorage::GlobalGLContextStorage(void)
+      {
+        this->fragmentprogramid[0] = this->fragmentprogramid[1] = 0;
+      }
+--- 83,89 ----
+    };
+    SbList<struct GLContextStorage *> contextlist;
+    struct GlobalGLContextStorage {
+!     GlobalGLContextStorage(void)
+      {
+        this->fragmentprogramid[0] = this->fragmentprogramid[1] = 0;
+      }
+#created with diff -crB SIMVoleon-2.0.1/lib/VolumeViz/render/common/CvrTextureObject.h 1/SIMVoleon-2.0.1/lib/VolumeViz/render/common/CvrTextureObject.h
+*** lib/VolumeViz/render/common/CvrTextureObject.h	2004-12-20 14:54:48.000000000 +0000
+--- other
+***************
+*** 106,112 ****
+  
+    static CvrTextureObject * findInstanceMatch(const SoType t,
+                                                const struct CvrTextureObject::EqualityComparison & cmp);
+!   unsigned long CvrTextureObject::hashKey(void) const;
+    static unsigned long hashKey(const struct CvrTextureObject::EqualityComparison & cmp);
+  };
+  
+--- 106,112 ----
+  
+    static CvrTextureObject * findInstanceMatch(const SoType t,
+                                                const struct CvrTextureObject::EqualityComparison & cmp);
+!   unsigned long hashKey(void) const;
+    static unsigned long hashKey(const struct CvrTextureObject::EqualityComparison & cmp);
+  };
+  
