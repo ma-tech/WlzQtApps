@@ -1,0 +1,29 @@
+#!/bin/sh
+# creates standalone package
+
+
+#setenv FD $MA_HOME/frameworks
+#setenv APP  MacOSX/bin/Warping.app/Contents/MacOS/Warping
+#setenv FMW  MacOSX/bin/Warping.app/Contents/Frameworks
+
+FD=$MA_HOME/frameworks
+LIBGUIDIR=$MA_HOME/libUI
+APP=MacOSX/bin/Warping.app/Contents/MacOS/Warping
+FMW=MacOSX/bin/Warping.app/Contents/Frameworks
+
+macdeployqt MacOSX/bin/Warping.app 
+#-no-plugins
+
+install_name_tool -change $LIBGUIDIR/libWlzQtCoinGlue.0.dylib @executable_path/../Frameworks/libWlzQtCoinGlue.0.dylib $APP
+install_name_tool -change $FD/SoQt.framework/Versions/A/SoQt @executable_path/../Frameworks/SoQt.framework/Versions/A/SoQt $APP
+install_name_tool -change $FD/Inventor.framework/Versions/C/Inventor @executable_path/../Frameworks/Inventor.framework/Versions/C/Inventor $APP
+install_name_tool -change $FD/Inventor.framework/Versions/C/Inventor @executable_path/../Frameworks/Inventor.framework/Versions/C/Inventor $FMW/SoQt.framework/Versions/A/SoQt
+install_name_tool -change $FD/Inventor.framework/Versions/C/Inventor @executable_path/../Frameworks/Inventor.framework/Versions/C/Inventor $FMW/libSimVoleon.40.dylib
+install_name_tool -change $FD/Inventor.framework/Versions/C/Inventor @executable_path/../Frameworks/Inventor.framework/Versions/C/Inventor $FMW/libWlzQtCoinGlue.0.dylib
+install_name_tool -change $FD/SoQt.framework/Versions/A/SoQt @executable_path/../Frameworks/SoQt.framework/Versions/A/SoQt $FMW/libWlzQtCoinGlue.0.dylib
+
+rm -R MacOSX/bin/Warping.app/Contents/Frameworks/Inventor.framework/Resources/
+mkdir MacOSX/bin/Warping.app/Contents/Frameworks/Inventor.framework/Resources/
+
+
+

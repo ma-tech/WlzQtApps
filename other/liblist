@@ -1,0 +1,10 @@
+libSimVoleon.*
+libSoQt.*
+libQtOpenGL.* 
+libQt3Support.*
+libQtSql.*
+libQtNetwork.*
+libCoin.*
+libQtXml.*
+libQtGui.*
+libQtCore.*

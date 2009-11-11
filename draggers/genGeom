@@ -1,0 +1,4 @@
+#iv2h.sh translateCrossHairDragger.iv CrossHairDragger >CrossHairDraggerGeom.h
+iv2h.sh crossHairDragger.iv CrossHairDragger >CrossHairDraggerGeom.h
+iv2h.sh translateRadialDragger.iv TranslateRadialDragger >TranslateRadialDraggerGeom.h
+iv2h.sh snapSurfaceDragger.iv SnapSurfaceDragger >SnapSurfaceDraggerGeom.h

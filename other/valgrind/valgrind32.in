@@ -1,0 +1,24 @@
+{
+  ld-2.6.1/ld-2.6.1/ld-2.6.1
+  Memcheck:Cond
+  obj:/lib/ld-2.6.1.so
+}
+
+{
+  ld-2.6.1V4/ld-2.6.1/ld-2.6.1
+  Memcheck:Value4
+  obj:/lib/ld-2.6.1.so
+}
+
+{
+  ld-2.6.1V5/ld-2.6.1/ld-2.6.1
+  Memcheck:Addr4
+  obj:/lib/ld-2.6.1.so
+}
+
+{
+  libGL.so.96.43.1ld-2.6.1/libGL.so.96.43.1ld-2.6.1/libGL.so.96.43.1ld-2.6.1
+  Memcheck:Addr4
+  obj:/usr/lib/libGL.so.96.43.11
+}
+

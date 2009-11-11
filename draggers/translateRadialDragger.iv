@@ -1,0 +1,106 @@
+#Inventor V2.0 ascii
+#
+# \file         translateRadialDragger.iv
+# \author       Zsolt Husz
+# \date         September 2009
+# \version      $Id$
+# \par
+# Address:
+#               MRC Human Genetics Unit,
+#               Western General Hospital,
+#               Edinburgh, EH4 2XU, UK.
+# \par
+# Copyright (C) 2008 Medical research Council, UK.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be
+# useful but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; if not, write to the Free
+# Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA  02110-1301, USA.
+# \brief        3D manipulator dragger geometry
+# \ingroup      UI
+#
+# This file is based on the example from the Inventor Toolmaker,
+# chapter 8, example 1.
+#
+# Geometry resource file for the TranslateRadialDragger
+
+DEF translatePlacedMaterial Material { 
+        diffuseColor 1 0 0 
+        shininess 0
+        ambientColor 0 0 0
+        emissiveColor 0 0 0
+}
+
+DEF translateActiveMaterial Material { 
+        diffuseColor 1 0 0 
+        shininess 0
+        ambientColor 0 0 0
+        emissiveColor 0 0 0
+}
+
+DEF translateNormalMaterial Material { 
+        diffuseColor 0 1 0 
+        shininess 0
+        ambientColor 0 0 0
+        emissiveColor 0 0 0
+}
+
+DEF translateInvalidMaterial Material { 
+        diffuseColor 0 0 0 
+        shininess 0
+        ambientColor 0 0 0
+        emissiveColor 0.94 0.77 0.25
+}
+
+DEF translateRadialTranslator Separator {
+    DrawStyle { style FILLED }
+#    DrawStyle { style LINES }
+    Sphere {
+	radius 0.5
+    }
+}
+
+DEF translateRadialTranslatorActive Separator {
+    DrawStyle { style LINES }
+    Sphere {
+       radius 0.5
+    }
+}
+
+# Don't show anything for feedback during inactive state
+DEF translateRadialFeedback Separator {
+}
+
+DEF translateRadialFeedbackActive Separator {
+    Material { diffuseColor .5  .9 .9 }
+    # An arrow aligned with the x axis.
+    RotationXYZ {
+	axis Z
+	angle 1.57079
+    }
+    Separator {
+
+	#stick
+	Cylinder { height 4.0 radius 0.05 }
+
+	#left arrowhead
+	Translation { translation 0 2.2 0 }
+	Cone { height 0.4 bottomRadius 0.2 }
+
+	#right arrowhead
+	Translation { translation 0 -4.4 0 }
+	RotationXYZ { axis Z angle 3.14159 }
+	Cone { height 0.4 bottomRadius 0.2 }
+   }
+}

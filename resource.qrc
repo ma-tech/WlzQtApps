@@ -1,0 +1,39 @@
+<RCC>
+    <qresource prefix="/icons" >
+        <file>images/print.png</file>
+        <file>images/move.png</file>
+        <file>images/views.png</file>
+        <file>images/delete.png</file>
+        <file>images/objects.png</file>
+        <file>images/paste.png</file>
+        <file>images/undo.png</file>
+        <file>images/new.png</file>
+        <file>images/save.png</file>
+        <file>images/copy.png</file>
+        <file>images/cut.png</file>
+        <file>images/add.png</file>
+        <file>images/redo.png</file>
+        <file>images/editall.png</file>
+        <file>images/viewall.png</file>
+        <file>images/segmentation.png</file>
+        <file>images/autoupdate.png</file>
+        <file>images/landmarks.png</file>
+        <file>images/landmarksOff.png</file>
+        <file>images/transformation.png</file>
+        <file>images/properties.png</file>
+        <file>images/mesh.png</file>
+        <file>images/contour.png</file>
+        <file>images/transferfunction.png</file>
+        <file>images/opensource.png</file>
+        <file>images/opentarget.png</file>
+        <file>images/cuttinglandmarkson.png</file>
+        <file>images/cuttinglandmarksoff.png</file>
+        <file>images/orthosliceoff.png</file>
+        <file>images/orthosliceon.png</file>
+        <file>images/cuttingplaneon.png</file>
+        <file>images/cuttingplaneoff.png</file>
+        <file>images/cuttingplanevisible.png</file>
+        <file>images/warpingparams.png</file>
+        <file>images/open.png</file>
+    </qresource>
+</RCC>
