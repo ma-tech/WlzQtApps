@@ -241,6 +241,15 @@ public slots:
   */
   void loadProject(QString filename);
 
+ /*!
+  * \ingroup      UI
+  * \brief        Slot processing status update
+  * \param        message new message
+  * \param        timeout timeout of the new message
+  * \return       void
+  * \par      Source:
+  *                MainWindow.cpp
+  */
   void statusChanged(QString message, int timeout);
 
 protected:
