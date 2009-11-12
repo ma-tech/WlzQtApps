@@ -191,7 +191,7 @@ void MainWindow::addViewer ()
     m_viewer ->init();
 
     //set title and minum size
-    m_viewer->setWindowTitle("Wlz 3D obbject viewer");
+    m_viewer->setWindowTitle("Wlz 3D object viewer");
 
     addMDIWindows(m_viewer);
 
