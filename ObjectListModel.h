@@ -426,15 +426,6 @@ signals:
 
  /*!
   * \ingroup      Control
-  * \brief        Signals the load request of all loadable objects
-  * \return       void
-  * \par      Source:
-  *                ObjectListModel.cpp
-  */
-  void loadAllSignal();
-
- /*!
-  * \ingroup      Control
   * \brief        Signals changed mesh for warping
   * \param        mesh new mesh used 
   * \return       void
@@ -443,7 +434,6 @@ signals:
   */
   void replaceWarpMesh(WoolzObject *mesh);
 
-  void statusChanged(QString, int);
 
 protected slots:
 

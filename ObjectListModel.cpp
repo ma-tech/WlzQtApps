@@ -435,10 +435,6 @@ void ObjectListModel::objectTypeChanged() {
    if (row>=0)
       removeObjectFromStore(store, object);
   }
-  //remove connections which addObject will recreate
-  disconnect(object, SIGNAL(objectPropertyChanged()), this, SLOT(objectChanged()));
-  disconnect(object, SIGNAL(objectTypeChanged()),  this, SLOT(objectTypeChanged()));
-  disconnect(object, SIGNAL(statusChange(QString, int)),  this, SIGNAL(statusChanged(QString, int)));
   addObject(object);
 }
 
