@@ -78,94 +78,6 @@ public:
 
  /*!
   * \ingroup      Control
-  * \brief        Returns the number of rows.
-  * \param        parent parent index
-  * \return       3 for the root index, otherwise the number of object for source/target/warped types.
-  * \par      Source:
-  *                ObjectListModelAbstract.cpp
-  */
-//  int rowCount(const QModelIndex & parent) const;
-
- /*!
-  * \ingroup      Control
-  * \brief        Returns the number of columns.
-  * \param        parent parent index
-  * \return       3
-  * \par      Source:
-  *                ObjectListModelAbstract.cpp
-  */
-//  int columnCount(const QModelIndex & parent) const;
-
- /*!
-  * \ingroup      Control
-  * \brief        Returns the data stored under the given role for the item referred to by the index.
-  * \param        index of requested data
-  * \param        role requested role
-  * \return       data requested
-  * \par      Source:
-  *                ObjectListModelAbstract.cpp
-  */
-//  QVariant data(const QModelIndex & index, int role ) const;
-
- /*!
-  * \ingroup      Control
-  * \brief        Returns the data for the given role and section in the header with the specified orientation.
-  * \param        section requested section
-  * \param        orientation requested orientation 
-  * \param        role requested role
-  * \return       data requested
-  * \par      Source:
-  *                ObjectListModelAbstract.cpp
-  */
-//  QVariant headerData(int section, Qt::Orientation orientation, int role ) const;
-
- /*!
-  * \ingroup      Control
-  * \brief        Returns the item flags for the given index.
-  * \param        index of requested data
-  * \return       index flags
-  * \par      Source:
-  *                ObjectListModelAbstract.cpp
-  */
-  //Qt::ItemFlags flags(const QModelIndex &index) const;
-
- /*!
-  * \ingroup      Control
-  * \brief        Returns the index of the item in the model specified by the given row, column and parent index.
-  * \param        row row number
-  * \param        column column number
-  * \param        parent index of the parent item
-  * \return       index of the requested item
-  * \par      Source:
-  *                ObjectListModelAbstract.cpp
-  */
-  //QModelIndex index(int row, int column,
-    //                          const QModelIndex &parent) const ;
-
- /*!
-  * \ingroup      Control
-  * \brief        Returns the parent of the model index, or QModelIndex() if it has no parent.
-  * \param        child index of the child
-  * \return       index of the parent item
-  * \par      Source:
-  *                ObjectListModelAbstract.cpp
-  */
-//  QModelIndex parent(const QModelIndex &child) const ;
-
- /*!
-  * \ingroup      Control
-  * \brief        Sets the role data for the item at index to value. Returns true if successful; otherwise returns false.
-  * \param        index to be set
-  * \param        value new value
-  * \param        role to be set
-  * \return       true if success, false if failed
-  * \par      Source:
-  *                ObjectListModelAbstract.cpp
-  */
-//  bool setData(const QModelIndex &index, const QVariant &value, int role);
-
- /*!
-  * \ingroup      Control
   * \brief        Returns an object of the model
   * \param        index index of the requested object
   * \return       requested WoolzObject
@@ -184,7 +96,7 @@ public:
   */
   virtual void addObject(WoolzObject * object) = 0;
 
-  /*!
+ /*!
   * \ingroup      Control
   * \brief        Removes an object and frees all allocated memmory
   * \param        object the object to be removed
@@ -267,16 +179,25 @@ signals:
 
  /*!
   * \ingroup      Control
-  * \brief        Signals the update request of updatable objects
-  * \param        oldtype old object type
+  * \brief        Signals the status bar update request
+  * \param        message new message
+  * \param        timeout timeout of the new message
   * \return       void
   * \par      Source:
   *                ObjectListModelAbstract.cpp
   */
-//  void updateAllSignal();
+  void statusChanged(QString message, int timeout);
+
+  /*!
+  * \ingroup      Control
+  * \brief        Signals the load request of all loadable objects
+  * \return       void
+  * \par      Source:
+  *                ObjectListModelAbstract.cpp
+  */
+  void loadAllSignal();
 
 protected slots:
-
  /*!
   * \ingroup      Control
   * \brief        Removal of an object. Viewers should process this signal.

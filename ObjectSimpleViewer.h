@@ -257,16 +257,6 @@ public slots:
 
  /*!
   * \ingroup      UI
-  * \brief        Processes camera changes in other viewers.
-  *
-  * \return       void
-  * \par      Source:
-  *                ObjectSimpleViewer.cpp
-  */
-  //void cameraChangedIn();
-
- /*!
-  * \ingroup      UI
   * \brief        Sets viewer in editing mode.
   *
   * \return       void
@@ -305,7 +295,6 @@ public slots:
   */
   virtual void transparencyChanged(int /*transparency*/) {}
 
-
  /*!
   * \ingroup      UI
   * \brief        Processes view type changes. Called by a view when the view canot handle its object
@@ -317,8 +306,9 @@ public slots:
 
  /*!
   * \ingroup      UI
-  * \brief        Processes clip plane on/off
-  * \param        on true if on, false if off
+  * \brief        Slot processing status update
+  * \param        message new message
+  * \param        timeout timeout of the new message
   * \return       void
   * \par      Source:
   *                ObjectSimpleViewer.cpp
@@ -368,18 +358,6 @@ protected:
   virtual int initialTransparency(WoolzObject * /*object*/ ) { return  0;}
 
  /*!
-  * \ingroup      UI
-  * \brief        Processes camara change.
-  *
-  *               Emits cameraChanged() signal.
-  *
-  * \return       void
-  * \par      Source:
-  *                ObjectSimpleViewer.cpp
-  */
-  //virtual void notifyCameraChanged();
-
-  /*!
   * \ingroup      UI
   * \brief        Static event handler for camera mouse events.
   *
