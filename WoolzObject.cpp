@@ -116,16 +116,21 @@ bool WoolzObject::isValueSet ( ) {
          (m_obj->type == WLZ_2D_DOMAINOBJ) ) && (m_obj->values.core));//&& (m_obj->values.core != NULL)));
 }
 
+
 bool WoolzObject::isColour ( ) {
+  return (getWoolzGreyType() == WLZ_GREY_RGBA);
+}
+
+WlzGreyType WoolzObject::getWoolzGreyType() {
   if (!isValueSet ())
-    return false;
+    return WLZ_GREY_ERROR;
 
   WlzGreyType   gType;
   WlzErrorNum errNum = WLZ_ERR_NONE;
 
   gType = WlzGreyTypeFromObj(m_obj, &errNum);
   Q_ASSERT(errNum == WLZ_ERR_NONE);
-  return (gType == WLZ_GREY_RGBA);
+  return gType;
 }
 
 bool WoolzObject::is3D ( ) {

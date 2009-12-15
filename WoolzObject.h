@@ -287,6 +287,15 @@ public:
   */
   virtual bool isColour ( );
 
+  /*!
+   * \ingroup      Control
+   * \brief        Returns the grey type of the object
+   * \return       grey type or WLZ_GREY_ERROR on error
+   * \par      Source:
+   *                WoolzObject.cpp
+   */
+   WlzGreyType getWoolzGreyType();
+
  /*!
   * \ingroup      Control
   * \brief        Checks without reading the whole file if the object is a Mesh
@@ -677,7 +686,16 @@ signals:
   */
   virtual void objectSelected();
 
-  virtual void statusChange(QString, int);
+  /*!
+   * \ingroup      Control
+   * \brief        Signals the status bar update request
+   * \param        message new message
+   * \param        timeout timeout of the new message
+   * \return       void
+   * \par      Source:
+   *                WoolzObject.cpp
+   */
+   virtual void statusChange(QString message, int timeout);
 
 protected:
   // protected attributes

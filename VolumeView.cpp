@@ -145,13 +145,46 @@ void VolumeView::generateSceneGraph ( bool /*bForce*/ ) {
 
       /* Get array of data. */
      if(errNum == WLZ_ERR_NONE) {
+        WlzGreyType greyType = obj->getWoolzGreyType();
+        bool isUBYTE = greyType == WLZ_GREY_UBYTE;
         sz.vtX = bBox.xMax - bBox.xMin + 1;
         sz.vtY = bBox.yMax - bBox.yMin + 1;
         sz.vtZ = bBox.zMax - bBox.zMin + 1;
         org.vtX = bBox.xMin;
         org.vtY = bBox.yMin;
         org.vtZ = bBox.zMin;
-        errNum = WlzToArray3D(&m_data, obj->getObj(), sz, org, 0, WLZ_GREY_UBYTE);
+
+        if (isUBYTE) {
+          errNum = WlzToArray3D(&m_data, obj->getObj(), sz, org, 0, WLZ_GREY_UBYTE );
+        } else {  // convert to UBYTE
+          WlzPixelV     greyMinV,
+                        greyMaxV,
+                        newGreyMinV,
+                        newGreyMaxV;
+          errNum = WlzGreyRange(obj->getObj(), &greyMinV, &greyMaxV);
+          newGreyMinV.type = WLZ_GREY_UBYTE;
+          newGreyMaxV.type = WLZ_GREY_UBYTE;
+          newGreyMinV.v.ubv = 0;
+          newGreyMaxV.v.ubv = 255;
+//newGreyMinV.type = WLZ_GREY_SHORT;
+//newGreyMaxV.type = WLZ_GREY_SHORT;
+//          newGreyMinV.v.shv = 0;
+//          newGreyMaxV.v.shv = 255;
+
+          WlzValueConvertPixel(&newGreyMinV, newGreyMinV, greyType);
+          WlzValueConvertPixel(&newGreyMaxV, newGreyMaxV, greyType);
+          WlzObject *cpyobj = NULL;
+          if( errNum == WLZ_ERR_NONE) {
+              cpyobj= WlzCopyObject(obj->getObj(), &errNum);
+           }
+          if(errNum == WLZ_ERR_NONE) {
+              errNum = WlzGreySetRange(cpyobj, greyMinV, greyMaxV, newGreyMinV, newGreyMaxV, 0);
+          }
+          if(errNum == WLZ_ERR_NONE) {
+              errNum = WlzToArray3D(&m_data, cpyobj, sz, org, 0, WLZ_GREY_UBYTE );
+              WlzFreeObj(cpyobj);
+          }
+       }
      }
      dim = SbVec3s(sz.vtX, sz.vtY, sz.vtZ);
      uint8_t *voxData;
