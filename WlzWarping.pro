@@ -130,9 +130,9 @@ CONFIG(debug, debug|release) {
 }
 else { 
     LIBS += -lWlzQtCoinGlue
+    INCLUDEPATH *= /$(MA_HOME)/include/WlzQtCoinGlue
 }
 LIBS *= -L/$(MA_HOME)/lib
-INCLUDEPATH *= /$(MA_HOME)/include/WlzQtCoinGlue
 
 # Coin/Qt:
 SOQTINC = $$system(soqt-config --includedir)
@@ -178,6 +178,13 @@ macx {
 CONFIG(debug, debug|release) {
   OUTDIR = $${OUTDIR}_debug
 }
+
+CONFIG(debug, debug|release) {
+    INCLUDEPATH *= ../WlzQtCoinGlue
+    LIBS = -L../WlzQtCoinGlue/$${OUTDIR}/bin $${LIBS}
+    PRE_TARGETDEPS += ../WlzQtCoinGlue/$${OUTDIR}/bin/libWlzQtCoinGlue_d.a
+}
+
 
 message( Output directory $$OUTDIR)
 OBJECTS_DIR = $$OUTDIR
