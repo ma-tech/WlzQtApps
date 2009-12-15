@@ -258,6 +258,7 @@ WarperController::WarperController ( MainWindow * mainwindow, ProjectProperties 
   connect( mainWindow->actionShowLandmarks, SIGNAL( toggled (bool) ), this, SLOT( landmarkVisibilityToggled(bool) ) );
   connect( mainWindow->actionAutoWarp, SIGNAL(toggled(bool)), this, SLOT(globalAutoUpdate(bool)));
   connect( mainWindow->actionShowMesh, SIGNAL(toggled(bool)), this, SLOT(warpingMeshUpdate(bool)));
+  mainWindow->actionEnableAlpha->setChecked(false);
 }
 
 void WarperController::setupToolbars() {
@@ -397,18 +398,18 @@ bool WarperController::openValueTarget () {
                                                 WoolzFileObject::getValueFormats());
     if (filename.isEmpty())
       return false;
-    bool ok=true;
+    bool ok=false;
     WoolzObject *newVolumeObject;
     if ((newVolumeObject = loadValue(filename, WoolzObject::target)))  {
         if (!is2D3Dcompatibile(newVolumeObject)) {
           ok = false;
-        }
-       if (ok) {
+        } else {
                 QApplication::setOverrideCursor(Qt::WaitCursor);
                 m_objectViewerController->addTargetViewer();
                 undoStack->push(new CreateWoolzObject(objectListModel, newVolumeObject));
                 setLastPath(filename);
                 QApplication::restoreOverrideCursor();
+                ok=true;
          }
     }
     m_objectViewerController->checkToSetupDefault();
@@ -420,13 +421,12 @@ bool WarperController::openValueSource () {
                                                 getLastPath(), WoolzFileObject::getValueFormats());
     if (filename.isEmpty())
       return false;
-    bool ok=true;
+    bool ok=false;
     WoolzObject *newVolumeObject;
     if ((newVolumeObject = loadValue(filename, WoolzObject::source)))  {
         if (!is2D3Dcompatibile(newVolumeObject)) {
           ok = false;
-        }
-        if (ok) {
+        } else {
                  QApplication::setOverrideCursor(Qt::WaitCursor);
                  m_objectViewerController->addSourceViewer();
                  undoStack->push(new CreateWoolzObject(objectListModel, newVolumeObject));
@@ -441,6 +441,7 @@ bool WarperController::openValueSource () {
                  }
                  setLastPath(filename);
                  QApplication::restoreOverrideCursor();
+                 ok=true;
         }
     }
     m_objectViewerController->checkToSetupDefault();
@@ -454,19 +455,19 @@ bool WarperController::openMeshTarget () {
                                                 tr("Woolz object (*.wlz)"));
     if (filename.isEmpty())
       return false;
-    bool ok=true;
+    bool ok=false;
     WoolzObject *newMeshObject;
     if ((newMeshObject = loadMesh(filename, WoolzObject::target))) {
         if (!is2D3Dcompatibile(newMeshObject)) {
           ok = false;
-        }
-        if (ok) {
+        } else {
                 QApplication::setOverrideCursor(Qt::WaitCursor);
 
                 m_objectViewerController->addTargetViewer();
                 undoStack->push(new CreateMeshObject(objectListModel, landmarkModel, newMeshObject));
                 setLastPath(filename);
                 QApplication::restoreOverrideCursor();
+                ok=true;
          }
     }
     m_objectViewerController->checkToSetupDefault();
@@ -479,18 +480,18 @@ bool WarperController::openMeshSource () {
                                                 tr("Woolz object (*.wlz)"));
     if (filename.isEmpty())
       return false;
-    bool ok=true;
+    bool ok=false;
     WoolzObject *newMeshObject;
     if ((newMeshObject = loadMesh(filename, WoolzObject::source))) {
         if (!is2D3Dcompatibile(newMeshObject)) {
           ok = false;
-        }
-        if (ok) {
+        } else {
                 QApplication::setOverrideCursor(Qt::WaitCursor);
                 m_objectViewerController->addSourceViewer();
                 undoStack->push(new CreateMeshObject(objectListModel, landmarkModel, newMeshObject));
                 setLastPath(filename);
                 QApplication::restoreOverrideCursor();
+                ok=true;
          }
     }
     m_objectViewerController->checkToSetupDefault();
@@ -619,6 +620,15 @@ WoolzObject *WarperController::loadValue(QString filename , WoolzObject::WoolzOb
           valueObject = NULL;
        } else {
          valueObject->open(filename, type);
+         if (valueObject->is3D()) {  // check if type is supported
+             WlzGreyType greyType = valueObject->getWoolzGreyType();
+             if (greyType != WLZ_GREY_UBYTE && greyType != WLZ_GREY_SHORT && greyType != WLZ_GREY_INT) {
+                 QMessageBox::warning(NULL, "Value object open", "Only UBYTE, SHORT and INT objects are supported.") ;
+                 delete valueObject;
+                 return  NULL;
+             }
+         }
+
          QApplication::restoreOverrideCursor();
          if (valueObject->isEmpty()) {
             QMessageBox::warning(NULL, "Value object open", "File " + filename + "\n cannot be read.") ;
@@ -1105,5 +1115,6 @@ void WarperController::set3D(bool is3D) {
   project3D = is3D;
   projectInitialised = true;
   landmarkModel->set3D(project3D);
+  mainWindow->actionEnableAlpha->setVisible(is3D);
   m_objectViewerController->set3D(project3D);
 }
