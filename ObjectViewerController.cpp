@@ -147,6 +147,8 @@ void ObjectViewerController::addSourceViewer(bool force)
     Q_ASSERT(sourceViewer);
     sourceViewer->init();
 
+    connect( m_mainWindow->actionEnableAlpha, SIGNAL(toggled(bool)), sourceViewer, SLOT(alphaChanged(bool)));
+
     //set title and minum size
     sourceViewerCounter++;
     if ( sourceViewerCounter > 1 )
@@ -171,6 +173,7 @@ void ObjectViewerController::addTargetViewer(bool force)
 
     Q_ASSERT(targetViewer );
     targetViewer->init();
+    connect( m_mainWindow->actionEnableAlpha, SIGNAL(toggled(bool)), targetViewer, SLOT(alphaChanged(bool)));
 
     //set title and minum size
     targetViewerCounter++;
@@ -194,6 +197,8 @@ void ObjectViewerController::addResultViewer(bool force)
 
     Q_ASSERT(resultViewer );
     resultViewer->init();
+
+    connect( m_mainWindow->actionEnableAlpha, SIGNAL(toggled(bool)), resultViewer, SLOT(alphaChanged(bool)));
 
     //set title and minum size
     resultViewerCounter++;

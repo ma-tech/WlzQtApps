@@ -51,7 +51,7 @@
      <x>0</x>
      <y>0</y>
      <width>1023</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -196,6 +196,7 @@
     <addaction name="actionShowLandmarks"/>
     <addaction name="actionShowMesh"/>
     <addaction name="separator"/>
+    <addaction name="actionEnableAlpha"/>
     <addaction name="actionSourceView"/>
     <addaction name="actionTargetView"/>
     <addaction name="actionResultView"/>
@@ -812,6 +813,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionEnableAlpha">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable alpha channel</string>
    </property>
   </action>
  </widget>

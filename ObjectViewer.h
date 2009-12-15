@@ -206,6 +206,16 @@ public slots:
   */
   void cameraChangedIn();
 
+  /*!
+   * \ingroup      UI
+   * \brief        Sets alpha
+   *
+   * \return       void
+   * \par      Source:
+   *                ObjectViewer.cpp
+   */
+   void alphaChanged(bool alpha);
+
 protected:
  /*!
   * \ingroup      UI
