@@ -2,20 +2,20 @@
 #Checks the uname information and starts up the 
 #correct 32 or 64 bit Warping interface
 
-set LPATH=`dirname $0`
+set LPATH=/opt/MouseAtlas/lib/WlzWarp
 setenv COIN_FULL_INDIRECT_RENDERING 1
 setenv SO_DRAGGER_DIR $LPATH/draggers
 
-if (`uname -i` == "x86_64") then
+if (`uname -i` == "x86_64" && $1 != "32" ) then
   echo Starting 64 bit warping
   setenv LD_LIBRARY_PATH $LPATH/lib64:$LD_LIBRARY_PATH
   set APP=Warping
 else
   echo Starting 32 bit warping
-  setenv LD_LIBRARY_PATH $LPATH/libs:$LD_LIBRARY_PATH
+  setenv LD_LIBRARY_PATH $LPATH/lib32:$LD_LIBRARY_PATH
   set APP=Warping32
 endif
 
-nohup $LPATH/$APP
+nohup $LPATH/$APP &
 
 
