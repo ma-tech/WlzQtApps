@@ -122,10 +122,24 @@ void TransferFunctionWidget::recomputeHistogram() {
   if (m_object && m_object->getObj() && m_pHist) {
       memset(m_pHist, 0, 256*sizeof(float));
       float max= 0;
+
       WlzObject     *histObj = NULL;
       WlzErrorNum   errNum = WLZ_ERR_NONE;
-      histObj = WlzAssignObject(WlzHistogramObj(m_object->getObj(), 256, 0.0, 1.0,
-                                     &errNum), NULL);
+      if (m_object->getWoolzGreyType()== WLZ_GREY_UBYTE) {
+        histObj = WlzAssignObject(WlzHistogramObj(m_object->getObj(), 256, 0.0, 1.0,
+                                       &errNum), NULL);
+    } else {
+      WlzPixelV     greyMinV,
+                    greyMaxV;
+
+      if(WlzGreyRange(m_object->getObj(), &greyMinV, &greyMaxV) == WLZ_ERR_NONE) {
+           WlzValueConvertPixel(&greyMinV, greyMinV, WLZ_GREY_DOUBLE);
+           WlzValueConvertPixel(&greyMaxV, greyMaxV, WLZ_GREY_DOUBLE);
+
+           histObj = WlzAssignObject(WlzHistogramObj(m_object->getObj(), 256, greyMinV.v.dbv, (greyMaxV.v.dbv - greyMinV.v.dbv +1)/256,
+                                       &errNum), NULL);
+          }
+      }
       if((histObj != NULL) && (errNum == WLZ_ERR_NONE)) {
            int           idx;
            WlzHistogramDomain *histDom;
@@ -146,8 +160,6 @@ void TransferFunctionWidget::recomputeHistogram() {
           WlzFreeObj(histObj);
    }
 }
-
-
 
 void TransferFunctionWidget::lowCutOffChanged() {
   if (!m_object || !checkBoxAutoUpdate->isChecked())
@@ -381,6 +393,8 @@ void TransferFunctionWidget::load(bool) {
 }
 
 void TransferFunctionWidget::save(bool) {
+  if (!m_object || !m_object->transferFunction())
+      return;
   QString filename = QFileDialog::getSaveFileName(NULL, tr("Save transfer function"), ".",
                                                 tr("Transfer function (*.trf)"));
   if (filename.isEmpty())
@@ -397,7 +411,7 @@ void TransferFunctionWidget::save(bool) {
   QXmlStreamWriter xmlWriter(&file);
   xmlWriter.setAutoFormatting(true);
   xmlWriter.writeStartDocument();
-
+  m_object->transferFunction()->saveAsXml(&xmlWriter);
   if (file.error()) {
     QMessageBox::warning(NULL, tr("Save transfer function"), tr("Error writing file."));
     file.remove();
