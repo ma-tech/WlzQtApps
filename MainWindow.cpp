@@ -213,7 +213,7 @@ void MainWindow::switchProjectType(ProjectProperties::ProjectTypes newType) {
       actionSaveProjectAs->setVisible(false);
 
       // Export menu
-      actionWarpTransformation->setVisible(false);
+      actionExportWarpTransform->setVisible(false);
       actionExportWarpedObject->setVisible(false);
       actionSaveLandmarks->setVisible(false);
       actionExportMesh->setVisible(false);
@@ -270,7 +270,7 @@ void MainWindow::switchProjectType(ProjectProperties::ProjectTypes newType) {
       actionSaveProjectAs->setVisible(true);
 
       // Export menu
-      actionWarpTransformation->setVisible(false);
+      actionExportWarpTransform->setVisible(false);
       actionExportWarpedObject->setVisible(false);
       actionSaveLandmarks->setVisible(false);
       actionExportMesh->setVisible(true);
@@ -332,7 +332,7 @@ void MainWindow::switchProjectType(ProjectProperties::ProjectTypes newType) {
 
 
       // Export menu
-      actionWarpTransformation->setVisible(true);
+      actionExportWarpTransform->setVisible(true);
       actionExportWarpedObject->setVisible(true);
       actionSaveLandmarks->setVisible(true);
       actionExportMesh->setVisible(false);

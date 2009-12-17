@@ -90,7 +90,7 @@
      <property name="title">
       <string>Export</string>
      </property>
-     <addaction name="actionWarpTransformation"/>
+     <addaction name="actionExportWarpTransform"/>
      <addaction name="actionExportWarpedObject"/>
      <addaction name="actionExportMesh"/>
     </widget>
@@ -583,10 +583,7 @@
     <string>Open composite</string>
    </property>
   </action>
-  <action name="actionWarpTransformation">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
+  <action name="actionExportWarpTransform">
    <property name="text">
     <string>Warp transformation</string>
    </property>
