@@ -437,7 +437,6 @@ public:
  /*!
   * \ingroup      Control
   * \brief        Sets the ID of the object.
-  *
   * \param        ID new object ID
   * \return       void
   * \par      Source:
@@ -448,11 +447,14 @@ public:
  /*!
   * \ingroup      Control
   * \brief        Sets a visualisation
+  * \param        newVis visualisation
+  * \param        newScale scale of the object
+
   * \return       void
   * \par      Source:
   *                WoolzObject.cpp
   */
-  virtual void setVisualisation(SoGroup * newVis);
+  virtual void setVisualisation(SoGroup * newVis, int newScale=1);
 
  /*!
   * \ingroup      Control
@@ -480,6 +482,16 @@ public:
   *                WoolzObject.cpp
   */
   virtual SoGroup* cachedVisualisation() { return m_cachedVisualisation;}
+
+  /*!
+   * \ingroup      Control
+   * \brief        Returns cached visualisation scale
+   * \return       cached visualisation scale
+   * \par      Source:
+   *                WoolzObject.cpp
+   */
+   virtual int cachedVisualisationScale() { return m_cachedVisualisationScale;}
+
 
  /*!
   * \ingroup      Control
@@ -630,7 +642,7 @@ signals:
   * \par      Source:
   *                WoolzObject.cpp
   */
-  virtual void objectPropertyChanged();
+  void objectPropertyChanged();
 
  /*!
   * \ingroup      Control
@@ -639,7 +651,7 @@ signals:
   * \par      Source:
   *                WoolzObject.cpp
   */
-  virtual void objectVisualisationChange();
+   void objectVisualisationChange();
 
  /*!
   * \ingroup      Control
@@ -648,7 +660,7 @@ signals:
   * \par      Source:
   *                WoolzObject.cpp
   */
-  virtual void objectVisibilityChanged();
+  void objectVisibilityChanged();
 
  /*!
   * \ingroup      Control
@@ -657,7 +669,7 @@ signals:
   * \par      Source:
   *                WoolzObject.cpp
   */
-  virtual void objectRemoved();
+  void objectRemoved();
 
  /*!
   * \ingroup      Control
@@ -666,7 +678,7 @@ signals:
   * \par      Source:
   *                WoolzObject.cpp
   */
-  virtual void objectChanged();
+  void objectChanged();
 
  /*!
   * \ingroup      Control
@@ -675,7 +687,7 @@ signals:
   * \par      Source:
   *                WoolzObject.cpp
   */
-  virtual void objectTypeChanged();
+  void objectTypeChanged();
 
  /*!
   * \ingroup      Control
@@ -684,7 +696,7 @@ signals:
   * \par      Source:
   *                WoolzObject.cpp
   */
-  virtual void objectSelected();
+  void objectSelected();
 
   /*!
    * \ingroup      Control
@@ -695,7 +707,7 @@ signals:
    * \par      Source:
    *                WoolzObject.cpp
    */
-   virtual void statusChange(QString message, int timeout);
+   void statusChange(QString message, int timeout);
 
 protected:
   // protected attributes
@@ -708,9 +720,9 @@ protected:
   SoGroup *m_cachedVisualisation;   /*!< cached visualisation of the object to share between multiple views */
   bool m_validVisualisation;        /*!< if visualisation is valid */
   bool m_visible;                   /*!< global flag if the object is visualised*/
+  int m_cachedVisualisationScale;   /*!< scale of the cached visualisation*/
   int m_ID;                         /*!< object ID to identify object troughout the application run-time TODO REMOVE*/
   TransferFunction * m_transferFunction;                  /*!< transfer function */
-
 private:
   static unsigned colourCounter;                          /*!< colour counter */
 

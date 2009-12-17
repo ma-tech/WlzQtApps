@@ -66,6 +66,7 @@ WoolzObject::WoolzObject ( ) : QObject() {
   m_type = none;
   m_cachedVisualisation = NULL;
   m_validVisualisation = false;
+  m_cachedVisualisationScale = 0;
   m_visible = true;
   m_ID = -1;
 
@@ -200,15 +201,18 @@ void WoolzObject::removeCachedVisualisation() {
   if (m_cachedVisualisation) {
     m_cachedVisualisation->unref();
     m_cachedVisualisation = NULL;
+    m_cachedVisualisationScale = 0;
   }
 }
 
-void WoolzObject::setVisualisation(SoGroup * newVis) {
+void WoolzObject::setVisualisation(SoGroup * newVis, int newScale) {
    removeCachedVisualisation();
+   m_cachedVisualisationScale = 0;
    m_validVisualisation = newVis != NULL;
    if (m_validVisualisation) {
      m_cachedVisualisation = newVis;
      m_cachedVisualisation ->ref();
+     m_cachedVisualisationScale = newScale;
    }
 }
 
@@ -229,7 +233,8 @@ QColor WoolzObject::getNextColour() {
 }
 
 void WoolzObject::generateNewColour() {
-  setQColour(getNextColour());
+    // setQColour(getNextColour());  //new colour
+    setQColour(QColor(255,255,255));  //use white colour
 }
 
 void WoolzObject::setVisible( bool visible ) {
