@@ -50,6 +50,7 @@ static char _VolumeView_cpp[] = "MRC HGU $Id$";
 // Coin includes
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/nodes/SoScale.h>
 #include <Inventor/nodes/SoIndexedFaceSet.h>
 #include <Inventor/nodes/SoShapeHints.h>
 #include <Inventor/manips/SoClipPlaneManip.h>
@@ -65,6 +66,9 @@ static char _VolumeView_cpp[] = "MRC HGU $Id$";
 
 //intialise section transfer function
 SoTransferFunction *VolumeView::m_tfSection = NULL;
+
+ const long VolumeView::maxVoxels = 256 * 256 * 256;
+
 
 // Constructors/Destructors
 //  
@@ -104,18 +108,22 @@ bool VolumeView::compatible( ) {
 /*
   Volume renderer organisation
      0 - SoMaterial
-     1 - cache wot SoVolumeData
+     1 - cache:
+         (0) SoScale
+         (1) SoVolumeData
      2 - SoSeparator
-           (0) - SoClipPlane
-         1 (1) - TransferFunction
-         2 (2) - SoVolumeRenderer
+           - (SoClipPlane)
+           - (SoScale)
+           - TransferFunction
+           - SoVolumeRenderer
      3 - SoSepator
+         ()- SoScale
          0 - SoTransferFunction
          1 - SoObliqueSlice
 */
 void VolumeView::generateSceneGraph ( bool /*bForce*/ ) {
 
-  // chacable root
+  // cachable root
   SoGroup *cache;
 
   m_material -> diffuseColor.setValue(obj->sbColour());
@@ -127,8 +135,10 @@ void VolumeView::generateSceneGraph ( bool /*bForce*/ ) {
       return;
   }
 
-  if (obj->isCachedVisualisation())
+  if (obj->isCachedVisualisation()) {
      cache = obj->cachedVisualisation();
+     m_scaleFactor = obj->cachedVisualisationScale();
+ }
   else {
      WlzErrorNum	errNum = WLZ_ERR_NONE;
      WlzIBox3	        bBox = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -143,68 +153,94 @@ void VolumeView::generateSceneGraph ( bool /*bForce*/ ) {
      if(errNum == WLZ_ERR_NONE)
         bBox = WlzBoundingBox3I(obj->getObj(), &errNum);
 
+     sz.vtX = bBox.xMax - bBox.xMin + 1;
+     sz.vtY = bBox.yMax - bBox.yMin + 1;
+     sz.vtZ = bBox.zMax - bBox.zMin + 1;
+     WlzObject *sampledObj = NULL;
+     m_scaleFactor = 1;
+     if (maxVoxels < sz.vtX * sz.vtY* sz.vtZ) { //do subsampling
+
+          m_scaleFactor = ceil(pow(((double)sz.vtX * sz.vtY * sz.vtZ) / maxVoxels, 1.0f/3.0f));
+          Q_ASSERT(m_scaleFactor > 1);
+   /*
+          WlzIVertex3 scale;
+          scale.vtX = m_scaleFactor;
+          scale.vtY = m_scaleFactor;
+          scale.vtZ = m_scaleFactor;
+          sampledObj = WlzSampleObj(obj->getObj(), scale, WLZ_SAMPLEFN_POINT, &errNum);*/
+          double scale = (double)1/m_scaleFactor;
+          WlzAffineTransform *trans=WlzAffineTransformFromScale(WLZ_TRANSFORM_3D_AFFINE, scale, scale, scale, &errNum);
+          sampledObj = WlzAffineTransformObj(obj->getObj(), trans, WLZ_INTERPOLATION_LINEAR, &errNum);
+          WlzFreeAffineTransform(trans);
+          if(errNum == WLZ_ERR_NONE) {
+              sampledObj = WlzAssignObject(sampledObj, &errNum);
+          if(errNum == WLZ_ERR_NONE) {
+              bBox = WlzBoundingBox3I(sampledObj, &errNum);
+              sz.vtX = bBox.xMax - bBox.xMin + 1;
+              sz.vtY = bBox.yMax - bBox.yMin + 1;
+              sz.vtZ = bBox.zMax - bBox.zMin + 1;
+          }
+          }
+      } else {
+          sampledObj = WlzAssignObject(obj->getObj(), &errNum);
+      }
+
+      org.vtX = bBox.xMin;
+      org.vtY = bBox.yMin;
+      org.vtZ = bBox.zMin;
+
       /* Get array of data. */
-     if(errNum == WLZ_ERR_NONE) {
+      if(errNum == WLZ_ERR_NONE) {
         WlzGreyType greyType = obj->getWoolzGreyType();
         bool isUBYTE = greyType == WLZ_GREY_UBYTE;
-        sz.vtX = bBox.xMax - bBox.xMin + 1;
-        sz.vtY = bBox.yMax - bBox.yMin + 1;
-        sz.vtZ = bBox.zMax - bBox.zMin + 1;
-        org.vtX = bBox.xMin;
-        org.vtY = bBox.yMin;
-        org.vtZ = bBox.zMin;
 
         if (isUBYTE) {
-          errNum = WlzToArray3D(&m_data, obj->getObj(), sz, org, 0, WLZ_GREY_UBYTE );
+          errNum = WlzToArray3D(&m_data, sampledObj, sz, org, 0, WLZ_GREY_UBYTE );
         } else {  // convert to UBYTE
           WlzPixelV     greyMinV,
                         greyMaxV,
                         newGreyMinV,
                         newGreyMaxV;
-          errNum = WlzGreyRange(obj->getObj(), &greyMinV, &greyMaxV);
+          errNum = WlzGreyRange(sampledObj, &greyMinV, &greyMaxV);
           newGreyMinV.type = WLZ_GREY_UBYTE;
           newGreyMaxV.type = WLZ_GREY_UBYTE;
           newGreyMinV.v.ubv = 0;
           newGreyMaxV.v.ubv = 255;
-//newGreyMinV.type = WLZ_GREY_SHORT;
-//newGreyMaxV.type = WLZ_GREY_SHORT;
-//          newGreyMinV.v.shv = 0;
-//          newGreyMaxV.v.shv = 255;
 
           WlzValueConvertPixel(&newGreyMinV, newGreyMinV, greyType);
           WlzValueConvertPixel(&newGreyMaxV, newGreyMaxV, greyType);
           WlzObject *cpyobj = NULL;
           if( errNum == WLZ_ERR_NONE) {
-              cpyobj= WlzCopyObject(obj->getObj(), &errNum);
+              cpyobj= WlzCopyObject(sampledObj, &errNum);
            }
           if(errNum == WLZ_ERR_NONE) {
               errNum = WlzGreySetRange(cpyobj, greyMinV, greyMaxV, newGreyMinV, newGreyMaxV, 0);
           }
           if(errNum == WLZ_ERR_NONE) {
               errNum = WlzToArray3D(&m_data, cpyobj, sz, org, 0, WLZ_GREY_UBYTE );
-              WlzFreeObj(cpyobj);
           }
+          if (cpyobj)
+            WlzFreeObj(cpyobj);
        }
      }
+     if (sampledObj)
+       WlzFreeObj(sampledObj);
      dim = SbVec3s(sz.vtX, sz.vtY, sz.vtZ);
-     uint8_t *voxData;
-     voxData = (uint8_t *)**m_data;
-     if(voxData!=NULL && errNum == WLZ_ERR_NONE)
-     {
-
+     uint8_t *voxData = NULL;
+     if(m_data!=NULL && errNum == WLZ_ERR_NONE) {
+        voxData = (uint8_t *)**m_data;
         // Add SoVolumeData to scene graph
         SoVolumeData *volData;
         volData = new SoVolumeData();
         volData ->setVolumeData(dim, voxData, SoVolumeData::UNSIGNED_BYTE);
-    
         //sets volume location and size
         SbBox3f box( SbVec3f(bBox.xMin, bBox.yMin, bBox.zMin), SbVec3f(bBox.xMax, bBox.yMax, bBox.zMax));
         volData->setVolumeSize(box);
-    
+
         cache->addChild(volData);
-        obj->setVisualisation(cache);
-    }
-   }
+        obj->setVisualisation(cache, m_scaleFactor);
+     }
+  }
   Q_ASSERT(cache);
   root->addChild(cache);
 
@@ -219,11 +255,16 @@ void VolumeView::generateSceneGraph ( bool /*bForce*/ ) {
   m_volumerenderSep->ref();
   if (m_clipPlane)
       m_volumerenderSep->addChild(m_clipPlane);
+
+  if (m_scaleFactor!=1) {
+       SoScale *scale= new SoScale();
+       scale->scaleFactor.setValue((float)m_scaleFactor, (float)m_scaleFactor, (float)m_scaleFactor);
+       m_volumerenderSep->addChild(scale);
+  }
   TransferFunction *transferFunction= obj->transferFunction();
   Q_ASSERT(transferFunction);
   m_volumerenderSep->addChild(transferFunction);
   m_volumerenderSep->addChild(volRend);
-
   root->addChild(m_volumerenderSep);
   root->addChild(m_section);
   if (m_orthoOn)
@@ -307,16 +348,24 @@ void VolumeView::setObliqueSlice(bool on) {
       m_tfSection->colorMapType = SoTransferFunction::LUM_ALPHA;
       for (int ir=0;ir<256;ir++) {
          m_tfSection->colorMap.set1Value(ir*2, ir/255.0f);
-//         m_tfSection->colorMap.set1Value(ir*2+1, 0.95f);
          m_tfSection->colorMap.set1Value(ir*2+1, 1.00f);
       }
       WlzPixelV pixel=WlzGetBackground(obj->getObj(),NULL);
 /*      if (pixel.type==WLZ_GREY_UBYTE)
         m_tfSection->colorMap.set1Value(pixel.v.ubv*2+1, 0.0f);*/
     }
+    if (m_scaleFactor!=1) {
+         SoScale *scale= new SoScale();
+         scale->scaleFactor.setValue((float)m_scaleFactor, (float)m_scaleFactor, (float)m_scaleFactor);
+         m_section->addChild(scale);
+     }
     m_section->addChild(m_tfSection);
     m_section->addChild(ob);
   } else {
     m_section->removeAllChildren();
   }
+}
+
+QString VolumeView::getProperties ( )  {
+    return QString("Scale factor: %1").arg(m_scaleFactor);
 }

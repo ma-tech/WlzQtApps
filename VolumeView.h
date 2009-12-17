@@ -136,6 +136,16 @@ public:
   */
   virtual int visualisationType () {return 0;}
 
+  /*!
+   * \ingroup      Visualisation
+   * \brief        Returns the properties of the view.
+   *
+   * \return       scale factor
+   * \par      Source:
+   *                VolumeView.cpp
+   */
+   virtual QString getProperties ( );
+
 protected:
  /*!
   * \ingroup      Visualisation
@@ -221,6 +231,9 @@ protected:
   SoClipPlane *m_clipPlane;                  /*!< reference clip plane from viewer*/
   bool m_orthoOn;                            /*!< if clip plane is on*/
   static SoTransferFunction *m_tfSection;    /*!< static transfer function, used for all oblique views */
+  int m_scaleFactor;                         /*!< volume scale factor */
+
+  static const long maxVoxels;
 };
 
 #endif // VOLUMEVIEW_H
