@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/icons" >
+    <qresource prefix="/icons">
         <file>images/print.png</file>
         <file>images/move.png</file>
         <file>images/views.png</file>
@@ -35,5 +35,7 @@
         <file>images/cuttingplanevisible.png</file>
         <file>images/warpingparams.png</file>
         <file>images/open.png</file>
+        <file>images/cuttingplanevisiblefliped.png</file>
+        <file>images/cuttingplaneonfliped.png</file>
     </qresource>
 </RCC>
