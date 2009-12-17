@@ -155,7 +155,7 @@ signals:
   * \par      Source:
   *                ObjectListModelAbstract.cpp
   */
-  virtual void addObjectSignal (WoolzObject * object);
+  void addObjectSignal (WoolzObject * object);
 
  /*!
   * \ingroup      Control
@@ -165,7 +165,7 @@ signals:
   * \par      Source:
   *                ObjectListModelAbstract.cpp
   */
-  virtual void removedObjectSignal (WoolzObject * object);
+  void removedObjectSignal (WoolzObject * object);
 
  /*!
   * \ingroup      Control
@@ -175,7 +175,7 @@ signals:
   * \par      Source:
   *                ObjectListModelAbstract.cpp
   */
-  virtual void objectSelected(WoolzObject * object);
+  void objectSelected(WoolzObject * object);
 
  /*!
   * \ingroup      Control
@@ -217,8 +217,8 @@ protected slots:
   *                ObjectListModelAbstract.cpp
   */
   virtual void selectAnObject();
-protected:
 
+protected:
  /*!
   * \ingroup      Control
   * \brief        Removes an object
