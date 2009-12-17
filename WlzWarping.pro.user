@@ -1,0 +1,466 @@
+<!DOCTYPE QtCreatorProject>
+<qtcreator>
+ <data>
+  <variable>RunConfiguration0-Arguments</variable>
+  <valuelist type="QVariantList"/>
+ </data>
+ <data>
+  <variable>RunConfiguration0-BaseEnvironmentBase</variable>
+  <value type="int">2</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-Executable</variable>
+  <value type="QString">/net/mahost/export/techcompwg1/zsolth/Projects/MouseAtlas/src/Applications/WlzWarp/linux_debug/bin/Warping_d</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-RunConfiguration.name</variable>
+  <value type="QString">Wlz Debug</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UseTerminal</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UserEnvironmentChanges</variable>
+  <valuelist type="QVariantList">
+   <value type="QString">COIN_SORTED_LAYERS_USE_NVIDIA_RC =1</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UserName</variable>
+  <value type="QString">Wlz Debug</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UserSetName</variable>
+  <value type="bool">true</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-WorkingDirectory</variable>
+  <value type="QString">/net/homehost/export/home/zsolth/ma-week/Warp/testwlz</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-type</variable>
+  <value type="QString">ProjectExplorer.CustomExecutableRunConfiguration</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-Arguments</variable>
+  <valuelist type="QVariantList"/>
+ </data>
+ <data>
+  <variable>RunConfiguration1-BaseEnvironmentBase</variable>
+  <value type="int">2</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-Executable</variable>
+  <value type="QString">/net/mahost/export/techcompwg1/zsolth/Projects/MouseAtlas/src/Applications/WlzWarp/linux/bin/Warping</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-RunConfiguration.name</variable>
+  <value type="QString">Wlz Release</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-UseTerminal</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-UserEnvironmentChanges</variable>
+  <valuelist type="QVariantList"/>
+ </data>
+ <data>
+  <variable>RunConfiguration1-UserName</variable>
+  <value type="QString">Wlz Release</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-UserSetName</variable>
+  <value type="bool">true</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-WorkingDirectory</variable>
+  <value type="QString">$BUILDDIR</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-type</variable>
+  <value type="QString">ProjectExplorer.CustomExecutableRunConfiguration</value>
+ </data>
+ <data>
+  <variable>RunConfiguration2-Arguments</variable>
+  <valuelist type="QVariantList"/>
+ </data>
+ <data>
+  <variable>RunConfiguration2-BaseEnvironmentBase</variable>
+  <value type="int">2</value>
+ </data>
+ <data>
+  <variable>RunConfiguration2-Executable</variable>
+  <value type="QString">/export/data0/home/zsolth/ma-week/Projects/MouseAtlas32/src/Applications/WlzWarp/linux32_debug/bin/Warping_d</value>
+ </data>
+ <data>
+  <variable>RunConfiguration2-RunConfiguration.name</variable>
+  <value type="QString">Debug 32</value>
+ </data>
+ <data>
+  <variable>RunConfiguration2-UseTerminal</variable>
+  <value type="bool">true</value>
+ </data>
+ <data>
+  <variable>RunConfiguration2-UserEnvironmentChanges</variable>
+  <valuelist type="QVariantList"/>
+ </data>
+ <data>
+  <variable>RunConfiguration2-UserName</variable>
+  <value type="QString">Debug 32</value>
+ </data>
+ <data>
+  <variable>RunConfiguration2-UserSetName</variable>
+  <value type="bool">true</value>
+ </data>
+ <data>
+  <variable>RunConfiguration2-WorkingDirectory</variable>
+  <value type="QString">/export/data0/home/zsolth/ma-week/Warp/testwlz</value>
+ </data>
+ <data>
+  <variable>RunConfiguration2-type</variable>
+  <value type="QString">ProjectExplorer.CustomExecutableRunConfiguration</value>
+ </data>
+ <data>
+  <variable>activeRunConfiguration</variable>
+  <value type="int">0</value>
+ </data>
+ <data>
+  <variable>activebuildconfiguration</variable>
+  <value type="QString">Debug</value>
+ </data>
+ <data>
+  <variable>buildConfiguration-Debug</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
+   <value key="QtVersionId" type="int">0</value>
+   <value key="ToolChain" type="int">0</value>
+   <value key="addQDumper" type=""></value>
+   <value key="buildConfiguration" type="int">2</value>
+   <value key="buildDirectory" type="QString">/net/mahost/export/techcompwg0/zsolth/Projects/Warping/WlzWarp</value>
+   <value key="clearSystemEnvironment" type="bool">false</value>
+   <value key="useShadowBuild" type="bool">false</value>
+   <valuelist key="userEnvironmentChanges" type="QVariantList">
+    <value type="QString">MA_HOME=/home/zsolth/home/ma-week/Projects/MouseAtlasDebug</value>
+   </valuelist>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildConfiguration-Release</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
+   <value key="QtVersionId" type="int">0</value>
+   <value key="addQDumper" type=""></value>
+   <value key="buildConfiguration" type="int">0</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Debug-buildstep0</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList">
+    <value type="QString">COLORTERM=</value>
+    <value type="QString">CPU=x86_64</value>
+    <value type="QString">CSHEDIT=emacs</value>
+    <value type="QString">CSHRCREAD=true</value>
+    <value type="QString">CVSROOT=:pserver:zsolth@macvs.hgu.mrc.ac.uk:2401/rep/MouseAtlas</value>
+    <value type="QString">CVS_RSH=ssh</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-Rolh3C8WZQ,guid=069219d79f7e1d6a17c6c9004b25f7d6</value>
+    <value type="QString">DESKTOP_LAUNCH=kde-open</value>
+    <value type="QString">DESKTOP_SESSION=default</value>
+    <value type="QString">DISPLAY=:0.0</value>
+    <value type="QString">DM_CONTROL=/var/run/xdmctl</value>
+    <value type="QString">ENV=/etc/bash.bashrc</value>
+    <value type="QString">FROM_HEADER=</value>
+    <value type="QString">GPG_AGENT_INFO=/tmp/gpg-iRYO4O/S.gpg-agent:4390:1</value>
+    <value type="QString">GROFF_NO_SGR=yes</value>
+    <value type="QString">GROUP=ma</value>
+    <value type="QString">GS_LIB=/net/homehost/export/home/zsolth/.fonts</value>
+    <value type="QString">GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/usr/share/themes//QtCurve/gtk-2.0/gtkrc:/net/homehost/export/home/zsolth/.gtkrc-2.0-qtengine:/net/homehost/export/home/zsolth/.gtkrc-2.0:/net/homehost/export/home/zsolth/.kde/share/config/gtkrc-2.0</value>
+    <value type="QString">GTK_PATH=/usr/local/lib/gtk-2.0:/usr/lib/gtk-2.0</value>
+    <value type="QString">GTK_PATH64=/usr/local/lib64/gtk-2.0:/usr/lib64/gtk-2.0</value>
+    <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/net/homehost/export/home/zsolth/.gtkrc:/net/homehost/export/home/zsolth/.kde/share/config/gtkrc</value>
+    <value type="QString">G_BROKEN_FILENAMES=1</value>
+    <value type="QString">G_FILENAME_ENCODING=@locale,UTF-8,ISO-8859-1,CP1252</value>
+    <value type="QString">HOME=/net/homehost/export/home/zsolth</value>
+    <value type="QString">HOST=kilchoman</value>
+    <value type="QString">HOSTNAME=kilchoman.hgu.mrc.ac.uk</value>
+    <value type="QString">HOSTTYPE=x86_64-linux</value>
+    <value type="QString">INFODIR=/usr/local/info:/usr/share/info:/usr/info</value>
+    <value type="QString">INFOPATH=/usr/local/info:/usr/share/info:/usr/info</value>
+    <value type="QString">INPUTRC=/etc/inputrc</value>
+    <value type="QString">JAVA_BINDIR=/usr/lib64/jvm/java/bin</value>
+    <value type="QString">JAVA_HOME=/usr/lib64/jvm/java</value>
+    <value type="QString">JAVA_ROOT=/usr/lib64/jvm/java</value>
+    <value type="QString">JDK_HOME=/usr/lib64/jvm/java</value>
+    <value type="QString">JRE_HOME=/usr/lib64/jvm/java/jre</value>
+    <value type="QString">KDE_FULL_SESSION=true</value>
+    <value type="QString">KDE_MULTIHEAD=false</value>
+    <value type="QString">KDE_NO_IPV6=1</value>
+    <value type="QString">KDE_SESSION_UID=10613</value>
+    <value type="QString">KONSOLE_DCOP=DCOPRef(konsole-26265,konsole)</value>
+    <value type="QString">KONSOLE_DCOP_SESSION=DCOPRef(konsole-26265,session-1)</value>
+    <value type="QString">LANG=en_GB.UTF-8</value>
+    <value type="QString">LD_LIBRARY_PATH=/opt/qthome/lib/qtcreator:.:/net/homehost/export/home/zsolth/lib:/opt/qt/lib:/usr/local/lib:/opt/local/lib:/home/zsolth/home/ma-week/MouseAtlas/lib::/opt/java/lib:/opt/kde3/lib:/opt/gnu/lib:/opt/vtk/lib:/opt/intel/Compiler/11.0/083/lib/intel64</value>
+    <value type="QString">LESS=-M -I</value>
+    <value type="QString">LESSCLOSE=lessclose.sh %s %s</value>
+    <value type="QString">LESSKEY=/etc/lesskey.bin</value>
+    <value type="QString">LESSOPEN=lessopen.sh %s</value>
+    <value type="QString">LESS_ADVANCED_PREPROCESSOR=no</value>
+    <value type="QString">LOGNAME=zsolth</value>
+    <value type="QString">LS_COLORS=no=00:fi=00:di=01;34:ln=00;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=41;33;01:ex=00;32:*.cmd=00;32:*.exe=01;32:*.com=01;32:*.bat=01;32:*.btm=01;32:*.dll=01;32:*.tar=00;31:*.tbz=00;31:*.tgz=00;31:*.rpm=00;31:*.deb=00;31:*.arj=00;31:*.taz=00;31:*.lzh=00;31:*.zip=00;31:*.zoo=00;31:*.z=00;31:*.Z=00;31:*.gz=00;31:*.bz2=00;31:*.tb2=00;31:*.tz2=00;31:*.tbz2=00;31:*.avi=01;35:*.bmp=01;35:*.fli=01;35:*.gif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mng=01;35:*.mov=01;35:*.mpg=01;35:*.pcx=01;35:*.pbm=01;35:*.pgm=01;35:*.png=01;35:*.ppm=01;35:*.tga=01;35:*.tif=01;35:*.xbm=01;35:*.xpm=01;35:*.dl=01;35:*.gl=01;35:*.wmv=01;35:*.aiff=00;32:*.au=00;32:*.mid=00;32:*.mp3=00;32:*.ogg=00;32:*.voc=00;32:*.wav=00;32:</value>
+    <value type="QString">LS_OPTIONS=-N --color=tty -T 0</value>
+    <value type="QString">MACHTYPE=x86_64</value>
+    <value type="QString">MAIL=/var/spool/mail/zsolth</value>
+    <value type="QString">MANPATH=/usr/local/man:/usr/share/man</value>
+    <value type="QString">MA_HOME=/home/zsolth/home/ma-week/Projects/MouseAtlasDebug</value>
+    <value type="QString">MINICOM=-c on</value>
+    <value type="QString">MORE=-sl</value>
+    <value type="QString">NNTPSERVER=news</value>
+    <value type="QString">OSTYPE=linux</value>
+    <value type="QString">PAGER=less</value>
+    <value type="QString">PATH=/opt/qtsdk-2009.05/qt/bin:.:/opt/qt/bin:/home/zsolth/home/bin:/home/zsolth/home/ma-week/Projects/MouseAtlas/bin:/opt/java/bin:/usr/bin:/sbin:/usr/sbin:/bin:/usr/X11R6/bin:/usr/games:/opt/JavaCC/bin:/opt/kde3/bin:/usr/local/bin:/opt/local/bin:/opt/gnu/bin:/opt/MeVisLab/bin:/opt/MuPAD/share/bin:/opt/vtk/bin:/opt/intel/Compiler/11.0/083/bin/intel64</value>
+    <value type="QString">PWD=/net/homehost/export/home/zsolth/ma-week/Projects/MouseAtlasDebug</value>
+    <value type="QString">PYTHONSTARTUP=/etc/pythonstart</value>
+    <value type="QString">QTDIR=/opt/qtsdk-2009.05/qt</value>
+    <value type="QString">QT_HOME=/opt/qt</value>
+    <value type="QString">QT_SYSTEM_DIR=/usr/share/desktop-data</value>
+    <value type="QString">SDK_HOME=/usr/lib64/jvm/java</value>
+    <value type="QString">SESSION_MANAGER=local/kilchoman:/tmp/.ICE-unix/4448</value>
+    <value type="QString">SHELL=/bin/tcsh</value>
+    <value type="QString">SHLVL=4</value>
+    <value type="QString">SO_DRAGGER_DIR=/net/mahost/export/techcompwg1/zsolth/Warp/draggers</value>
+    <value type="QString">SSH_AGENT_PID=4391</value>
+    <value type="QString">SSH_ASKPASS=/usr/lib64/ssh/x11-ssh-askpass</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-LHaAI4294/agent.4294</value>
+    <value type="QString">TERM=linux</value>
+    <value type="QString">TEXINPUTS=:/net/homehost/export/home/zsolth/.TeX:/usr/share/doc/.TeX:/usr/doc/.TeX</value>
+    <value type="QString">TMPDIR=/tmp</value>
+    <value type="QString">USER=zsolth</value>
+    <value type="QString">USE_FAM=</value>
+    <value type="QString">VENDOR=suse</value>
+    <value type="QString">WINDOWID=48234504</value>
+    <value type="QString">WINDOWMANAGER=/usr/bin/dbus-launch --sh-syntax --exit-with-session /usr/bin/kde</value>
+    <value type="QString">XAUTHLOCALHOSTNAME=kilchoman</value>
+    <value type="QString">XCURSOR_THEME=DMZ</value>
+    <value type="QString">XDG_CONFIG_DIRS=/etc/xdg</value>
+    <value type="QString">XDG_DATA_DIRS=/usr/local/share:/usr/share:/etc/opt/kde3/share:/opt/bioinf/share:/opt/gnu/share:/opt/kde3/share:/opt/local/share:/opt/mpi/share:/opt/qthome/share:/opt/qtsdk-2009.03/share:/opt/qtsdk-2009.04/share:/opt/qtsdk-2009.05/share:/usr/share/gnome/help</value>
+    <value type="QString">XDG_SESSION_COOKIE=3a6e93b7cfe2e92047b406004a265b00-1260779475.203814-196411188</value>
+    <value type="QString">XDM_MANAGED=/var/run/xdmctl/xdmctl-:0,maysd,mayfn,sched,rsvd,method=classic</value>
+    <value type="QString">XKEYSYMDB=/usr/share/X11/XKeysymDB</value>
+    <value type="QString">XMODIFIERS=@im=local</value>
+    <value type="QString">XNLSPATH=/usr/share/X11/nls</value>
+    <value type="QString">XSESSION_IS_UP=yes</value>
+   </valuelist>
+   <valuelist key="abstractProcess.arguments" type="QVariantList">
+    <value type="QString">/net/mahost/export/techcompwg0/zsolth/Projects/Warping/WlzWarp/WlzWarping.pro</value>
+    <value type="QString">-spec</value>
+    <value type="QString">linux-g++-64</value>
+    <value type="QString">-r</value>
+    <value type="QString">CONFIG+=debug</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString">/opt/qt/bin/qmake</value>
+   <value key="abstractProcess.enabled" type="bool">false</value>
+   <value key="abstractProcess.workingDirectory" type="QString">/net/mahost/export/techcompwg0/zsolth/Projects/Warping/WlzWarp</value>
+   <value key="buildConfiguration" type=""></value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Debug-buildstep1</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList">
+    <value type="QString">COLORTERM=</value>
+    <value type="QString">CPU=x86_64</value>
+    <value type="QString">CSHEDIT=emacs</value>
+    <value type="QString">CSHRCREAD=true</value>
+    <value type="QString">CVSROOT=:pserver:zsolth@macvs.hgu.mrc.ac.uk:2401/rep/MouseAtlas</value>
+    <value type="QString">CVS_RSH=ssh</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-Rolh3C8WZQ,guid=069219d79f7e1d6a17c6c9004b25f7d6</value>
+    <value type="QString">DESKTOP_LAUNCH=kde-open</value>
+    <value type="QString">DESKTOP_SESSION=default</value>
+    <value type="QString">DISPLAY=:0.0</value>
+    <value type="QString">DM_CONTROL=/var/run/xdmctl</value>
+    <value type="QString">ENV=/etc/bash.bashrc</value>
+    <value type="QString">FROM_HEADER=</value>
+    <value type="QString">GPG_AGENT_INFO=/tmp/gpg-iRYO4O/S.gpg-agent:4390:1</value>
+    <value type="QString">GROFF_NO_SGR=yes</value>
+    <value type="QString">GROUP=ma</value>
+    <value type="QString">GS_LIB=/net/homehost/export/home/zsolth/.fonts</value>
+    <value type="QString">GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/usr/share/themes//QtCurve/gtk-2.0/gtkrc:/net/homehost/export/home/zsolth/.gtkrc-2.0-qtengine:/net/homehost/export/home/zsolth/.gtkrc-2.0:/net/homehost/export/home/zsolth/.kde/share/config/gtkrc-2.0</value>
+    <value type="QString">GTK_PATH=/usr/local/lib/gtk-2.0:/usr/lib/gtk-2.0</value>
+    <value type="QString">GTK_PATH64=/usr/local/lib64/gtk-2.0:/usr/lib64/gtk-2.0</value>
+    <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/net/homehost/export/home/zsolth/.gtkrc:/net/homehost/export/home/zsolth/.kde/share/config/gtkrc</value>
+    <value type="QString">G_BROKEN_FILENAMES=1</value>
+    <value type="QString">G_FILENAME_ENCODING=@locale,UTF-8,ISO-8859-1,CP1252</value>
+    <value type="QString">HOME=/net/homehost/export/home/zsolth</value>
+    <value type="QString">HOST=kilchoman</value>
+    <value type="QString">HOSTNAME=kilchoman.hgu.mrc.ac.uk</value>
+    <value type="QString">HOSTTYPE=x86_64-linux</value>
+    <value type="QString">INFODIR=/usr/local/info:/usr/share/info:/usr/info</value>
+    <value type="QString">INFOPATH=/usr/local/info:/usr/share/info:/usr/info</value>
+    <value type="QString">INPUTRC=/etc/inputrc</value>
+    <value type="QString">JAVA_BINDIR=/usr/lib64/jvm/java/bin</value>
+    <value type="QString">JAVA_HOME=/usr/lib64/jvm/java</value>
+    <value type="QString">JAVA_ROOT=/usr/lib64/jvm/java</value>
+    <value type="QString">JDK_HOME=/usr/lib64/jvm/java</value>
+    <value type="QString">JRE_HOME=/usr/lib64/jvm/java/jre</value>
+    <value type="QString">KDE_FULL_SESSION=true</value>
+    <value type="QString">KDE_MULTIHEAD=false</value>
+    <value type="QString">KDE_NO_IPV6=1</value>
+    <value type="QString">KDE_SESSION_UID=10613</value>
+    <value type="QString">KONSOLE_DCOP=DCOPRef(konsole-26265,konsole)</value>
+    <value type="QString">KONSOLE_DCOP_SESSION=DCOPRef(konsole-26265,session-1)</value>
+    <value type="QString">LANG=en_GB.UTF-8</value>
+    <value type="QString">LD_LIBRARY_PATH=/opt/qthome/lib/qtcreator:.:/net/homehost/export/home/zsolth/lib:/opt/qt/lib:/usr/local/lib:/opt/local/lib:/home/zsolth/home/ma-week/MouseAtlas/lib::/opt/java/lib:/opt/kde3/lib:/opt/gnu/lib:/opt/vtk/lib:/opt/intel/Compiler/11.0/083/lib/intel64</value>
+    <value type="QString">LESS=-M -I</value>
+    <value type="QString">LESSCLOSE=lessclose.sh %s %s</value>
+    <value type="QString">LESSKEY=/etc/lesskey.bin</value>
+    <value type="QString">LESSOPEN=lessopen.sh %s</value>
+    <value type="QString">LESS_ADVANCED_PREPROCESSOR=no</value>
+    <value type="QString">LOGNAME=zsolth</value>
+    <value type="QString">LS_COLORS=no=00:fi=00:di=01;34:ln=00;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=41;33;01:ex=00;32:*.cmd=00;32:*.exe=01;32:*.com=01;32:*.bat=01;32:*.btm=01;32:*.dll=01;32:*.tar=00;31:*.tbz=00;31:*.tgz=00;31:*.rpm=00;31:*.deb=00;31:*.arj=00;31:*.taz=00;31:*.lzh=00;31:*.zip=00;31:*.zoo=00;31:*.z=00;31:*.Z=00;31:*.gz=00;31:*.bz2=00;31:*.tb2=00;31:*.tz2=00;31:*.tbz2=00;31:*.avi=01;35:*.bmp=01;35:*.fli=01;35:*.gif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mng=01;35:*.mov=01;35:*.mpg=01;35:*.pcx=01;35:*.pbm=01;35:*.pgm=01;35:*.png=01;35:*.ppm=01;35:*.tga=01;35:*.tif=01;35:*.xbm=01;35:*.xpm=01;35:*.dl=01;35:*.gl=01;35:*.wmv=01;35:*.aiff=00;32:*.au=00;32:*.mid=00;32:*.mp3=00;32:*.ogg=00;32:*.voc=00;32:*.wav=00;32:</value>
+    <value type="QString">LS_OPTIONS=-N --color=tty -T 0</value>
+    <value type="QString">MACHTYPE=x86_64</value>
+    <value type="QString">MAIL=/var/spool/mail/zsolth</value>
+    <value type="QString">MANPATH=/usr/local/man:/usr/share/man</value>
+    <value type="QString">MA_HOME=/home/zsolth/home/ma-week/Projects/MouseAtlasDebug</value>
+    <value type="QString">MINICOM=-c on</value>
+    <value type="QString">MORE=-sl</value>
+    <value type="QString">NNTPSERVER=news</value>
+    <value type="QString">OSTYPE=linux</value>
+    <value type="QString">PAGER=less</value>
+    <value type="QString">PATH=/opt/qtsdk-2009.05/qt/bin:.:/opt/qt/bin:/home/zsolth/home/bin:/home/zsolth/home/ma-week/Projects/MouseAtlas/bin:/opt/java/bin:/usr/bin:/sbin:/usr/sbin:/bin:/usr/X11R6/bin:/usr/games:/opt/JavaCC/bin:/opt/kde3/bin:/usr/local/bin:/opt/local/bin:/opt/gnu/bin:/opt/MeVisLab/bin:/opt/MuPAD/share/bin:/opt/vtk/bin:/opt/intel/Compiler/11.0/083/bin/intel64</value>
+    <value type="QString">PWD=/net/homehost/export/home/zsolth/ma-week/Projects/MouseAtlasDebug</value>
+    <value type="QString">PYTHONSTARTUP=/etc/pythonstart</value>
+    <value type="QString">QTDIR=/opt/qtsdk-2009.05/qt</value>
+    <value type="QString">QT_HOME=/opt/qt</value>
+    <value type="QString">QT_SYSTEM_DIR=/usr/share/desktop-data</value>
+    <value type="QString">SDK_HOME=/usr/lib64/jvm/java</value>
+    <value type="QString">SESSION_MANAGER=local/kilchoman:/tmp/.ICE-unix/4448</value>
+    <value type="QString">SHELL=/bin/tcsh</value>
+    <value type="QString">SHLVL=4</value>
+    <value type="QString">SO_DRAGGER_DIR=/net/mahost/export/techcompwg1/zsolth/Warp/draggers</value>
+    <value type="QString">SSH_AGENT_PID=4391</value>
+    <value type="QString">SSH_ASKPASS=/usr/lib64/ssh/x11-ssh-askpass</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-LHaAI4294/agent.4294</value>
+    <value type="QString">TERM=linux</value>
+    <value type="QString">TEXINPUTS=:/net/homehost/export/home/zsolth/.TeX:/usr/share/doc/.TeX:/usr/doc/.TeX</value>
+    <value type="QString">TMPDIR=/tmp</value>
+    <value type="QString">USER=zsolth</value>
+    <value type="QString">USE_FAM=</value>
+    <value type="QString">VENDOR=suse</value>
+    <value type="QString">WINDOWID=48234504</value>
+    <value type="QString">WINDOWMANAGER=/usr/bin/dbus-launch --sh-syntax --exit-with-session /usr/bin/kde</value>
+    <value type="QString">XAUTHLOCALHOSTNAME=kilchoman</value>
+    <value type="QString">XCURSOR_THEME=DMZ</value>
+    <value type="QString">XDG_CONFIG_DIRS=/etc/xdg</value>
+    <value type="QString">XDG_DATA_DIRS=/usr/local/share:/usr/share:/etc/opt/kde3/share:/opt/bioinf/share:/opt/gnu/share:/opt/kde3/share:/opt/local/share:/opt/mpi/share:/opt/qthome/share:/opt/qtsdk-2009.03/share:/opt/qtsdk-2009.04/share:/opt/qtsdk-2009.05/share:/usr/share/gnome/help</value>
+    <value type="QString">XDG_SESSION_COOKIE=3a6e93b7cfe2e92047b406004a265b00-1260779475.203814-196411188</value>
+    <value type="QString">XDM_MANAGED=/var/run/xdmctl/xdmctl-:0,maysd,mayfn,sched,rsvd,method=classic</value>
+    <value type="QString">XKEYSYMDB=/usr/share/X11/XKeysymDB</value>
+    <value type="QString">XMODIFIERS=@im=local</value>
+    <value type="QString">XNLSPATH=/usr/share/X11/nls</value>
+    <value type="QString">XSESSION_IS_UP=yes</value>
+   </valuelist>
+   <value key="abstractProcess.IgnoreReturnValue" type="bool">false</value>
+   <valuelist key="abstractProcess.arguments" type="QVariantList">
+    <value type="QString">-w</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString">/usr/bin/make</value>
+   <value key="abstractProcess.enabled" type="bool">true</value>
+   <value key="abstractProcess.workingDirectory" type="QString">/net/mahost/export/techcompwg0/zsolth/Projects/Warping/WlzWarp</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Debug-cleanstep0</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList">
+    <value type="QString">MA_HOME=/home/zsolth/home/ma-week/Projects/MouseAtlasDebug</value>
+    <value type="QString">PATH=/opt/qtsdk-2009.05/qt/bin</value>
+    <value type="QString">QTDIR=/opt/qtsdk-2009.05/qt</value>
+   </valuelist>
+   <value key="abstractProcess.IgnoreReturnValue" type="bool">true</value>
+   <valuelist key="abstractProcess.arguments" type="QVariantList">
+    <value type="QString">clean</value>
+    <value type="QString">-w</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString">/usr/bin/make</value>
+   <value key="abstractProcess.enabled" type="bool">true</value>
+   <value key="abstractProcess.workingDirectory" type="QString">/net/mahost/export/techcompwg0/zsolth/Projects/Warping/WlzWarp</value>
+   <value key="cleanConfig" type="bool">true</value>
+   <valuelist key="makeargs" type="QVariantList">
+    <value type="QString">clean</value>
+   </valuelist>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-buildstep0</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
+   <value key="buildConfiguration" type=""></value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-buildstep1</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-cleanstep0</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfigurations</variable>
+  <valuelist type="QVariantList">
+   <value type="QString">Debug</value>
+   <value type="QString">Release</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>buildstep0</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString"></value>
+   <value key="mkspec" type="QString"></value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildstep1</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString"></value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildsteps</variable>
+  <valuelist type="QVariantList">
+   <value type="QString">trolltech.qt4projectmanager.qmake</value>
+   <value type="QString">trolltech.qt4projectmanager.make</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>cleanstep0</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString"></value>
+   <value key="clean" type="bool">true</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>cleansteps</variable>
+  <valuelist type="QVariantList">
+   <value type="QString">trolltech.qt4projectmanager.make</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>defaultFileEncoding</variable>
+  <value type="QByteArray">System</value>
+ </data>
+ <data>
+  <variable>project</variable>
+  <valuemap type="QVariantMap"/>
+ </data>
+</qtcreator>
