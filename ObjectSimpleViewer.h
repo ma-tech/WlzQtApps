@@ -44,7 +44,7 @@ static char _ObjectSimpleViewer_h[] = "MRC HGU $Id$";
 #define OBJECTSIMPLEVIEWER_H
 
 #include <QWidget>
-#include "ClipPlaneButton.h"
+#include "ClipPlaneButtonBiDirection.h"
 
 //project objects
 class WoolzObject;
@@ -512,7 +512,7 @@ protected:
 
   SoClipPlaneManip *m_clipPlaneManip;          /*!< clip plane manipulator*/
   SoClipPlane *m_clipPlane;                    /*!< clip plane */
-  ClipPlaneButton *m_clipManipulatorButton;    /*!< clip manipulator button */
+  ClipPlaneButtonBiDirection *m_clipManipulatorButtonBi;    /*!< clip manipulator button */
   QPushButton * m_obliqueSliceButton;          /*!< oblique slice button */
   QPushButton * m_clipLandmarkButton;          /*!< landmark clipping button */  //TODO: move from child class
   QSlider *m_mixSlider;                        /*!< mixing slider */

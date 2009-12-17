@@ -86,7 +86,7 @@ static char _ObjectSimpleViewer_cpp[] = "MRC HGU $Id$";
 
 ObjectSimpleViewer::ObjectSimpleViewer (bool is3D, bool isBlending) :
      QWidget(0, Qt::SubWindow | Qt::Window), m_clipPlaneManip(NULL), m_clipPlane(NULL),
-     m_clipManipulatorButton(NULL), m_obliqueSliceButton(NULL), m_clipLandmarkButton(NULL), m_mixSlider(NULL), m_viewAll(true) {
+     m_clipManipulatorButtonBi(NULL), m_obliqueSliceButton(NULL), m_clipLandmarkButton(NULL), m_mixSlider(NULL), m_viewAll(true) {
 
 
     QLayout *mix = NULL;
@@ -113,10 +113,10 @@ ObjectSimpleViewer::ObjectSimpleViewer (bool is3D, bool isBlending) :
     if (is3D) {
        QList <QWidget*> *buttons=new QList <QWidget*>;
 
-       m_clipManipulatorButton=new ClipPlaneButton(this);
-       m_clipManipulatorButton->setCheckable(false);
-       m_clipManipulatorButton->setToolTip("Clip manipulator on/clip/off");
-       buttons->append(m_clipManipulatorButton);
+       m_clipManipulatorButtonBi=new ClipPlaneButtonBiDirection(this);
+       m_clipManipulatorButtonBi->setCheckable(false);
+       m_clipManipulatorButtonBi->setToolTip("Clip manipulator on/clip/off");
+       buttons->append(m_clipManipulatorButtonBi);
 
        QIcon icon;
        icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/images/orthosliceon.png")), QIcon::Normal, QIcon::Off);
@@ -140,7 +140,7 @@ ObjectSimpleViewer::ObjectSimpleViewer (bool is3D, bool isBlending) :
        buttons->append(m_clipLandmarkButton);
 
        m_viewer = (Viewer2D3D*) new Viewer3D(this, mix, buttons);
-       connect(m_clipManipulatorButton, SIGNAL(stateChanged(ClipPlaneButton::statetype)), this, SLOT(stateChanged(ClipPlaneButton::statetype)));
+       connect(m_clipManipulatorButtonBi, SIGNAL(stateChanged(ClipPlaneButton::statetype)), this, SLOT(stateChanged(ClipPlaneButton::statetype)));
     }
     else {
        m_viewer = (Viewer2D3D*) new Viewer2D(this, mix);
@@ -321,8 +321,10 @@ void ObjectSimpleViewer::stateChanged(ClipPlaneButton::statetype state) {
               SoGetBoundingBoxAction ba(m_viewer->getViewportRegion());
               ba.apply(views_root);
               SbBox3f box = ba.getBoundingBox();
-              m_clipPlaneManip->setValue(box, SbVec3f(1.0f, 0.0f, 0.0f), 1.02f);
+              m_clipPlaneManip->setValue(box, SbVec3f(1.0f, 0.0f, 0.0f), 1.00f);
           }
+          SbPlane plane = m_clipPlaneManip->plane.getValue();
+          m_clipPlaneManip->plane.setValue(SbPlane(-plane.getNormal(), -plane.getDistanceFromOrigin()));
           emit addedClipPlane(m_clipPlaneManip);  //remove ortho slices
         }
         break;
@@ -353,10 +355,10 @@ ObjectView* ObjectSimpleViewer::Factory(QObject * parent, WoolzObject *object) {
   if (object->isMesh()) {
     if (object->is3D()) {
         Mesh3DView * mesh = new Mesh3DView(parent, object);
-        if (m_clipManipulatorButton->state() == ClipPlaneButton::ClipOnly) {
+        if (m_clipManipulatorButtonBi->state() == ClipPlaneButton::ClipOnly) {
             Q_ASSERT(m_clipPlane);
             mesh->addedClipPlane(m_clipPlane);
-        } else if (m_clipManipulatorButton->state() == ClipPlaneButton::ClipOn) {
+        } else if (m_clipManipulatorButtonBi->state() == ClipPlaneButton::ClipOn) {
             Q_ASSERT(m_clipPlaneManip);
             mesh->addedClipPlane(m_clipPlaneManip);
         }
@@ -367,10 +369,10 @@ ObjectView* ObjectSimpleViewer::Factory(QObject * parent, WoolzObject *object) {
   } else if (object->isContour()) {
     if (object->is3D()) {
         Contour3DView * contour = new Contour3DView(parent, object);
-        if (m_clipManipulatorButton->state() == ClipPlaneButton::ClipOnly) {
+        if (m_clipManipulatorButtonBi->state() == ClipPlaneButton::ClipOnly) {
             Q_ASSERT(m_clipPlane);
             contour->addedClipPlane(m_clipPlane);
-        } else if (m_clipManipulatorButton->state() == ClipPlaneButton::ClipOn) {
+        } else if (m_clipManipulatorButtonBi->state() == ClipPlaneButton::ClipOn) {
             Q_ASSERT(m_clipPlaneManip);
             contour->addedClipPlane(m_clipPlaneManip);
         }
@@ -381,10 +383,10 @@ ObjectView* ObjectSimpleViewer::Factory(QObject * parent, WoolzObject *object) {
     if (object->is3D()) {
       VolumeView *volume = new VolumeView(parent, object);
       connect(m_obliqueSliceButton, SIGNAL(clicked(bool)), volume, SLOT(setObliqueSlice(bool)));
-        if (m_clipManipulatorButton->state() == ClipPlaneButton::ClipOnly) {
+        if (m_clipManipulatorButtonBi->state() == ClipPlaneButton::ClipOnly) {
             Q_ASSERT(m_clipPlane);
             volume->addedClipPlane(m_clipPlane);
-        } else if (m_clipManipulatorButton->state() == ClipPlaneButton::ClipOn) {
+        } else if (m_clipManipulatorButtonBi->state() == ClipPlaneButton::ClipOn) {
             Q_ASSERT(m_clipPlaneManip);
             volume->addedClipPlane(m_clipPlaneManip);
         }
