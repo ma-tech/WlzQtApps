@@ -60,47 +60,37 @@ void WoolzDynMeshObject::doUpdate () {
 
     if (!obj)
       return ;
-
-    statusChange("Mesh " + m_name+ " computing...", 0);
+    statusChange("Computing mesh " + m_name+ "...", 0);
 
     WlzMeshGenMethod meshGenMth = WLZ_MESH_GENMETHOD_CONFORM;
     WlzErrorNum	errNum = WLZ_ERR_NONE;
-    WlzTransform  meshTr;
+
+    WlzObject * meshObj = NULL;
     if (m_obj)
       WlzFreeObj(m_obj);
-    meshTr.cMesh = WlzCMeshTransformFromObj(obj->getObj(),
+    meshObj  = WlzCMeshTransformFromObj(obj->getObj(),
               meshGenMth, m_meshMinDist, m_meshMaxDist,
               NULL, 1, &errNum);
-    if (errNum!= WLZ_ERR_NONE && meshTr.cMesh) {
-        WlzFreeTransform(meshTr);
-        meshTr.cMesh = NULL;
+    if (errNum!= WLZ_ERR_NONE && meshObj) {
+        WlzFreeObj(meshObj);
+        meshObj = NULL;
     }
-    if (meshTr.cMesh ) {
-      WlzDomain     dom;
+    if (meshObj!=NULL) {
       WlzValues     val;
       val.core = NULL;
-
-      if (obj->is3D()) {
-        dom.cm3 = meshTr.cMesh->mesh.m3;
-        m_obj = WlzMakeMain(WLZ_CMESH_3D, dom, val, NULL, NULL, &errNum);
-      } else {
-        dom.cm2 = meshTr.cMesh->mesh.m2;
-        m_obj = WlzMakeMain(WLZ_CMESH_2D, dom, val, NULL, NULL, &errNum);
-      }
-
-      m_obj = WlzAssignObject( m_obj, &errNum );
+      m_obj = WlzMakeMain(obj->is3D() ? WLZ_CMESH_3D : WLZ_CMESH_2D, meshObj->domain, val, NULL, NULL, NULL);
+      m_obj = WlzAssignObject( m_obj, NULL );
       m_name = "Mesh";
       m_type = obj->type();
       saveUsedParameters();
       statusChange("Mesh " + m_name+ " finished.", 0);
       emit objectChanged();
-
     } else {
       statusChange("Mesh " + m_name+ " failed.", 0);
     }
-    if (meshTr.cMesh ) {
-      WlzFreeTransform(meshTr);  // Valgrind reports an error, suggesting that this does not do the job
-      meshTr.cMesh = NULL;
+    if (meshObj) {
+      WlzFreeObj(meshObj);  // Valgrind reports an error, suggesting that this does not do the job
+      meshObj = NULL;
     }
     return ;
 }

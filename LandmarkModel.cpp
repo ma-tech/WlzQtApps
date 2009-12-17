@@ -592,8 +592,7 @@ bool LandmarkModel::readDOMPoint(const QDomElement &element, WlzDVertex3 &p) {
   return isX && isY && (isZ || !is3D);
 }
 
-//WlzBasisFnTransform *LandmarkModel::getBasisTransform(WlzCMeshTransform *cMesh, const double delta, const bool useIMQ, WlzErrorNum& errNum,  bool isSource) {
-WlzBasisFnTransform *LandmarkModel::getBasisTransform(WlzCMeshTransform *cMesh, WlzErrorNum& errNum,  bool isSource) {
+WlzBasisFnTransform *LandmarkModel::getBasisTransform(WlzTransform *cMesh, WlzErrorNum& errNum,  bool isSource) {
    int ns, nd;
    WlzVertexP  source, target;
    const bool useIMQ = m_basisFnType == basis_IMQ;
@@ -620,6 +619,9 @@ WlzBasisFnTransform *LandmarkModel::getBasisTransform(WlzCMeshTransform *cMesh, 
    if (ns!=nd || nd<=0) {
       errNum = WLZ_ERR_UNSPECIFIED;
    }
+   if (!cMesh->obj ) {
+       errNum = WLZ_ERR_OBJECT_NULL;
+    }
    if (errNum == WLZ_ERR_NONE) {
      if (!basisTr)
        if((basisTr = WlzMakeBasisFnTransform(NULL)) == NULL) {
@@ -637,22 +639,22 @@ WlzBasisFnTransform *LandmarkModel::getBasisTransform(WlzCMeshTransform *cMesh, 
                source.d3, target.d3,
                m_delta,
                basisTr->basisFn,
-               cMesh->mesh.m3, &errNum) :
+               cMesh->obj->domain.cm3, &errNum) :
               WlzBasisFnMQ3DFromCPts(ns,
                source.d3, target.d3,
                m_delta,
                basisTr->basisFn,
-               cMesh->mesh.m3, &errNum);
+               cMesh->obj->domain.cm3, &errNum);
        else
          basisFn = useIMQ ?
              WlzBasisFnIMQ2DFromCPts(ns,
                source.d2, target.d2,
                m_delta,
-               basisTr->basisFn, cMesh->mesh.m2, &errNum) :
+               basisTr->basisFn, cMesh->obj->domain.cm2, &errNum) :
              WlzBasisFnMQ2DFromCPts(ns,
                source.d2, target.d2,
                m_delta,
-               basisTr->basisFn, cMesh->mesh.m2, &errNum);
+               basisTr->basisFn, cMesh->obj->domain.cm2, &errNum);
 
        if (basisTr->basisFn)
          WlzBasisFnFree(basisTr->basisFn);

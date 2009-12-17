@@ -378,11 +378,8 @@ public:
   * \par      Source:
   *                LandmarkModel.cpp
   */
-  WlzBasisFnTransform *getBasisTransform(WlzCMeshTransform *cMesh, WlzErrorNum& errNum,
+  WlzBasisFnTransform *getBasisTransform(WlzTransform *cMesh, WlzErrorNum& errNum,
        bool isSource);
-//  WlzBasisFnTransform *getBasisTransform(WlzCMeshTransform *cMesh, const double delta, const bool useIMQ, WlzErrorNum& errNum,
-  //     bool isSource);
-
  /*!
   * \ingroup      Control
   * \brief        Returns if landmark is valid or not
