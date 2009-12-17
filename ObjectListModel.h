@@ -398,16 +398,6 @@ signals:
 
  /*!
   * \ingroup      Control
-  * \brief        Signals the selection of an object.
-  * \param        object the object to be selected
-  * \return       void
-  * \par      Source:
-  *                ObjectListModel.cpp
-  */
-  void objectSelected(WoolzObject * object);
-
- /*!
-  * \ingroup      Control
   * \brief        Signals the update request of updatable objects
   * \return       void
   * \par      Source:
