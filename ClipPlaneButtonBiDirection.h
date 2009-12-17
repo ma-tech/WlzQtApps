@@ -4,13 +4,13 @@
 #if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
 #pragma ident "MRC HGU $Id$"
 #else
-static char _ClipPlaneButton_h[] = "MRC HGU $Id$";
+static char _ClipPlaneButtonBiDirection_h[] = "MRC HGU $Id$";
 #endif
 #endif
 /*!
 * \file         ClipPlaneButton.h
 * \author       Zsolt Husz
-* \date         July 2009
+* \date         December 2009
 * \version      $Id$
 * \par
 * Address:
@@ -35,17 +35,18 @@ static char _ClipPlaneButton_h[] = "MRC HGU $Id$";
 * License along with this program; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
-* \brief        Button for clip plane switch
+* \brief        Button for clip plane switch with bidirectional support
 * \ingroup      UI
 *
 */
 
-#ifndef CLIPPLANEBUTTON_H
-#define CLIPPLANEBUTTON_H
+#ifndef CLIPPLANEBUTTONBIDIRECTION_H
+#define CLIPPLANEBUTTONBIDIRECTION_H
 
 #include <QPushButton>
+#include "ClipPlaneButton.h"
 
-class ClipPlaneButton : public QPushButton
+class ClipPlaneButtonBiDirection : public ClipPlaneButton
 {
     Q_OBJECT
 public:
@@ -56,43 +57,42 @@ public:
   * \brief        Constructor
   * \param        parent parent widget
   * \par      Source:
-  *               ClipPlaneButton.cpp
+  *               ClipPlaneButtonBiDirection.cpp
   */
-  ClipPlaneButton(QWidget *parent);
+  ClipPlaneButtonBiDirection(QWidget *parent);
 
- /*!
-  * \ingroup      UI
-  * \brief        Returns the state of the button
-  * \param        button state
-  * \par      Source:
-  *               ClipPlaneButton.cpp
-  */
-  statetype state() {return m_state;}
+  /*!
+   * \ingroup      UI
+   * \brief        Returns if the plane is right of mirrored orientation
+   * \param        plane orientation
+   * \par      Source:
+   *               ClipPlaneButtonBiDirection.cpp
+   */
+   bool isRight() {return m_isRight;}
+
+   /*!
+    * \ingroup      UI
+    * \brief        Sets the isRight value, the orientation of the plane
+    * \param        void
+    * \par      Source:
+    *               ClipPlaneButtonBiDirection.cpp
+    */
+    void setIsRight(bool isRight) { if (isRight != m_isRight) m_isRight = isRight;}
 
 protected slots:
  /*!
   * \ingroup      UI
   * \brief        Processes button click
   * \par      Source:
-  *               ClipPlaneButton.cpp
+  *               ClipPlaneButtonBiDirection.cpp
   */
   virtual void buttonClicked(bool);
 
-signals:
- /*!
-  * \ingroup      UI
-  * \brief        Signals button state change
-  * \param        state new state
-  * \par      Source:
-  *               ClipPlaneButton.cpp
-  */
-  void stateChanged(ClipPlaneButton::statetype state);
+private:
+    bool m_isRight;                      /*!< is flipped */
+    QIcon m_iconOnFliped;                /*!< icon to use the plane and manipulator if plane is flipped*/
+    QIcon m_iconVisibleFliped;           /*!< icon to use the plane but without manipulator if plane is flipped*/
 
-protected:
-    QIcon m_iconOff;               /*!< icon to remove the plane */
-    QIcon m_iconOn;                /*!< icon to use the plane and manipulator */
-    QIcon m_iconVisible;           /*!< icon to use the plane but without manipulator */
-    statetype m_state;             /*!< current stat of the button */
 };
 
-#endif // CLIPPLANEBUTTON_H
+#endif // CLIPPLANEBUTTONBIDIRECTION_H

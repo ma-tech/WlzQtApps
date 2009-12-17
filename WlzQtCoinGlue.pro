@@ -1,5 +1,4 @@
-#CONFIG += debug_and_release build_all 
-
+# CONFIG += debug_and_release build_all
 HEADERS = WoolzObject.h \
     TransferFunction.h \
     ObjectListModelAbstract.h \
@@ -20,8 +19,8 @@ HEADERS = WoolzObject.h \
     ImageView.h \
     WoolzFileObject.h \
     ClipPlaneButton.h \
-    QFunctionEditor.h
-
+    QFunctionEditor.h \
+    ClipPlaneButtonBiDirection.h
 SOURCES = Mesh3DView.cpp \
     TransferFunction.cpp \
     ObjectListModelAbstract.cpp \
@@ -41,64 +40,51 @@ SOURCES = Mesh3DView.cpp \
     WoolzObject.cpp \
     ObjectSimpleViewer.cpp \
     ClipPlaneButton.cpp \
-    QFunctionEditor.cpp
-
+    QFunctionEditor.cpp \
+    ClipPlaneButtonBiDirection.cpp
 TEMPLATE = lib
 VERSION = 0.9.5
-
 TYPE = 32
-contains( QMAKE_CFLAGS, -m64): TYPE =
-
+contains( QMAKE_CFLAGS, -m64):TYPE = 
 QT += xml
-
-CONFIG(debug, debug|release) {
-  TARGET = WlzQtCoinGlue_d
-} else {
-  TARGET = WlzQtCoinGlue
-}
-
+CONFIG(debug, debug|release):TARGET = WlzQtCoinGlue_d
+else:TARGET = WlzQtCoinGlue
 
 # Coin/Qt:
 SOQTINC = $$system(soqt-config --includedir)
 COININC = $$system(coin-config --includedir)
-
 SOQTLIB = $$system(soqt-config --libs)
 COINLIB = $$system(coin-config --libs)
-
 SOQTLDFLAGS = $$system(soqt-config --ldflags)
 COINLDFLAGS = $$system(coin-config --ldflags)
-
-INCLUDEPATH *= $$SOQTINC $$COININC
-LIBS *= -lSimVoleon $$COINLIB $$COINLDFLAGS $$SOQTLIB $$SOQTLDFLAGS
-
+INCLUDEPATH *= $$SOQTINC \
+    $$COININC
+LIBS *= -lSimVoleon \
+    $$COINLIB \
+    $$COINLDFLAGS \
+    $$SOQTLIB \
+    $$SOQTLDFLAGS
 
 # static libraries for Woolz
 INCLUDEPATH *= /$(MA_HOME)/include
 LIBS *= -L/$(MA_HOME)/lib
 LIBS *= -lWlzExtFF \
-        -lWlz \
-        -lAlc \
-        -lAlg \
-        -ljpeg \
-        -ltiff
-
+    -lWlz \
+    -lAlc \
+    -lAlg \
+    -ljpeg \
+    -ltiff
 
 # must precede win32 otherwise cross-compiling causes problems (both win32 and unix are defined)
-unix {
+unix { 
     CONFIG += staticlib
-    OUTDIR  = linux$$TYPE
+    OUTDIR = linux$$TYPE
 }
-
-
-macx {
+macx { 
     CONFIG -= staticlib
     OUTDIR = MacOSX
 }
-
-CONFIG(debug, debug|release) {
-  OUTDIR = $${OUTDIR}_debug
-}
-
+CONFIG(debug, debug|release):OUTDIR = $${OUTDIR}_debug
 message( Output directory $$OUTDIR)
 OBJECTS_DIR = $$OUTDIR
 DESTDIR = $$OUTDIR/bin
@@ -113,8 +99,8 @@ sources.files = $$SOURCES \
     $$RESOURCES \
     $$FORMS \
     *.pro
-    
 sources.path = .
 headers.files = $$HEADERS
 headers.path = /$(MA_HOME)/include/WlzQtCoinGlue
-INSTALLS += target headers
+INSTALLS += target \
+    headers
