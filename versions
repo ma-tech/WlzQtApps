@@ -1,0 +1,40 @@
+Version information:
+
+v.0.9.5 - November 2009
+        - version for EO testing
+
+  Source code labels: 
+        Wlz           WlzWarp_v0_9_5 
+        WlzWarp       WlzWarp_v0_9_5 
+	WlzView       WlzWarp_v0_9_5 
+	WlzQtCoinGlue WlzWarp_v0_9_5 
+
+  Library versions:
+        Coin  3.1.1
+	SoQt  1.4.1
+	SimVoleon 2.0.1
+	Qt 2009.04.01
+
+
+New:
+ - suport for 3D SHORT volume objects
+ 
+v.0.9.6 - December 2009
+        - /opt/MouseAtlas version
+
+  Source code labels: 
+        Wlz           WlzWarp_v0_9_5 
+        WlzWarp       WlzWarp_v0_9_6 
+	WlzQtCoinGlue WlzWarp_v0_9_6
+
+  Library versions:
+        Coin  3.1.2
+	SoQt  1.4.1
+	SimVoleon 2.0.1
+	Qt 2009.05.01
+
+Additional features:
+ - added alpha channel
+Fixes:
+ - histogram for non UBYTE objects
+ 
