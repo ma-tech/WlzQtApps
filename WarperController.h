@@ -281,14 +281,33 @@ public slots:
 
  /*!
   * \ingroup      Control
+  * \brief        Saves the warping transform
+  * \return       void
+  * \par      Source:
+  *                WarperController.cpp
+  */
+   void saveWarpingTransform ();
+
+ /*!
+  * \ingroup      Control
+  * \brief        Saves the warping transform into the specified file
+  * \param        filename the name of the file where transform is to be saved
+  * \return       void
+  * \par      Source:
+  *                WarperController.cpp
+  */
+   bool saveWarpingTransformToFile(QString filename);
+
+ /*!
+  * \ingroup      Control
   * \brief        Saves the warped object with the current filename
   * \return       void
   * \par      Source:
   *                WarperController.cpp
   */
-  void saveProject();
+   void saveProject();
 
-  /*!
+ /*!
   * \ingroup      Control
   * \brief        Saves the warped project with a new filename
   * \return       void
@@ -466,7 +485,7 @@ public slots:
 
  /*!
   * \ingroup      Control
-  * \brief        Updates warping mesh on/off action enable/disabled status
+  * \brief        Updates warping mesh on/off action enable/disabled C
   * \return       void
   * \par      Source:
   *                WarperController.cpp
