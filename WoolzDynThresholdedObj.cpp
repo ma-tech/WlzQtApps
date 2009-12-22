@@ -125,7 +125,7 @@ void WoolzDynThresholdedObj::doUpdate () {
    WlzPixelV greyV;
    if (m_lowTh>0) {
      greyV.type = WLZ_GREY_UBYTE;
-     greyV.v.ubv = m_lowTh-1;
+     greyV.v.ubv = m_lowTh;
      //NOTE: Temporary object must be keept allive, since is used as thresholeded object
      tempObj = WlzAssignObject(WlzThreshold (srcObj->getObj(), greyV, WLZ_THRESH_HIGH, &errNum), NULL);
     } else
