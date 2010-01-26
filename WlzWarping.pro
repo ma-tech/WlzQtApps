@@ -121,7 +121,7 @@ FORMS = MainWindow.ui \
     ViewToolWidget.ui \
     LandmarkWidget.ui
 TEMPLATE = app
-VERSION = 0.9.5
+VERSION = 0.9.7
 TYPE = 32
 
 openmp {
