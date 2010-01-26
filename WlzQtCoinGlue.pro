@@ -45,7 +45,7 @@ SOURCES = Mesh3DView.cpp \
     ClipPlaneButtonBiDirection.cpp \
     BinaryTransferFunction.cpp
 TEMPLATE = lib
-VERSION = 0.9.6
+VERSION = 0.9.7
 TYPE = 32
 contains( QMAKE_CFLAGS, -m64):TYPE = 
 QT += xml
