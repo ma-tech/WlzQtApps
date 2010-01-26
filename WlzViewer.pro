@@ -17,7 +17,7 @@ FORMS = MainWindow.ui \
     TransferFunctionWidget.ui
 
 TEMPLATE = app
-VERSION = 0.9.5
+VERSION = 0.9.7
 
 TYPE = 32
 contains( QMAKE_CFLAGS, -m64): TYPE =
