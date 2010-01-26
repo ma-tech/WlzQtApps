@@ -194,7 +194,7 @@ void VolumeView::generateSceneGraph ( bool /*bForce*/ ) {
         WlzGreyType greyType = obj->getWoolzGreyType();
         bool isUBYTE = greyType == WLZ_GREY_UBYTE;
 
-        if (isUBYTE) {
+        if (isUBYTE || sampledObj->values.core == NULL) {
           errNum = WlzToArray3D(&m_data, sampledObj, sz, org, 0, WLZ_GREY_UBYTE );
         } else {  // convert to UBYTE
           WlzPixelV     greyMinV,
@@ -245,7 +245,7 @@ void VolumeView::generateSceneGraph ( bool /*bForce*/ ) {
   root->addChild(cache);
 
   SoVolumeRender *volRend = new SoVolumeRender();
-  volRend->interpolation = SoVolumeRender::LINEAR;
+  volRend->interpolation = SoVolumeRender::NEAREST;  // linear is not good, if object has noisy regions
   volRend->composition = SoVolumeRender::ALPHA_BLENDING;
 
   if (m_volumerenderSep)
@@ -346,9 +346,17 @@ void VolumeView::setObliqueSlice(bool on) {
       m_tfSection->ref();
       m_tfSection->predefColorMap = SoTransferFunction::NONE;
       m_tfSection->colorMapType = SoTransferFunction::LUM_ALPHA;
-      for (int ir=0;ir<256;ir++) {
-         m_tfSection->colorMap.set1Value(ir*2, ir/255.0f);
-         m_tfSection->colorMap.set1Value(ir*2+1, 1.00f);
+      m_tfSection->colorMap.set1Value(511, 1.00f); //set color map size to 512
+      if (obj && obj->isValueSet()) {
+          for (int ir=0;ir<256;ir++) {
+             m_tfSection->colorMap.set1Value(ir*2, ir/255.0f);
+             m_tfSection->colorMap.set1Value(ir*2+1, 1.00f);
+          }
+      } else {
+             m_tfSection->colorMap.set1Value(0, 0.00f); // background is black
+             m_tfSection->colorMap.set1Value(1, 1.00f);
+             m_tfSection->colorMap.set1Value(2, 1.00f); // foreground is white
+             m_tfSection->colorMap.set1Value(3, 1.00f);
       }
       WlzPixelV pixel=WlzGetBackground(obj->getObj(),NULL);
 /*      if (pixel.type==WLZ_GREY_UBYTE)
