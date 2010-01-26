@@ -238,8 +238,8 @@ void ObjectSimpleViewer::removedObject ( WoolzObject * object ) {
     for (int i = 0; i < views.size(); ++i) {
       ObjectView* view = dynamic_cast<ObjectView*>(views.at(i));
       if (view && view->isUsing(object)) {// remove
-        views_root->removeChild(view->getSceneGraph(false));
         removedViewStart(view); //must be before removeAt, otherwise row number can't be found
+        views_root->removeChild(view->getSceneGraph(false));
         views.removeAt(i);
         removedViewFinish(view); //must be before removeAt, otherwise row number can't be found
         delete view;
