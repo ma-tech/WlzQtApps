@@ -50,6 +50,7 @@ static char _WoolzObject_cpp[] = "MRC HGU $Id$";
 #include <QFileInfo>
 
 #include "TransferFunction.h"
+#include "BinaryTransferFunction.h"
 
 #include <QtXml/QXmlStreamWriter>
 
@@ -154,9 +155,6 @@ bool WoolzObject::is2D ( ) {
                      ));
 }
 
-
-
-
 SbColor WoolzObject::sbColour() {
   int r,g,b;
   m_colour.getRgb(&r, &g, &b);
@@ -223,18 +221,22 @@ void WoolzObject::changeWoolzObjectType (WoolzObjectType type) {
   }
 }
 
-
 QColor WoolzObject::getNextColour() {
   QColor color;
   do 
     color = QColor(QColor::colorNames().at(colourCounter++));
-  while (qGray(color.rgb())== 0); //  while color is not black
+  while (qGray(color.rgb())== 0|| qGray(color.rgb())== 255); //  while color is not black nor white
   return color;
 }
 
 void WoolzObject::generateNewColour() {
-    // setQColour(getNextColour());  //new colour
-    setQColour(QColor(255,255,255));  //use white colour
+    if (isValue()) {
+        if (isValueSet())
+            setQColour(QColor(255,255,255));  //use white colour
+        else
+            setQColour(QColor(127,127,127));  //use grey colour
+    } else
+        setQColour(getNextColour());  //new colour
 }
 
 void WoolzObject::setVisible( bool visible ) {
@@ -243,8 +245,21 @@ void WoolzObject::setVisible( bool visible ) {
 }
 
 void WoolzObject::setupTransferFunction(bool force) {
-    if (!m_transferFunction && (force ||(is3D() && isValue()))) {
-         m_transferFunction = new TransferFunction;
+    if (m_obj && !m_transferFunction && (force ||(is3D() && isValue()))) {
+
+         m_transferFunction = isValueSet() ? new TransferFunction : new BinaryTransferFunction;
+         m_transferFunction->ref();
+         connect(m_transferFunction, SIGNAL(updated()), this, SIGNAL(objectPropertyChanged()));
+    }
+}
+
+void WoolzObject::replaceTransferFunction(TransferFunction *tf) {
+    if (m_transferFunction) {
+      m_transferFunction->unref();
+      disconnect(m_transferFunction, SIGNAL(updated()), this, SIGNAL(objectPropertyChanged()));
+    }
+    m_transferFunction = tf;
+    if (tf) {
          m_transferFunction->ref();
          connect(m_transferFunction, SIGNAL(updated()), this, SIGNAL(objectPropertyChanged()));
     }
@@ -257,7 +272,7 @@ void WoolzObject::setupConnections(QObject *target) {
   connect(this, SIGNAL(objectSelected()), target, SLOT(selectAnObject()));
   connect(this, SIGNAL(statusChange(QString, int)), target, SIGNAL(statusChanged(QString, int)));
 
-  connect( target, SIGNAL(updateAllSignal()), this, SLOT(update()));
+  connect( target, SIGNAL(updateAllSignal(bool)), this, SLOT(update(bool)));
 }
 
 
@@ -304,14 +319,11 @@ bool WoolzObject::parseDOMLine(const QDomElement &element) {
        QString str = element.text().toUpper();
        m_visible = str == "YES";
        return true;
-    } else if (element.tagName() == TransferFunction::xmlTag) {
-       if (!m_transferFunction)
-         setupTransferFunction(true);
-       Q_ASSERT(m_transferFunction);
-       if (!m_transferFunction)
-          return false;
-       m_transferFunction->parseDOM(element);
-       return true;
+    } else if (element.tagName() == BinaryTransferFunction::xmlTag || element.tagName() == TransferFunction::xmlTag) {
+      TransferFunction *tf = (element.tagName() == BinaryTransferFunction::xmlTag) ? new BinaryTransferFunction : new TransferFunction;
+      Q_ASSERT(tf);
+      replaceTransferFunction(tf);
+      return tf->parseDOM(element);
     } else if (element.tagName() == "ID") {
        m_ID = element.text().toInt();
        return true;

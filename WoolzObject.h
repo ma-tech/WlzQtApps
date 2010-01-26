@@ -432,7 +432,7 @@ public:
   * \par      Source:
   *                WoolzObject.cpp
   */
-  virtual const int ID() {return m_ID;}
+  virtual int ID() {return m_ID;}
 
  /*!
   * \ingroup      Control
@@ -588,6 +588,15 @@ public:
   */
   virtual bool parseDOMLine(const QDomElement &element);
 
+  /*!
+   * \ingroup      Control
+   * \brief        Checks if object parameters changes requireing update
+   * \return       true if object needs update
+   * \par      Source:
+   *                WoolzObject.cpp
+   */
+  virtual bool needsUpdate() {return false;}
+
 public slots:
  /*!
   * \ingroup      Control
@@ -633,6 +642,16 @@ protected:
   *                WoolzObject.cpp
   */
   virtual void setupTransferFunction(bool force = false);
+
+  /*!
+   * \ingroup      Control
+   * \brief        Replaces the transfer function
+   * \param        tf new transfer function
+   * \return       void
+   * \par      Source:
+   *                WoolzObject.cpp
+   */
+   void replaceTransferFunction(TransferFunction *tf);
 
 signals:
  /*!
@@ -708,6 +727,15 @@ signals:
    *                WoolzObject.cpp
    */
    void statusChange(QString message, int timeout);
+
+ /*!
+  * \ingroup      Control
+  * \brief        Signals when an object is updatable state changes
+  * \return       void
+  * \par      Source:
+  *                WoolzObject.cpp
+  */
+  void updated(bool);
 
 protected:
   // protected attributes

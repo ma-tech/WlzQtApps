@@ -20,7 +20,8 @@ HEADERS = WoolzObject.h \
     WoolzFileObject.h \
     ClipPlaneButton.h \
     QFunctionEditor.h \
-    ClipPlaneButtonBiDirection.h
+    ClipPlaneButtonBiDirection.h \
+    BinaryTransferFunction.h
 SOURCES = Mesh3DView.cpp \
     TransferFunction.cpp \
     ObjectListModelAbstract.cpp \
@@ -41,9 +42,10 @@ SOURCES = Mesh3DView.cpp \
     ObjectSimpleViewer.cpp \
     ClipPlaneButton.cpp \
     QFunctionEditor.cpp \
-    ClipPlaneButtonBiDirection.cpp
+    ClipPlaneButtonBiDirection.cpp \
+    BinaryTransferFunction.cpp
 TEMPLATE = lib
-VERSION = 0.9.5
+VERSION = 0.9.6
 TYPE = 32
 contains( QMAKE_CFLAGS, -m64):TYPE = 
 QT += xml
@@ -88,9 +90,9 @@ CONFIG(debug, debug|release):OUTDIR = $${OUTDIR}_debug
 message( Output directory $$OUTDIR)
 OBJECTS_DIR = $$OUTDIR
 DESTDIR = $$OUTDIR/bin
-MOC_DIR = moc
-UI_DIR = ui
-RCC_DIR = rcc
+MOC_DIR = $$OUTDIR/moc
+UI_DIR = $$OUTDIR/ui
+RCC_DIR = $$OUTDIR/rcc
 
 # install
 target.path = /$(MA_HOME)/lib
