@@ -70,12 +70,13 @@ static char _WarperController_cpp[] = "MRC HGU $Id$";
 #include "WoolzDynMeshObject.h"
 #include "LandmarkController.h"
 #include "ObjectViewerController.h"
+#include "WoolzDirectTransform.h"
 
 //dialogs
-#include "ViewToolDialog.h"
-#include "ObjectToolDialog.h"
+//#include "ViewToolDialog.h"
+//#include "ObjectToolDialog.h"
 #include "MeshDialog.h"
-#include "LandmarkDialog.h"
+//#include "LandmarkDialog.h"
 #include "PreferencesDialog.h"
 
 //widgets
@@ -87,6 +88,10 @@ static char _WarperController_cpp[] = "MRC HGU $Id$";
 #include "TransferFunctionWidget.h"
 #include "ProjectPropertiesDialog.h"
 #include "ProjectProperties.h"
+
+#include "ObjectToolWidget.h"
+#include "ViewToolWidget.h"
+#include "LandmarkWidget.h"
 
 //Commands
 #include "Commands.h"
@@ -102,24 +107,27 @@ static char _WarperController_cpp[] = "MRC HGU $Id$";
 const char* WarperController::xmlTag2D = "Warping2DProject";
 const char* WarperController::xmlTag3D = "Warping3DProject";
 
-
 WarperConfig config;
 
 WarperController::WarperController ( MainWindow * mainwindow, ProjectProperties *projectProperties): m_projectProperties(projectProperties) {
   mainWindow = mainwindow;
   Q_ASSERT(mainwindow != NULL);
-  viewToolDialog   = NULL;
-  objectToolDialog = NULL;
-  landmarkDialog   = NULL;
+//  viewToolDialog   = NULL;
+//  objectToolDialog = NULL;
+//  landmarkDialog   = NULL;
   segmentWidget    = NULL;
   transformWidget  = NULL;
   warpingWidget    = NULL;
   objectPropertyWidget = NULL;
   contourWidget    = NULL;
   transferFunctionWidget = NULL;
+  objectToolWidget = NULL;
+  viewToolWidget = NULL;
+  landmarkWidget = NULL;
   undoStack = NULL;
   actionUndo = NULL;
   actionRedo = NULL;
+  m_woolzTransform = NULL;
 
   project3D = true;
   projectInitialised = false;
@@ -139,13 +147,22 @@ WarperController::WarperController ( MainWindow * mainwindow, ProjectProperties 
 
   //create landmark model
   landmarkModel = new LandmarkModel();
+  Q_ASSERT(landmarkModel);
+
+  // create transform
+  m_woolzTransform = new WoolzDirectTransform(landmarkModel);
+  Q_ASSERT(m_woolzTransform);
 
   // create object and view managers
-  objectListModel = new ObjectListModel(landmarkModel, undoStack);
+  objectListModel = new ObjectListModel(m_woolzTransform, undoStack);
+  Q_ASSERT(objectListModel);
+  connect(objectListModel, SIGNAL(replaceWarpMesh(WoolzObject *)), m_woolzTransform , SLOT(setMeshObject(WoolzObject *)));
+
 
   Q_ASSERT(objectListModel);
   connect(&config, SIGNAL(updateAll()), objectListModel , SLOT(updateAll()));
   connect(&config, SIGNAL(updateAllWarped()), objectListModel , SLOT(updateAllWarped()));
+
   connect(objectListModel , SIGNAL(statusChanged(QString, int)), mainWindow, SLOT(statusChanged(QString, int)));
 
   //connect(landmarkModel, SIGNAL(warpingChanged()), objectListModel , SLOT(updateAllWarped()));
@@ -158,9 +175,49 @@ WarperController::WarperController ( MainWindow * mainwindow, ProjectProperties 
   m_objectViewerController = new ObjectViewerController(mainWindow, landmarkController);
   Q_ASSERT(m_objectViewerController);
 
+
   // create docking widgets
   int widgetPos =0 ;
   QSize sizeMain = mainWindow->size();
+
+  if (!viewToolWidget) {
+     viewToolWidget = new ViewToolWidget(m_objectViewerController->model(), mainWindow);
+     Q_ASSERT(viewToolWidget);
+     viewToolWidget->setFloating(true);
+     viewToolWidget->hide();
+
+     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, viewToolWidget );
+     QSize sizeWidget = viewToolWidget ->size();
+     viewToolWidget ->move(widgetPos,
+          sizeMain.rheight()-sizeWidget.rheight());
+     //widgetPos += sizeWidget.rwidth();
+  }
+
+  if (!objectToolWidget) {
+     objectToolWidget = new ObjectToolWidget(objectListModel, mainWindow);
+     Q_ASSERT(objectToolWidget);
+     objectToolWidget->setFloating(true);
+     objectToolWidget->hide();
+
+     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, objectToolWidget );
+     QSize sizeWidget = objectToolWidget ->size();
+     objectToolWidget ->move(widgetPos,
+          sizeMain.rheight()-sizeWidget.rheight());
+     //widgetPos += sizeWidget.rwidth();
+  }
+
+  if (!landmarkWidget) {
+     landmarkWidget = new LandmarkWidget(landmarkController, mainWindow);
+     Q_ASSERT(landmarkWidget);
+     landmarkWidget->setFloating(true);
+     landmarkWidget->hide();
+
+     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, landmarkWidget );
+     QSize sizeWidget = landmarkWidget ->size();
+     landmarkWidget ->move(widgetPos,
+          sizeMain.rheight()-sizeWidget.rheight());
+     //widgetPos += sizeWidget.rwidth();
+  }
 
   if (!objectPropertyWidget) {
      objectPropertyWidget = new ObjectPropertyWidget( mainWindow,
@@ -190,7 +247,7 @@ WarperController::WarperController ( MainWindow * mainwindow, ProjectProperties 
   }
 
   if (!transformWidget) {
-     transformWidget = new TransformWidget( mainWindow, objectListModel, landmarkModel);
+     transformWidget = new TransformWidget( mainWindow, objectListModel, m_woolzTransform);
      Q_ASSERT(transformWidget);
      transformWidget->setFloating(true);
      transformWidget->hide();
@@ -227,6 +284,7 @@ WarperController::WarperController ( MainWindow * mainwindow, ProjectProperties 
           sizeMain.rheight()-sizeWidget.rheight());
      widgetPos += sizeWidget.rwidth();
   }
+
   if (!warpingWidget) {
      warpingWidget = new WarpingWidget( mainWindow, landmarkController);
      Q_ASSERT(warpingWidget);
@@ -248,6 +306,7 @@ WarperController::WarperController ( MainWindow * mainwindow, ProjectProperties 
   //set up connection between models
   connect(objectListModel, SIGNAL(addObjectSignal(WoolzObject*)), m_objectViewerController, SIGNAL(addObjectSignal(WoolzObject*)));
   connect(objectListModel, SIGNAL(removedObjectSignal(WoolzObject*)), m_objectViewerController, SIGNAL(removedObjectSignal(WoolzObject*)));
+  connect(objectListModel, SIGNAL(updatePossibleChange(bool)), this, SLOT(updatePossibleChanged(bool)));
 
   connect( mainWindow->actionAllEditing, SIGNAL( triggered() ), m_objectViewerController, SIGNAL(setEditingMode() ) );
   connect( mainWindow->actionAllViewing, SIGNAL( triggered() ), m_objectViewerController, SIGNAL(setViewingMode() ) );
@@ -277,6 +336,34 @@ void WarperController::setupToolbars() {
     mainWindow->toolBarGeneral->addAction(actionRedo);
     mainWindow->menuEdit->addAction(actionRedo);
   }
+
+  if (objectToolWidget) {
+       QAction *toggleAction = objectToolWidget->toggleViewAction();
+       QIcon icon;
+       icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/images/objects.png")), QIcon::Normal, QIcon::Off);
+       toggleAction->setIcon(icon);
+       mainWindow->toolBarOperations->addAction(toggleAction);
+       mainWindow->menuView->insertAction(mainWindow->menuToolbars->menuAction(), toggleAction);
+  }
+  if (viewToolWidget) {
+       QAction *toggleAction = viewToolWidget->toggleViewAction();
+       QIcon icon;
+       icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/images/views.png")), QIcon::Normal, QIcon::Off);
+       toggleAction->setIcon(icon);
+       mainWindow->toolBarOperations->addAction(toggleAction);
+       mainWindow->menuView->insertAction(mainWindow->menuToolbars->menuAction(), toggleAction);
+  }
+
+  if (landmarkWidget) {
+       QAction *toggleAction = landmarkWidget->toggleViewAction();
+       /*       QIcon icon;
+       icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/images/landmarks.png")), QIcon::Normal, QIcon::Off);
+       toggleAction->setIcon(icon);*/
+       //mainWindow->toolBarOperations->addAction(toggleAction);
+       mainWindow->menuView->insertAction(mainWindow->menuToolbars->menuAction(), toggleAction);
+  }
+  mainWindow->menuView->insertSeparator(mainWindow->menuToolbars->menuAction());
+
   if (objectPropertyWidget) {
      QAction *toggleAction = objectPropertyWidget->toggleViewAction();
      QIcon icon;
@@ -342,14 +429,23 @@ WarperController::~WarperController ( ) {
   mainWindow->toolBarWarpingMode->setVisible(false);
   mainWindow->toolBarOperations->setVisible(false);
 
-  if (viewToolDialog)
-      delete viewToolDialog;
+  if (viewToolWidget)
+      delete viewToolWidget;
 
-  if (objectToolDialog )
-      delete objectToolDialog;
+  if (objectToolWidget)
+      delete objectToolWidget;
 
-  if (landmarkDialog)
-      delete landmarkDialog;
+  if (landmarkWidget)
+      delete landmarkWidget;
+
+//  if (viewToolDialog)
+  //    delete viewToolDialog;
+
+/*  if (objectToolDialog )
+      delete objectToolDialog;*/
+
+/*  if (landmarkDialog)
+      delete landmarkDialog;*/
 
   if (segmentWidget)
       delete segmentWidget;
@@ -432,7 +528,7 @@ bool WarperController::openValueSource () {
                  undoStack->push(new CreateWoolzObject(objectListModel, newVolumeObject));
 
                  if (!objectListModel->getFirstWarped()) {
-                     WoolzDynWarpedObject * warpedObject = new WoolzDynWarpedObject (objectListModel, landmarkController->getModel());
+                     WoolzDynWarpedObject * warpedObject = new WoolzDynWarpedObject (objectListModel, m_woolzTransform);
                      warpedObject->setSourceObj(newVolumeObject);
                      warpedObject->setName("Warped "+ newVolumeObject->name());
                      warpedObject->generateNewColour();
@@ -558,9 +654,9 @@ void  WarperController::connectSignals () {
     connect( mainWindow->actionSourceView, SIGNAL( triggered() ), this, SLOT( addSourceViewer() ) );
     connect( mainWindow->actionTargetView, SIGNAL( triggered() ), this, SLOT( addTargetViewer() ) );
     connect( mainWindow->actionResultView, SIGNAL( triggered() ), this, SLOT( addResultViewer() ) );
-    connect( mainWindow->actionObjects, SIGNAL( triggered() ), this, SLOT( openObjectDialog() ) );
-    connect( mainWindow->actionViews, SIGNAL( triggered() ), this, SLOT( openViewDialog() ) );
-    connect( mainWindow->actionLandmarks, SIGNAL( triggered() ), this, SLOT( openLandmarkDialog()) );
+    //connect( mainWindow->actionObjects, SIGNAL( triggered() ), this, SLOT( openObjectDialog() ) );
+    //connect( mainWindow->actionViews, SIGNAL( triggered() ), this, SLOT( openViewDialog() ) );
+    //connect( mainWindow->actionLandmarks, SIGNAL( triggered() ), this, SLOT( openLandmarkDialog()) );
     connect( mainWindow->actionMinimize, SIGNAL( triggered() ), this, SLOT( minimizeSubWindow() ) );
     connect( mainWindow->actionMaximize, SIGNAL( triggered() ), this, SLOT( maximizeSubWindow() ) );
     connect( mainWindow->actionRestore, SIGNAL( triggered() ), this, SLOT( restoreSubWindow() ) );
@@ -576,6 +672,7 @@ void  WarperController::connectSignals () {
     connect( mainWindow->actionOptions, SIGNAL(triggered()), this, SLOT(options()));
     connect( mainWindow->actionProjectProperties, SIGNAL(triggered()), this, SLOT(setProjectProperties()));
 
+    connect( mainWindow->actionUpdate, SIGNAL(triggered()), this, SLOT(updateNow()));
     mainWindow->actionShowMesh->setEnabled(objectListModel->getMeshObject()!=NULL);
 }
 
@@ -622,7 +719,7 @@ WoolzObject *WarperController::loadValue(QString filename , WoolzObject::WoolzOb
           valueObject = NULL;
        } else {
          valueObject->open(filename, type);
-         if (valueObject->is3D()) {  // check if type is supported
+         if (valueObject->is3D() && valueObject->isValueSet()) {  // check if type is supported
              WlzGreyType greyType = valueObject->getWoolzGreyType();
              if (greyType != WLZ_GREY_UBYTE && greyType != WLZ_GREY_SHORT && greyType != WLZ_GREY_INT) {
                  QMessageBox::warning(NULL, "Value object open", "Only UBYTE, SHORT and INT objects are supported.") ;
@@ -713,51 +810,51 @@ void WarperController::init() {
   connectSignals();
 }
 
-void WarperController::openViewDialog () {
+/*void WarperController::openViewDialog () {
   getViewToolDialog()->show();
   getViewToolDialog()->raise();
   getViewToolDialog()->activateWindow();
   return;
-}
+}*/
 
-void WarperController::openLandmarkDialog () {
+/*void WarperController::openLandmarkDialog () {
   getLandmarkDialog()->show(); 
   getLandmarkDialog()->raise();
   getLandmarkDialog()->activateWindow();
   return;
-}
+}*/
 
-ViewToolDialog* WarperController::getViewToolDialog(void) {
+/*ViewToolDialog* WarperController::getViewToolDialog(void) {
   if (!viewToolDialog) {
     viewToolDialog = new ViewToolDialog( m_objectViewerController->model(), mainWindow);
     Q_ASSERT(viewToolDialog);
   }
   return viewToolDialog;
-}
+}*/
 
-void WarperController::openObjectDialog () {
+/*void WarperController::openObjectDialog () {
   getObjectToolDialog()->show();
   getObjectToolDialog()->raise();
   getObjectToolDialog()->activateWindow();
   return;
-}
-
+}*/
+/*
 ObjectToolDialog* WarperController::getObjectToolDialog(void) {
   if (!objectToolDialog) {
     objectToolDialog = new ObjectToolDialog( objectListModel, mainWindow);
     Q_ASSERT(objectToolDialog);
   }
   return objectToolDialog;
-}
+}*/
 
-LandmarkDialog* WarperController::getLandmarkDialog(void) {
+/*LandmarkDialog* WarperController::getLandmarkDialog(void) {
   if (!landmarkDialog) {
     landmarkDialog = new LandmarkDialog( landmarkController, mainWindow);
     Q_ASSERT(landmarkDialog);
   }
   return landmarkDialog;
 }
-
+*/
 void WarperController::minimizeSubWindow() {
   QMdiSubWindow *subWindow =  mainWindow->getWorkspace()->activeSubWindow();
   if (subWindow)
@@ -852,42 +949,17 @@ void WarperController::saveWarpingTransform  () {
 
 bool WarperController::saveWarpingTransformToFile(QString filename) {
     WlzErrorNum errNum = WLZ_ERR_NONE;
-    WlzBasisFnTransform *basisTr=NULL;
-    WlzTransform transform;
 
     mainWindow->statusChanged("Generating warping transform.", 0);
-    if (!landmarkModel->isValidLandmakSet()) {
-       mainWindow->statusChanged("Transform failed: invalid landmarks.", 0);
+
+    //check for errors
+    QString errorMsg;
+    if (!m_woolzTransform->isReadyForWarp(errorMsg)) {
+       mainWindow->statusChanged("Transform generation failed: " + errorMsg + ".", 0);
        return false;
     }
 
-    WoolzObject *meshObj = objectListModel->getMeshObject();
-    if (!meshObj) {
-       mainWindow->statusChanged("Export failed: no mesh.", 0);
-       return false;
-    }
-
-    bool direct  = meshObj->type() == WoolzObject::source;
-
-    // create basis transform by generated by the landmarks
-    if (errNum == WLZ_ERR_NONE) {
-      transform.obj = WlzAssignObject(meshObj->getObj(), & errNum);
-    }
-    if (errNum == WLZ_ERR_NONE) {
-      basisTr = landmarkModel->getBasisTransform(&transform, errNum, direct);
-    }
-    if (errNum == WLZ_ERR_NONE) {
-      if (direct) {
-         errNum = WlzBasisFnSetCMesh(transform.obj, basisTr);
-      } else {
-        if (errNum == WLZ_ERR_NONE) {
-             WlzFreeObj(transform.obj);
-             WlzCMeshP     dirMesh;
-             dirMesh.m3=meshObj->getObj()->domain.cm3;
-             transform.obj = WlzBasisFnInvertAndSetCMesh(basisTr, dirMesh, &errNum);
-         }
-      }
-    }
+  WlzObject *transformObj = m_woolzTransform->getTransformObj(&errNum);
 
   if (errNum == WLZ_ERR_NONE) {
     FILE *fp;
@@ -895,9 +967,10 @@ bool WarperController::saveWarpingTransformToFile(QString filename) {
 
     if (!fp)
        return false;
-    errNum = WlzWriteObj( fp, transform.obj);
+    errNum = WlzWriteObj( fp, transformObj);
 
-    if (fp) fclose(fp);
+    if (fp)
+        fclose(fp);
     mainWindow->statusChanged(errNum == WLZ_ERR_NONE ? "Saving transform succeded.":"Saving transform failed.", 0);
   }
   return (errNum == WLZ_ERR_NONE);
@@ -1195,4 +1268,12 @@ void WarperController::set3D(bool is3D) {
   landmarkModel->set3D(project3D);
   mainWindow->actionEnableAlpha->setVisible(is3D);
   m_objectViewerController->set3D(project3D);
+}
+
+void WarperController::updateNow() {
+  objectListModel->updateAll(true);
+}
+
+void WarperController::updatePossibleChanged(bool possible) {
+  mainWindow->actionUpdate->setEnabled(possible);
 }

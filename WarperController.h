@@ -52,9 +52,11 @@ class MainWindow;
 class WarperSourceViewer;
 class WarperTargetViewer;
 class WarperResultViewer;
-class ViewToolDialog;
-class ObjectToolDialog;
-class LandmarkDialog;
+//class ViewToolDialog;
+//class ObjectToolDialog;
+class ViewToolWidget;
+class ObjectToolWidget;
+class LandmarkWidget;
 class ObjectViewer;
 class ObjectListModel;
 class ObjectViewerController;
@@ -69,6 +71,7 @@ class ContourISOSurfaceWidget;
 class TransferFunctionWidget;
 class LandmarkController;
 class ProjectProperties;
+class WoolzDirectTransform;
 class QUndoStack;
 class QAction;
 class QDomElement;
@@ -250,7 +253,7 @@ public slots:
   * \par      Source:
   *                WarperController.cpp
   */
-  void openViewDialog ();
+  //void openViewDialog ();
 
  /*!
   * \ingroup      Control
@@ -259,7 +262,7 @@ public slots:
   * \par      Source:
   *                WarperController.cpp
   */
-  void openObjectDialog ();
+  //void openObjectDialog ();
 
  /*!
   * \ingroup      Control
@@ -268,7 +271,7 @@ public slots:
   * \par      Source:
   *                WarperController.cpp
   */
-  void openLandmarkDialog ();
+  //void openLandmarkDialog ();
 
  /*!
   * \ingroup      Control
@@ -483,7 +486,16 @@ public slots:
   */
   void warpingMeshUpdate(bool on);
 
- /*!
+  /*!
+   * \ingroup      Control
+   * \brief        Processes update request for all objects requireing update
+   * \return       void
+   * \par      Source:
+   *                WarperController.cpp
+   */
+   void updateNow();
+
+  /*!
   * \ingroup      Control
   * \brief        Updates warping mesh on/off action enable/disabled C
   * \return       void
@@ -499,6 +511,16 @@ public slots:
   *                WarperController.cpp
   */
   void options();
+
+  /*!
+   * \ingroup      Control
+   * \brief        Processes update possible signal
+   * \param        possible update is possible
+   * \return       void
+   * \par      Source:
+   *                WarperController.cpp
+   */
+   void updatePossibleChanged(bool possible);
 
 protected:
 
@@ -556,14 +578,6 @@ private:
   */
   WoolzObject* loadValue(QString filename , WoolzObject::WoolzObjectType type);
 
- /*!
-  * \ingroup      Control
-  * \brief        Retruns the viewer tool dialog. It creates if did not exists.
-  * \return       view tool dialog
-  * \par      Source:
-  *                WarperController.cpp
-  */
-  ViewToolDialog* getViewToolDialog(void);
 
  /*!
   * \ingroup      Control
@@ -582,7 +596,7 @@ private:
   * \par      Source:
   *                WarperController.cpp
   */
-  ObjectToolDialog* getObjectToolDialog(void);
+  //ObjectToolDialog* getObjectToolDialog(void);
 
  /*!
   * \ingroup      Control
@@ -591,7 +605,7 @@ private:
   * \par      Source:
   *                WarperController.cpp
   */
-  LandmarkDialog* getLandmarkDialog(void);
+//  LandmarkDialog* getLandmarkDialog(void);
 
  /*!
   * \ingroup      Control
@@ -654,24 +668,27 @@ private:
   QActionGroup *menuMeshSelectionActionGroup;      /*!< action group for mesh selection */
   bool project3D;                                  /*!< true if 3D object */
   bool projectInitialised;                         /*!< true if project loaded or intialised */
-  ViewToolDialog *viewToolDialog;                  /*!< view tool dialog */
-  ObjectToolDialog *objectToolDialog;              /*!< object tool dialog */
-  LandmarkDialog *landmarkDialog;                  /*!< landmark dialog */
-  SegmentationWidget *segmentWidget;               /*!< segmentation widget*/
-  ObjectPropertyWidget *objectPropertyWidget;      /*!< general object property widget*/
-  TransformWidget* transformWidget;                /*!< transform widget*/
-  WarpingWidget* warpingWidget;                    /*!< object warping widget*/
-  ContourISOSurfaceWidget* contourWidget;          /*!< contour / ISO surface widget*/
-  TransferFunctionWidget* transferFunctionWidget;  /*!< transfer function editor widget*/
+  //ViewToolDialog *viewToolDialog;                  /*!< view tool dialog */
+  //ObjectToolDialog *objectToolDialog;              /*!< object tool dialog */
+  //LandmarkDialog *landmarkDialog;                  /*!< landmark dialog */
+  SegmentationWidget *segmentWidget;               /*!< segmentation widget */
+  ObjectPropertyWidget *objectPropertyWidget;      /*!< general object property widget */
+  TransformWidget* transformWidget;                /*!< transform widget */
+  WarpingWidget* warpingWidget;                    /*!< object warping widget */
+  ContourISOSurfaceWidget* contourWidget;          /*!< contour / ISO surface widget */
+  TransferFunctionWidget* transferFunctionWidget;  /*!< transfer function editor widget */
+  ObjectToolWidget * objectToolWidget;             /*!< tree list of objects */
+  ViewToolWidget * viewToolWidget;                 /*!< view tool widget */
+  LandmarkWidget * landmarkWidget;                 /*!< landmark widget */
   ObjectListModel *objectListModel;                /*!< object container */
-//  ObjectViewerModel *objectViewerModel;            /*!< viewer container */
   ObjectViewerController *m_objectViewerController;/*!< viewer controller */
   LandmarkModel *landmarkModel;                    /*!< landmark container */
   LandmarkController *landmarkController;          /*!< landmark controller */
   MainWindow * mainWindow;                         /*!< the main window object */
   QUndoStack *undoStack;                           /*!< stack for undoable commands */
   QAction *actionUndo;                             /*!< action for Undo */
-  QAction *actionRedo;                             /*!< action for Redo*/
-  ProjectProperties *m_projectProperties;          /*!< pointer to project properties*/
+  QAction *actionRedo;                             /*!< action for Redo */
+  ProjectProperties *m_projectProperties;          /*!< pointer to project properties */
+  WoolzDirectTransform *m_woolzTransform;          /*!< tranformation object */
 };
 #endif // WARPERCONTROLLER_H
