@@ -69,6 +69,10 @@ public:
   */
   TransferFunction(QObject *parent = NULL);
 
+public:
+  static const char * xmlTag;             /*!< xml section tag string */
+
+public:
  /*!
   * \ingroup      UI
   * \brief        Sets new colour map
@@ -146,7 +150,7 @@ public:
   */
   virtual bool parseDOM(const QDomElement &element);
 
-  void copy(TransferFunction *tf);
+  void copyTF(TransferFunction *tf);
 
 private:
  /*!
@@ -158,6 +162,14 @@ private:
   */
   virtual void update();
 
+  /*!
+   * \ingroup      UI
+   * \brief        Returns the xml tag used by the object
+   * \return       xml tag defined in static member xmlTag
+   * \par      Source:
+   *                TransferFunction.cpp
+   */
+   virtual const char * getXmlTag() { return xmlTag;}
 signals:
  /*!
   * \ingroup      UI
@@ -169,13 +181,11 @@ signals:
   void updated();
 
 
-private:
+protected:
   unsigned char m_lowCutOff;               /*!< current low cut off value*/
   unsigned char m_highCutOff;              /*!< current high cut off value*/
   SoMFFloat m_colorMap;                    /*!< current colour map, including regions cut off*/
 
-public:
-  static const char * xmlTag;             /*!< xml section tag string */
 };
 
 #endif // TRANSFERFUNCTION_H

@@ -64,7 +64,7 @@ TransferFunction::TransferFunction(QObject *parent):  QObject(parent), SoTransfe
     colorMap.copyFrom(m_colorMap);
 }
 
-void TransferFunction::copy(TransferFunction *tf){
+void TransferFunction::copyTF(TransferFunction *tf){
     if (tf) {
         m_lowCutOff = tf->m_lowCutOff;
         m_highCutOff = tf->m_highCutOff;
@@ -90,16 +90,16 @@ void TransferFunction::setColorMap(SoMFFloat &colorMap) {
 
 bool TransferFunction::saveAsXml(QXmlStreamWriter *xmlWriter) {
   Q_ASSERT(xmlWriter);
-  xmlWriter->writeStartElement(xmlTag);
+  xmlWriter->writeStartElement(getXmlTag());
   xmlWriter->writeTextElement("lowCutOff", QString("%1").arg(m_lowCutOff));
   xmlWriter->writeTextElement("highCutOff", QString("%1").arg(m_highCutOff));
   for (int i=0; i<256 ; i++) {
       xmlWriter->writeStartElement("value");
       xmlWriter->writeTextElement("index", QString("%1").arg(i));
-      xmlWriter->writeTextElement("red", QString("%1").arg(colorMap[i*4]));
-      xmlWriter->writeTextElement("green", QString("%1").arg(colorMap[i*4+1]));
-      xmlWriter->writeTextElement("blue", QString("%1").arg(colorMap[i*4+2]));
-      xmlWriter->writeTextElement("alpha", QString("%1").arg(colorMap[i*4+3]));
+      xmlWriter->writeTextElement("red", QString("%1").arg(m_colorMap[i*4]));
+      xmlWriter->writeTextElement("green", QString("%1").arg(m_colorMap[i*4+1]));
+      xmlWriter->writeTextElement("blue", QString("%1").arg(m_colorMap[i*4+2]));
+      xmlWriter->writeTextElement("alpha", QString("%1").arg(m_colorMap[i*4+3]));
       xmlWriter->writeEndElement();
   }
   xmlWriter->writeEndElement();
@@ -107,7 +107,7 @@ bool TransferFunction::saveAsXml(QXmlStreamWriter *xmlWriter) {
 }
 
 bool TransferFunction::parseDOM(const QDomElement &element) {
-  if (element.tagName() != xmlTag)
+  if (element.tagName() != getXmlTag())
         return false;
   QDomNode child = element.firstChild();
   m_colorMap.setNum(256*4);
@@ -129,9 +129,7 @@ bool TransferFunction::parseDOM(const QDomElement &element) {
         QDomNode child = element.firstChild();
         while (!child.isNull()) {
            QDomElement element = child.toElement();
-           if (element.tagName() == "lowCutOff") {
-              m_lowCutOff =  element.text().toInt();
-           } else if (element.tagName() == "index") {
+           if (element.tagName() == "index") {
               index =  element.text().toInt();
            } else if (element.tagName() == "red") {
               R =  element.text().toFloat();
