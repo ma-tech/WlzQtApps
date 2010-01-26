@@ -177,6 +177,7 @@
     <addaction name="actionAllEditing"/>
     <addaction name="actionAllViewing"/>
     <addaction name="actionSwitchModes"/>
+    <addaction name="actionUpdate"/>
     <addaction name="actionAutoWarp"/>
     <addaction name="separator"/>
     <addaction name="actionGenerateMesh"/>
@@ -201,10 +202,6 @@
     <addaction name="actionTargetView"/>
     <addaction name="actionResultView"/>
     <addaction name="actionSectionView"/>
-    <addaction name="separator"/>
-    <addaction name="actionViews"/>
-    <addaction name="actionObjects"/>
-    <addaction name="actionLandmarks"/>
     <addaction name="separator"/>
     <addaction name="menuToolbars"/>
    </widget>
@@ -231,6 +228,7 @@
    <addaction name="actionOpenValueTarget"/>
    <addaction name="actionOpenWoolzObject"/>
    <addaction name="actionAutoWarp"/>
+   <addaction name="actionUpdate"/>
    <addaction name="actionShowMesh"/>
    <addaction name="actionOpen_mesh"/>
   </widget>
@@ -254,8 +252,6 @@
    <addaction name="separator"/>
    <addaction name="actionShowLandmarks"/>
    <addaction name="separator"/>
-   <addaction name="actionViews"/>
-   <addaction name="actionObjects"/>
   </widget>
   <widget class="QToolBar" name="toolBarModes">
    <property name="windowTitle">
@@ -350,14 +346,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+R</string>
-   </property>
-  </action>
-  <action name="actionLandmarks">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Landmark list</string>
    </property>
   </action>
   <action name="actionSectionView">
@@ -467,21 +455,6 @@
    </property>
    <property name="shortcut">
     <string>D</string>
-   </property>
-  </action>
-  <action name="actionViews">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="resource.qrc">
-     <normaloff>:/icons/images/views.png</normaloff>:/icons/images/views.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;View list</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
    </property>
   </action>
   <action name="actionMoveLandmark">
@@ -599,18 +572,6 @@
    </property>
    <property name="text">
     <string>Export mesh</string>
-   </property>
-  </action>
-  <action name="actionObjects">
-   <property name="icon">
-    <iconset resource="resource.qrc">
-     <normaloff>:/icons/images/objects.png</normaloff>:/icons/images/objects.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Object list</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionSeparator">
@@ -818,6 +779,15 @@
    </property>
    <property name="text">
     <string>Enable alpha channel</string>
+   </property>
+  </action>
+  <action name="actionUpdate">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/icons/images/update.png</normaloff>:/icons/images/update.png</iconset>
+   </property>
+   <property name="text">
+    <string>Update</string>
    </property>
   </action>
  </widget>

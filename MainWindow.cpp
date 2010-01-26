@@ -234,15 +234,13 @@ void MainWindow::switchProjectType(ProjectProperties::ProjectTypes newType) {
       actionDeleteLandmark->setVisible(false);
       actionMoveLandmark->setVisible(false);
       actionShowLandmarks->setVisible(false);
+      actionUpdate->setVisible(false);
 
       // View menu
       actionSourceView->setVisible(false);
       actionTargetView->setVisible(false);
       actionResultView->setVisible(false);
       actionSectionView->setVisible(false);
-      actionLandmarks->setVisible(false);
-      actionObjects->setVisible(false);
-      actionViews->setVisible(false);
       menuToolbars->setVisible(false);
 
       //Settings menu  
@@ -291,15 +289,13 @@ void MainWindow::switchProjectType(ProjectProperties::ProjectTypes newType) {
       actionDeleteLandmark->setVisible(false);
       actionMoveLandmark->setVisible(false);
       actionShowLandmarks->setVisible(false);
+      actionUpdate->setVisible(false);
 
       // View menu
       actionSourceView->setVisible(false);
       actionTargetView->setVisible(false);
       actionResultView->setVisible(false);
       actionSectionView->setVisible(false);
-      actionLandmarks->setVisible(false);
-      actionObjects->setVisible(true);
-      actionViews->setVisible(true);
 
       //Settings menu  
       actionAutoWarp->setVisible(true);
@@ -353,15 +349,13 @@ void MainWindow::switchProjectType(ProjectProperties::ProjectTypes newType) {
       actionDeleteLandmark->setVisible(true);
       actionMoveLandmark->setVisible(true);
       actionShowLandmarks->setVisible(true);
+      actionUpdate->setVisible(true);
 
       // View menu
       actionSourceView->setVisible(true);
       actionTargetView->setVisible(true);
       actionResultView->setVisible(true);
       actionSectionView->setVisible(false);
-      actionLandmarks->setVisible(true);
-      actionObjects->setVisible(true);
-      actionViews->setVisible(true);
 
       //Settings menu  
       actionAutoWarp->setVisible(true);
