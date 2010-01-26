@@ -29,15 +29,14 @@ else {
     TARGET = Viewer
 }
 
+
 # Coin-Qt-Wlz glue libraries
-CONFIG(debug, debug|release) { 
-    LIBS += -lWlzQtCoinGlue_d
-}
-else { 
+CONFIG(debug, debug|release):LIBS += -lWlzQtCoinGlue_d
+else {
     LIBS += -lWlzQtCoinGlue
+    INCLUDEPATH *= /$(MA_HOME)/include/WlzQtCoinGlue
 }
 LIBS *= -L/$(MA_HOME)/lib
-INCLUDEPATH *= /$(MA_HOME)/include/WlzQtCoinGlue
 
 # static libraries for Woolz
 INCLUDEPATH *= /$(MA_HOME)/include
@@ -70,7 +69,6 @@ unix {
    OUTDIR  = linux$$TYPE
 }
 
-
 macx {
     ICON = icon_mac.png
     QMAKE_INFO_PLIST = Info.plist
@@ -82,12 +80,18 @@ CONFIG(debug, debug|release) {
   OUTDIR = $${OUTDIR}_debug
 }
 
+CONFIG(debug, debug|release) {
+    INCLUDEPATH *= ../WlzQtCoinGlue
+    LIBS = -L../WlzQtCoinGlue/$${OUTDIR}/bin \
+        $${LIBS}
+    PRE_TARGETDEPS += ../WlzQtCoinGlue/$${OUTDIR}/bin/libWlzQtCoinGlue_d.a
+}
 message( Output directory $$OUTDIR)
 OBJECTS_DIR = $$OUTDIR
 DESTDIR = $$OUTDIR/bin
-MOC_DIR = moc
-UI_DIR = ui
-RCC_DIR = rcc
+MOC_DIR = $$OUTDIR/moc
+UI_DIR = $$OUTDIR/ui
+RCC_DIR = $$OUTDIR/rcc
 
 target.path = /$(MA_HOME)/bin
 INSTALLS += target
