@@ -840,7 +840,7 @@ void TransferFunctionLoad::undo() {
   WoolzObject *obj = m_objectListModel->getObject(m_objID) ;
   if (!obj)
     return;
-  obj->transferFunction()->copy(m_oldTransfFunc);
+  obj->transferFunction()->copyTF(m_oldTransfFunc);
   delete m_oldTransfFunc;
   m_oldTransfFunc = NULL;
 }
@@ -850,20 +850,10 @@ void TransferFunctionLoad::redo() {
   if (!obj)
     return;
   m_oldTransfFunc = new TransferFunction;
-  m_oldTransfFunc->copy(obj->transferFunction());
-  obj->transferFunction()->copy(m_transfFunc);
+  m_oldTransfFunc->copyTF(obj->transferFunction());
+  obj->transferFunction()->copyTF(m_transfFunc);
 }
 
-/*bool TransferFunctionLoad::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an TransferFunctionLoad command
-    return false;
-  const TransferFunctionLoad *setCommand = static_cast<const TransferFunctionLoad*>(command);
-  if (setCommand->m_objID != m_objID) // make sure other is also referes the same object
-    return false;
-   m_cutOff = setCommand->m_cutOff;
-  return true;
-}
-*/
 
 WarpingSetDelta::WarpingSetDelta(LandmarkModel *landmarkModel, double delta, QUndoCommand * parent):
     QUndoCommand(parent),  m_landmarkModel(landmarkModel), m_delta(delta) {
@@ -873,7 +863,6 @@ WarpingSetDelta::WarpingSetDelta(LandmarkModel *landmarkModel, double delta, QUn
 void WarpingSetDelta::undo() {
    QApplication::setOverrideCursor(Qt::WaitCursor);
    m_landmarkModel->setDelta(m_oldDelta);
-   //m_landmarkModel->update();
    QApplication::restoreOverrideCursor();
 }
 
@@ -896,7 +885,7 @@ bool WarpingSetDelta::mergeWith ( const QUndoCommand * command ) {
 
 WarpingtSetBasisFnType::WarpingtSetBasisFnType(LandmarkModel *landmarkModel, LandmarkModel::BasisFnType basisFnType, QUndoCommand * parent):
     QUndoCommand(parent),  m_landmarkModel(landmarkModel), m_basisFnType(basisFnType) {
-         setText("Set basis transform to" + basisFnType == LandmarkModel::basis_IMQ ? "Inverse multiquadric" : "Multiquadric");
+         setText(QString("Set basis transform to") + ((basisFnType == LandmarkModel::basis_IMQ) ? "Inverse multiquadric" : "Multiquadric"));
 }
 
 void WarpingtSetBasisFnType::undo() {

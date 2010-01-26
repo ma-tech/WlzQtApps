@@ -558,8 +558,6 @@ class TransferFunctionLoad: public QUndoCommand
 
      virtual void undo();
      virtual void redo();
-     //int id () const;
-     //bool mergeWith ( const QUndoCommand * command );
  private:
      ObjectListModel *m_objectListModel;       /*!< object manager */
      int m_objID;                              /*!< object identifier */
