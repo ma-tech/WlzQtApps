@@ -37,5 +37,6 @@
         <file>images/open.png</file>
         <file>images/cuttingplanevisiblefliped.png</file>
         <file>images/cuttingplaneonfliped.png</file>
+        <file>images/update.png</file>
     </qresource>
 </RCC>
