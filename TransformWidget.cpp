@@ -48,8 +48,8 @@ static char _TransformWidget_cpp[] = "MRC HGU $Id$";
 #include "Commands.h"
 
 TransformWidget::TransformWidget(QWidget *parent,
-   ObjectListModel *objectListModel, LandmarkModel *landmarkModel): 
-       QDockWidget(parent), m_objectListModel(objectListModel), m_landmarkModel(landmarkModel),
+   ObjectListModel *objectListModel, WoolzDirectTransform *woolzTransform):
+       QDockWidget(parent), m_objectListModel(objectListModel), m_woolzTransform(woolzTransform),
        m_object(NULL), m_sourceObject(NULL) {
   setupUi( this );
 
@@ -78,7 +78,8 @@ TransformWidget::TransformWidget(QWidget *parent,
 
 void TransformWidget::createNew() {
   WoolzDynWarpedObject *newTarget;
-  newTarget = new WoolzDynWarpedObject(m_objectListModel, m_landmarkModel) ;
+
+  newTarget = new WoolzDynWarpedObject(m_objectListModel, m_woolzTransform) ;
 
   Q_ASSERT(newTarget);
   if (newTarget) {
@@ -114,6 +115,7 @@ void TransformWidget::loadProperties(WoolzDynWarpedObject *object) {
 
   checkBoxAutoUpdate->setChecked(object->autoUpdate());
   selectSource(object->sourceObj());
+  enableUpdate(!object->needsUpdate());
   m_object = object;
 }
 
@@ -134,6 +136,7 @@ void TransformWidget::objectSelected(WoolzObject* object) {
   m_object =  NULL;  // do not update object
   if (obj!=NULL) {
     connect( obj, SIGNAL(objectPropertyChanged()), this, SLOT(objectPropertyChanged()));
+    connect( obj, SIGNAL(updated(bool)), this, SLOT(enableUpdate(bool)));
 
     comboSourceObject->clear();
     QList <WoolzObject*>  list = m_objectListModel->getObjects(true, true, false);
@@ -193,6 +196,7 @@ void TransformWidget::sourceObjectChanged(int index) {
 
 void TransformWidget::addObjectSignal(WoolzObject* obj) {
   connect( obj, SIGNAL(objectPropertyChanged()), this, SLOT(objectPropertyChanged()));
+  connect( obj, SIGNAL(updated(bool)), this, SLOT(enableUpdate(bool)));
   if (obj && obj->isValue() && obj != m_object)
     comboSourceObject->addItem(obj->name(),qVariantFromValue<QObject*>(obj));
 }
@@ -237,4 +241,8 @@ void TransformWidget::selectSource(WoolzObject * source) {
     comboSourceObject->insertItem(0, tr("*removed*"), qVariantFromValue<QObject*>(NULL));
     comboSourceObject->setCurrentIndex(0);
   }
+}
+
+void TransformWidget::enableUpdate(bool enabled) {
+   pushButtonUpdate->setEnabled(!enabled);
 }

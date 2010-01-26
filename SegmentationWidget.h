@@ -179,7 +179,17 @@ private slots:
   * \par      Source:
   *                SegmentationWidget.cpp
   */
- void setAutoUpdate(bool enabled);
+  void setAutoUpdate(bool enabled);
+
+ /*!
+  * \ingroup      UI
+  * \brief        Processes object update state change
+  * \param        enabled auto update
+  * \return       void
+  * \par      Source:
+  *                SegmentationWidget.cpp
+  */
+  void enableUpdate(bool enabled);
 
 private:
  /*!

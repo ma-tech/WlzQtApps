@@ -50,7 +50,7 @@ class ObjectListModel;
 class WoolzObject;
 class WoolzDynWarpedObject ;
 class QObject;
-class LandmarkModel;
+class WoolzDirectTransform;
 
 /*!
  * \brief	Widget class for manipulating segmented Woolz Object (WoolzDynThresholdedObj) common properties 
@@ -69,7 +69,7 @@ public:
   * \par      Source:
   *                TransformWidget.cpp
   */
-  TransformWidget(QWidget *parent, ObjectListModel *objectListModel, LandmarkModel *landmarkModel);
+  TransformWidget(QWidget *parent, ObjectListModel *objectListModel, WoolzDirectTransform *woolzTransform);
 
  /*!
   * \ingroup      UI
@@ -169,6 +169,16 @@ private slots:
   */
   void setAutoUpdate(bool enabled);
 
+  /*!
+   * \ingroup      UI
+   * \brief        Processes object update state change
+   * \param        enabled auto update
+   * \return       void
+   * \par      Source:
+   *                TransformWidget.cpp
+   */
+  void enableUpdate(bool enabled);
+
  private:
  /*!
   * \ingroup      UI
@@ -192,7 +202,8 @@ private slots:
 
 protected:
   ObjectListModel* m_objectListModel;    /*!< the object list model*/
-  LandmarkModel *m_landmarkModel;        /*!< the landmark model specifying the warping*/
+  //LandmarkModel *m_landmarkModel;        /*!< the landmark model specifying the warping*/
+  WoolzDirectTransform *m_woolzTransform;          /*!< tranformation object */
   WoolzDynWarpedObject * m_object;       /*!< current object*/
   WoolzObject *m_sourceObject;           /*!< the source (parent) object*/
   //virtual QSize sizeHint () const;

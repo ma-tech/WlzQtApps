@@ -214,6 +214,16 @@ private slots:
   */
   void setShellSelection ();
 
+ /*!
+  * \ingroup      UI
+  * \brief        Processes object update state change
+  * \param        enabled auto update
+  * \return       void
+  * \par      Source:
+  *                ContourISOSurfaceWidget.cpp
+  */
+  void enableUpdate(bool enabled);
+
 private:
  /*!
   * \ingroup      UI

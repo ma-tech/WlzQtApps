@@ -144,6 +144,7 @@ void SegmentationWidget::loadProperties(WoolzDynThresholdedObj *object) {
   horizontalLowSlider->setValue(object->lowTh());
   horizontalHighSlider->setValue(object->highTh());
   checkBoxAutoUpdate->setChecked(object->autoUpdate());
+  enableUpdate(!object->needsUpdate());
   selectSource(object->sourceObj());
   m_object = object;
 }
@@ -169,6 +170,8 @@ void SegmentationWidget::objectSelected(WoolzObject* object) {
     //disable autoupdate while properties are populated
     connect( obj, SIGNAL(objectPropertyChanged()),
            this, SLOT(objectPropertyChanged()));
+    connect( obj, SIGNAL(updated(bool)), this, SLOT(enableUpdate(bool)));
+
     comboSourceObject->clear();
     QList <WoolzObject*>  list = m_objectListModel->getObjects(true, true, true);
     for (int i=0; i<list.size(); i++)
@@ -228,6 +231,8 @@ void SegmentationWidget::sourceObjectChanged(int index) {
 
 void SegmentationWidget::addObjectSignal(WoolzObject* obj) {
   connect( obj, SIGNAL(objectPropertyChanged()), this, SLOT(objectPropertyChanged()));
+  connect( obj, SIGNAL(updated(bool)), this, SLOT(enableUpdate(bool)));
+
   if (obj && obj->isValue() && obj != m_object)
     comboSourceObject->addItem(obj->name(),qVariantFromValue<QObject*>(obj));
 }
@@ -262,4 +267,8 @@ void SegmentationWidget::selectSource(WoolzObject * source) {
       comboSourceObject->insertItem(0, tr("*removed*"), qVariantFromValue<QObject*>(NULL));
       comboSourceObject->setCurrentIndex(0);
     }
+}
+
+void SegmentationWidget::enableUpdate(bool enabled) {
+   pushButtonUpdate->setEnabled(!enabled);
 }

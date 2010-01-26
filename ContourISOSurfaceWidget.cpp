@@ -189,8 +189,9 @@ void ContourISOSurfaceWidget::loadProperties(WoolzDynContourISO *object) {
     for (i=maxShells+1; i<16; i++)
        shells[i]->setChecked(true);
 
-}
-  m_object = object;
+ }
+ enableUpdate(!object->needsUpdate());
+ m_object = object;
 }
 
 void ContourISOSurfaceWidget::objectPropertyChanged() {
@@ -243,6 +244,8 @@ void ContourISOSurfaceWidget::objectSelected(WoolzObject* object) {
     //disable autoupdate while properties are populated
     connect( obj, SIGNAL(objectPropertyChanged()),
            this, SLOT(objectPropertyChanged()));
+    connect( obj, SIGNAL(updated(bool)), this, SLOT(enableUpdate(bool)));
+
     comboSourceObject->clear();
     QList <WoolzObject*>  list = m_objectListModel->getObjects(true, true, true);
     for (int i=0; i<list.size(); i++)
@@ -283,6 +286,8 @@ void ContourISOSurfaceWidget::sourceObjectChanged(int index) {
 
 void ContourISOSurfaceWidget::addObjectSignal(WoolzObject* obj) {
   connect( obj, SIGNAL(objectPropertyChanged()), this, SLOT(objectPropertyChanged()));
+  connect( obj, SIGNAL(updated(bool)), this, SLOT(enableUpdate(bool)));
+
   if (obj && obj->isValue() && obj != m_object)
     comboSourceObject->addItem(obj->name(),qVariantFromValue<QObject*>(obj));
 }
@@ -350,3 +355,6 @@ void ContourISOSurfaceWidget::setShellSelection () {
   }
 }
 
+void ContourISOSurfaceWidget::enableUpdate(bool enabled) {
+   pushButtonUpdate->setEnabled(!enabled);
+}
