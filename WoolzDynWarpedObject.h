@@ -44,7 +44,7 @@ static char _WoolzDynObject_h[] = "MRC HGU $Id$";
 
 #include "WoolzDynObject.h"
 
-class LandmarkModel;
+class WoolzTransform;
 
 /*!
  * \brief	Container class for WlzObject
@@ -61,19 +61,19 @@ public:
   * \ingroup      Control
   * \brief        Constructor
   * \param        objectListModel object list model
-  * \param        landmarkModel landmark model
+  * \param        woolzTransform transformation model
   * \return       void
   * \par      Source:
-  *                WoolzDynWarpedObject .cpp
+  *                WoolzDynWarpedObject.cpp
   */
-  WoolzDynWarpedObject (ObjectListModel * objectListModel, LandmarkModel *landmarkModel);
+  WoolzDynWarpedObject (ObjectListModel * objectListModel, WoolzTransform *woolzTransform);
 
  /*!
   * \ingroup      Control
   * \brief        Destructor
   * \return       void
   * \par      Source:
-  *                WoolzDynWarpedObject .cpp
+  *                WoolzDynWarpedObject.cpp
   */
   virtual ~WoolzDynWarpedObject ();
 
@@ -194,7 +194,7 @@ public slots:
 
  /*!
   * \ingroup      Control
-  * \brief        Processes landmark model update
+  * \brief        Processes tranformation update
   * \return       void
   * \par      Source:
   *                WoolzDynWarpedObject.cpp
@@ -209,7 +209,7 @@ protected:
   *               Calls private method warp() do to the job.
   * \return       void
   * \par      Source:
-  *                WoolzDynWarpedObject .cpp
+  *                WoolzDynWarpedObject.cpp
   */
   virtual void doUpdate ();
 
@@ -219,7 +219,7 @@ signals:
   * \brief        Signals if warp can not be completed due to an error
   * \return       void
   * \par      Source:
-  *                WoolzDynWarpedObject .cpp
+  *                WoolzDynWarpedObject.cpp
   */
   void invalidWarping();
 
@@ -229,12 +229,12 @@ private:
   * \brief        Performs the warp
   * \return       void
   * \par      Source:
-  *                WoolzDynWarpedObject .cpp
+  *                WoolzDynWarpedObject.cpp
   */
   void warp ();
 
 protected:
-  LandmarkModel *m_landmarkModel;      /*!< landmarks*/
+  WoolzTransform *m_woolzTransform;    /*!< tranformation object */
   bool m_outdatedWarp;                 /*!< if true then warping is out of date due to transform change*/
 public:
   static const char * xmlTag;          /*!< xml section tag string */

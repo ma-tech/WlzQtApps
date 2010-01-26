@@ -52,8 +52,6 @@ class MainWindow;
 class WarperSourceViewer;
 class WarperTargetViewer;
 class WarperResultViewer;
-//class ViewToolDialog;
-//class ObjectToolDialog;
 class ViewToolWidget;
 class ObjectToolWidget;
 class LandmarkWidget;
@@ -71,7 +69,7 @@ class ContourISOSurfaceWidget;
 class TransferFunctionWidget;
 class LandmarkController;
 class ProjectProperties;
-class WoolzDirectTransform;
+class WoolzTransform;
 class QUndoStack;
 class QAction;
 class QDomElement;
@@ -245,33 +243,6 @@ public slots:
   *                WarperController.cpp
   */
   bool openMeshSource () ;
-
- /*!
-  * \ingroup      Control
-  * \brief        Opens the view tool dialog
-  * \return       void
-  * \par      Source:
-  *                WarperController.cpp
-  */
-  //void openViewDialog ();
-
- /*!
-  * \ingroup      Control
-  * \brief        Opens the object tool dialog
-  * \return       void
-  * \par      Source:
-  *                WarperController.cpp
-  */
-  //void openObjectDialog ();
-
- /*!
-  * \ingroup      Control
-  * \brief        Opens the landmark dialog
-  * \return       void
-  * \par      Source:
-  *                WarperController.cpp
-  */
-  //void openLandmarkDialog ();
 
  /*!
   * \ingroup      Control
@@ -588,25 +559,6 @@ private:
   */
   SegmentationWidget* getSegmentWidget(void);
 
-
- /*!
-  * \ingroup      Control
-  * \brief        Retruns the object tool dialog. It creates if did not exists.
-  * \return       object tool dialog
-  * \par      Source:
-  *                WarperController.cpp
-  */
-  //ObjectToolDialog* getObjectToolDialog(void);
-
- /*!
-  * \ingroup      Control
-  * \brief        Retruns the landmark dialog. It creates if did not exists.
-  * \return       landmark dialog
-  * \par      Source:
-  *                WarperController.cpp
-  */
-//  LandmarkDialog* getLandmarkDialog(void);
-
  /*!
   * \ingroup      Control
   * \brief        Check if project is 3D or 2D, the object is same, 3D or 2D
@@ -648,15 +600,6 @@ signals:
 
  /*!
   * \ingroup      Control
-  * \brief        Signals viewer addition.
-  * \return       void
-  * \par      Source:
-  *                WarperController.cpp
-  */
-  //void addedViewer(ObjectViewer *);
-
- /*!
-  * \ingroup      Control
   * \brief        Signals object change
   * \return       void
   * \par      Source:
@@ -668,9 +611,6 @@ private:
   QActionGroup *menuMeshSelectionActionGroup;      /*!< action group for mesh selection */
   bool project3D;                                  /*!< true if 3D object */
   bool projectInitialised;                         /*!< true if project loaded or intialised */
-  //ViewToolDialog *viewToolDialog;                  /*!< view tool dialog */
-  //ObjectToolDialog *objectToolDialog;              /*!< object tool dialog */
-  //LandmarkDialog *landmarkDialog;                  /*!< landmark dialog */
   SegmentationWidget *segmentWidget;               /*!< segmentation widget */
   ObjectPropertyWidget *objectPropertyWidget;      /*!< general object property widget */
   TransformWidget* transformWidget;                /*!< transform widget */
@@ -689,6 +629,6 @@ private:
   QAction *actionUndo;                             /*!< action for Undo */
   QAction *actionRedo;                             /*!< action for Redo */
   ProjectProperties *m_projectProperties;          /*!< pointer to project properties */
-  WoolzDirectTransform *m_woolzTransform;          /*!< tranformation object */
+  WoolzTransform *m_woolzTransform;               /*!< tranformation object */
 };
 #endif // WARPERCONTROLLER_H

@@ -592,12 +592,17 @@ bool LandmarkModel::readDOMPoint(const QDomElement &element, WlzDVertex3 &p) {
   return isX && isY && (isZ || !is3D);
 }
 
-WlzBasisFnTransform *LandmarkModel::getBasisTransform(WlzTransform *cMesh, WlzErrorNum& errNum,  bool isSource) {
+WlzBasisFnTransform *LandmarkModel::getBasisTransform(WoolzObject *cMesh, WlzErrorNum& errNum,  bool isSource) {
    int ns, nd;
    WlzVertexP  source, target;
    const bool useIMQ = m_basisFnType == basis_IMQ;
    source.v = NULL;
    target.v = NULL;
+
+   if (!cMesh || !(cMesh->getObj()) ) {
+       errNum = WLZ_ERR_OBJECT_NULL;
+    }
+
    if (is3D) {
      source.d3 = extractVertex3D(LandmarkModel::sourceV, ns);
      target.d3 = extractVertex3D(LandmarkModel::targetV, nd);
@@ -619,9 +624,6 @@ WlzBasisFnTransform *LandmarkModel::getBasisTransform(WlzTransform *cMesh, WlzEr
    if (ns!=nd || nd<=0) {
       errNum = WLZ_ERR_UNSPECIFIED;
    }
-   if (!cMesh->obj ) {
-       errNum = WLZ_ERR_OBJECT_NULL;
-    }
    if (errNum == WLZ_ERR_NONE) {
      if (!basisTr)
        if((basisTr = WlzMakeBasisFnTransform(NULL)) == NULL) {
@@ -639,22 +641,22 @@ WlzBasisFnTransform *LandmarkModel::getBasisTransform(WlzTransform *cMesh, WlzEr
                source.d3, target.d3,
                m_delta,
                basisTr->basisFn,
-               cMesh->obj->domain.cm3, &errNum) :
+               cMesh->getObj()->domain.cm3, &errNum) :
               WlzBasisFnMQ3DFromCPts(ns,
                source.d3, target.d3,
                m_delta,
                basisTr->basisFn,
-               cMesh->obj->domain.cm3, &errNum);
+               cMesh->getObj()->domain.cm3, &errNum);
        else
          basisFn = useIMQ ?
              WlzBasisFnIMQ2DFromCPts(ns,
                source.d2, target.d2,
                m_delta,
-               basisTr->basisFn, cMesh->obj->domain.cm2, &errNum) :
+               basisTr->basisFn, cMesh->getObj()->domain.cm2, &errNum) :
              WlzBasisFnMQ2DFromCPts(ns,
                source.d2, target.d2,
                m_delta,
-               basisTr->basisFn, cMesh->obj->domain.cm2, &errNum);
+               basisTr->basisFn, cMesh->getObj()->domain.cm2, &errNum);
 
        if (basisTr->basisFn)
          WlzBasisFnFree(basisTr->basisFn);
@@ -749,4 +751,17 @@ bool LandmarkModel::isValidLandmakSet(){
         return false;
   }
   return true;
+}
+
+void LandmarkModel::set3D(bool b) {
+    if (is3D !=b) {
+        is3D = b;
+        if (is3D) {
+            beginInsertColumns(QModelIndex(), 5, 6);
+            endInsertColumns();
+        } else {
+            beginRemoveColumns(QModelIndex(), 5, 6);
+            endRemoveColumns();
+        }
+    }
 }

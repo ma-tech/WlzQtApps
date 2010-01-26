@@ -53,13 +53,13 @@ class QUndoStack;
 class QUndoCommand;
 class ObjectViewer;
 class QXmlStreamWriter;
-class LandmarkModel;
+class WoolzTransform;
 class QDomElement;
 
 /*!
-* \brief	Model to manage the collection of objects
-* \ingroup      Control
-*/
+ * \brief	Model to manage the collection of objects
+ * \ingroup      Control
+ */
 class ObjectListModel : public ObjectListModelAbstract
 {
   Q_OBJECT
@@ -67,13 +67,14 @@ public:
  /*!
   * \ingroup      Control
   * \brief        Constructor
-  * \param        parent parent object
+  * \param        woolzTransform transformation manager
+  * \param        undoStack undo stack
   * \param        parent parent object
   * \return       void
   * \par      Source:
   *                ObjectListModel.cpp
   */
-  ObjectListModel ( LandmarkModel *landmarkModel, QUndoStack *undoStack, QObject * parent = 0 );
+  ObjectListModel ( WoolzTransform *woolzTransform, QUndoStack *undoStack, QObject * parent = 0 );
 
  /*!
   * \ingroup      Control
@@ -403,7 +404,7 @@ signals:
   * \par      Source:
   *                ObjectListModel.cpp
   */
-  void updateAllSignal();
+  void updateAllSignal(bool);
 
  /*!
   * \ingroup      Control
@@ -412,7 +413,7 @@ signals:
   * \par      Source:
   *                ObjectListModel.cpp
   */
-  void updateAllWarpedSignal();
+  void updateAllWarpedSignal(bool);
 
  /*!
   * \ingroup      Control
@@ -424,10 +425,17 @@ signals:
   */
   void replaceWarpMesh(WoolzObject *mesh);
 
+  /*!
+   * \ingroup      Control
+   * \brief        Signals that an object was changed and needs update
+   * \return       void
+   * \par      Source:
+   *                WarperController.cpp
+   */
+  void updatePossibleChange(bool possible);
 
 protected slots:
-
- /*!
+/*!
   * \ingroup      Control
   * \brief        Removal of an object. Viewers should process this signal.
   * \param        object the object to be removed
@@ -452,22 +460,22 @@ public slots:
  /*!
   * \ingroup      Control
   * \brief        Updates all dynamic objects
-  * \param        enabled true if auto update is enabled
+  * \param        force if true updates are forced
   * \return       void
   * \par      Source:
   *                ObjectListModel.cpp
   */
-  void updateAll();
+  void updateAll(bool force = false);
 
  /*!
   * \ingroup      Control
   * \brief        Updates all warped dynamic objects
-  * \param        enabled true if auto update is enabled
+  * \param        force if true updates are forced
   * \return       void
   * \par      Source:
   *                ObjectListModel.cpp
   */
-  void updateAllWarped();
+  void updateAllWarped(bool force = false);
 
  /*!
   * \ingroup      Control
@@ -478,12 +486,22 @@ public slots:
   */
   void addAllObjects(ObjectViewer *viewer);
 
+  /*!
+   * \ingroup      Control
+   * \brief        Processes if an object is updated
+   * \return       void
+   * \par      Source:
+   *                WarperController.cpp
+   */
+   void objectUpdated(bool updated);
+
 protected:
   QList <WoolzObject*> objects[3];  /*!< object stores: 0 - source, 1-target, 2-warped */
   WoolzObject *m_meshObject;        /*!< mesh object for direct access */
   QUndoStack *m_undoStack;          /*!< undo stack */
-  LandmarkModel *m_landmarkModel;   /*!< landmarkmodel */
+  WoolzTransform *m_woolzTransform; /*!< transformation object */
 
+  bool m_allObjectsUpdated;         /*!< true if all objects are updated */
 public:
   static const char * xmlTag;                /*!< xml section tag string */
 };

@@ -48,7 +48,7 @@ static char _TransformWidget_cpp[] = "MRC HGU $Id$";
 #include "Commands.h"
 
 TransformWidget::TransformWidget(QWidget *parent,
-   ObjectListModel *objectListModel, WoolzDirectTransform *woolzTransform):
+   ObjectListModel *objectListModel, WoolzTransform *woolzTransform):
        QDockWidget(parent), m_objectListModel(objectListModel), m_woolzTransform(woolzTransform),
        m_object(NULL), m_sourceObject(NULL) {
   setupUi( this );

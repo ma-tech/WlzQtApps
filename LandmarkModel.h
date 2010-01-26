@@ -72,7 +72,7 @@ struct PointPair
 * \brief	Model of landmarks. Stores and manages landmark corespondences.
 * \ingroup      Control
 */
-class LandmarkModel : public QAbstractItemModel 
+class LandmarkModel : public QAbstractItemModel
 {
   Q_OBJECT
 public:
@@ -315,9 +315,7 @@ public:
   * \par      Source:
   *                LandmarkModel.cpp
   */
-  void set3D(bool b) {
-      is3D = b;
-  }
+  void set3D(bool b);
 
  /*!
   * \ingroup      Control
@@ -378,7 +376,7 @@ public:
   * \par      Source:
   *                LandmarkModel.cpp
   */
-  WlzBasisFnTransform *getBasisTransform(WlzTransform *cMesh, WlzErrorNum& errNum,
+  WlzBasisFnTransform *getBasisTransform(WoolzObject *cMesh, WlzErrorNum& errNum,
        bool isSource);
  /*!
   * \ingroup      Control

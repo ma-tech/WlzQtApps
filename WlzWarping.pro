@@ -1,6 +1,7 @@
 # CONFIG += debug_and_release build_all
+# CONFIG += openmp
+CONFIG += sse2
 QT += xml
-
 HEADERS = WarperConfig.h \
     WarperController.h \
     SnapSurfaceManip.h \
@@ -48,8 +49,11 @@ HEADERS = WarperConfig.h \
     PreferencesDialog.h \
     ProjectPropertiesDialog.h \
     ObjectViewerController.h \
-    WarpingWidget.h
-
+    WarpingWidget.h \
+    ObjectToolWidget.h \
+    ViewToolWidget.h \
+    LandmarkWidget.h \
+    WoolzTransform.h
 SOURCES = WarperConfig.cpp \
     SnapSurfaceManip.cpp \
     SnapSurfaceDragger.cpp \
@@ -95,8 +99,11 @@ SOURCES = WarperConfig.cpp \
     PreferencesDialog.cpp \
     ProjectPropertiesDialog.cpp \
     ObjectViewerController.cpp \
-    WarpingWidget.cpp
-
+    WarpingWidget.cpp \
+    ObjectToolWidget.cpp \
+    ViewToolWidget.cpp \
+    LandmarkWidget.cpp \
+    WoolzTransform.cpp
 FORMS = MainWindow.ui \
     ViewToolDialog.ui \
     ObjectToolDialog.ui \
@@ -109,25 +116,27 @@ FORMS = MainWindow.ui \
     TransferFunctionWidget.ui \
     PreferencesDialog.ui \
     ProjectPropertiesDialog.ui \
-    WarpingWidget.ui
-
+    WarpingWidget.ui \
+    ObjectToolWidget.ui \
+    ViewToolWidget.ui \
+    LandmarkWidget.ui
 TEMPLATE = app
 VERSION = 0.9.5
-
 TYPE = 32
-contains( QMAKE_CFLAGS, -m64): TYPE =
 
-CONFIG(debug, debug|release) { 
-    TARGET = Warping_d
+openmp {
+  LIBS *= -openmp
+  message( Using openmp )
 }
-else { 
-    TARGET = Warping
-}
+
+contains( QMAKE_CFLAGS, -m64):TYPE = 
+contains( QMAKE_LIBDIR_X11, /usr/X11R6/lib64):TYPE =
+
+CONFIG(debug, debug|release):TARGET = Warping_d
+else:TARGET = Warping
 
 # Coin-Qt-Wlz glue libraries
-CONFIG(debug, debug|release) { 
-    LIBS += -lWlzQtCoinGlue_d
-}
+CONFIG(debug, debug|release):LIBS += -lWlzQtCoinGlue_d
 else { 
     LIBS += -lWlzQtCoinGlue
     INCLUDEPATH *= /$(MA_HOME)/include/WlzQtCoinGlue
@@ -137,64 +146,58 @@ LIBS *= -L/$(MA_HOME)/lib
 # Coin/Qt:
 SOQTINC = $$system(soqt-config --includedir)
 COININC = $$system(coin-config --includedir)
-
 SOQTLIB = $$system(soqt-config --libs)
 COINLIB = $$system(coin-config --libs)
-
 SOQTLDFLAGS = $$system(soqt-config --ldflags)
 COINLDFLAGS = $$system(coin-config --ldflags)
-
-INCLUDEPATH *= $$SOQTINC $$COININC
-LIBS *= -lSimVoleon $$COINLIB $$COINLDFLAGS $$SOQTLIB $$SOQTLDFLAGS
+INCLUDEPATH *= $$SOQTINC \
+    $$COININC
+LIBS *= -lSimVoleon \
+    $$COINLIB \
+    $$COINLDFLAGS \
+    $$SOQTLIB \
+    $$SOQTLDFLAGS
 
 # static libraries for Woolz
 INCLUDEPATH *= /$(MA_HOME)/include
 LIBS *= -L/$(MA_HOME)/lib
 LIBS *= -lWlzExtFF \
-        -lWlz \
-        -lAlc \
-        -lAlg \
-        -ljpeg \
-        -ltiff
-
+    -lWlz \
+    -lAlc \
+    -lAlg \
+    -ljpeg \
+    -ltiff
 include(/$(MA_HOME)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
-
 draggers.files = draggers/*.iv
 draggers.path = /$(MA_HOME)/bin/draggers
 
 # must precede win32 otherwise cross-compiling causes problems (both win32 and u
-unix {
-   OUTDIR  = linux$$TYPE
-   INSTALLS += draggers
+unix { 
+    OUTDIR = linux$$TYPE
+    INSTALLS += draggers
 }
-
-macx {
+macx { 
     ICON = icon_mac.png
     QMAKE_INFO_PLIST = Info.plist
     OUTDIR = MacOSX
     QMAKE_POST_LINK = ./mac_deploy
 }
-
-CONFIG(debug, debug|release) {
-  OUTDIR = $${OUTDIR}_debug
-}
-
-CONFIG(debug, debug|release) {
+CONFIG(debug, debug|release):OUTDIR = $${OUTDIR}_debug
+CONFIG(debug, debug|release) { 
     INCLUDEPATH *= ../WlzQtCoinGlue
-    LIBS = -L../WlzQtCoinGlue/$${OUTDIR}/bin $${LIBS}
+    LIBS = -L../WlzQtCoinGlue/$${OUTDIR}/bin \
+        $${LIBS}
     PRE_TARGETDEPS += ../WlzQtCoinGlue/$${OUTDIR}/bin/libWlzQtCoinGlue_d.a
 }
-
-
 message( Output directory $$OUTDIR)
 OBJECTS_DIR = $$OUTDIR
 DESTDIR = $$OUTDIR/bin
-MOC_DIR = moc
-UI_DIR = ui
-RCC_DIR = rcc
+MOC_DIR = $$OUTDIR/moc
+UI_DIR = $$OUTDIR/ui
+RCC_DIR = $$OUTDIR/rcc
 
 # install
 RESOURCES += resource.qrc
-
 target.path = /$(MA_HOME)/bin
 INSTALLS += target
+OTHER_FILES += openmp.prf

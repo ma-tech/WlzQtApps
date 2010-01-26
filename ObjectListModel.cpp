@@ -59,7 +59,9 @@ static char _ObjectListModel_cpp[] = "MRC HGU $Id$";
 
 const char* ObjectListModel::xmlTag = "Objects";
 
-ObjectListModel::ObjectListModel (LandmarkModel *landmarkModel, QUndoStack *undoStack, QObject * parent):  ObjectListModelAbstract(parent), m_meshObject(NULL), m_undoStack(undoStack), m_landmarkModel(landmarkModel) {
+ObjectListModel::ObjectListModel (WoolzTransform *woolzTransform, QUndoStack *undoStack, QObject * parent):
+        ObjectListModelAbstract(parent), m_meshObject(NULL),
+        m_undoStack(undoStack), m_woolzTransform(woolzTransform), m_allObjectsUpdated(true) {
 }
 
 int ObjectListModel::rowCount(const QModelIndex & parent) const {
@@ -248,23 +250,23 @@ void ObjectListModel::addObject(WoolzObject * object) {
   if (!object->isWarped()) {
     if (object->type() & WoolzObject::source) {
       const int index = 0;
-      objects[index].append(object);
-      int row = objects[index].size()-1;
+      int row = objects[index].size();
       beginInsertRows(createIndex(index, 0, (void*)-1), row, row);
+      objects[index].append(object);
       endInsertRows();
     }
     if (object->type() & WoolzObject::target) {
       const int index = 1;
-      objects[index].append(object);
-      int row = objects[index].size()-1;
+      int row = objects[index].size();
       beginInsertRows(createIndex(index, 0, (void*)-1), row, row);
+      objects[index].append(object);
       endInsertRows();
     }
   } else {
     const int index = 2;
-    objects[index].append(object);
-    int row = objects[index].size()-1;
+    int row = objects[index].size();
     beginInsertRows(createIndex(index, 0, (void*)-1), row, row);
+    objects[index].append(object);
     endInsertRows();
   }
 
@@ -330,6 +332,7 @@ void ObjectListModel::removeObject(WoolzObject * object) {
     removeObjectFromStore(1, object);
     removeObjectFromStore(2, object);
     object->close();
+    objectUpdated(true);  // check update state, maybe this was the only outdated object
     delete object;
   }
 }
@@ -341,6 +344,7 @@ void ObjectListModel::removeObjectNoDelete(WoolzObject * object) {
     removeObjectFromStore(1, object);
     removeObjectFromStore(2, object);
     emit removedObjectSignal(object);
+    objectUpdated(true);  // check update state, maybe this was the only outdated object
     object->close();
   }
 }
@@ -438,12 +442,12 @@ void ObjectListModel::objectTypeChanged() {
   addObject(object);
 }
 
-void ObjectListModel::updateAll() {
-  emit updateAllSignal();
+void ObjectListModel::updateAll(bool force) {
+  emit updateAllSignal(force);
 }
 
-void ObjectListModel::updateAllWarped() {
-  emit updateAllWarpedSignal();
+void ObjectListModel::updateAllWarped(bool force) {
+  emit updateAllWarpedSignal(force);
 }
 
 void ObjectListModel::loadAll() {
@@ -510,6 +514,7 @@ bool ObjectListModel::parseDOM(const QDomElement &element) {
    else {
       const int meshObjID = temp.text().toInt();
       m_meshObject = getObject(meshObjID);
+      emit replaceWarpMesh(m_meshObject);
   }
 
   temp = element.firstChildElement("SelectedObjectID");
@@ -534,7 +539,7 @@ WoolzObject * ObjectListModel::createObject(QString type) {
     if (type == WoolzFileObject::xmlTag)
         return new WoolzFileObject();
     else if (type == WoolzDynWarpedObject::xmlTag)
-        return new WoolzDynWarpedObject(this, m_landmarkModel);
+        return new WoolzDynWarpedObject(this, m_woolzTransform);
     else if (type == WoolzDynThresholdedObj::xmlTag)
         return new WoolzDynThresholdedObj(this);
     else if (type == WoolzDynMeshObject::xmlTag)
@@ -552,10 +557,34 @@ bool ObjectListModel::readStoreFromXml(int store, const QDomElement &element) {
         if (obj) {
             obj->setupConnections(this);
             obj->parseDOM(child.toElement());
+            int row = objects[store].size();
+            beginInsertRows(createIndex(store, 0, (void*)-1), row, row);
             objects[store].append(obj);
+            endInsertRows();
             emit addObjectSignal(obj);
         }
         child = child.nextSibling();
   }
+
   return true;
+}
+
+void ObjectListModel::objectUpdated(bool updated) {
+  if (updated) {
+    if (!m_allObjectsUpdated) {
+      int store, i;
+      for (store=0; store<3; store++) {
+        for (i=0; i< objects[store].size(); i++)
+          if (objects[store].at(i)->needsUpdate())
+              return ;
+      }
+      m_allObjectsUpdated = true;
+      updatePossibleChange(false);
+    }
+  } else {
+      if (m_allObjectsUpdated) {
+          m_allObjectsUpdated = false;
+          updatePossibleChange(true);
+      }
+  }
 }

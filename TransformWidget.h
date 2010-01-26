@@ -46,11 +46,11 @@ static char _TransformWidgett_h[] = "MRC HGU $Id$";
 #include <QDockWidget>
 #include <ui_TransformWidget.h>
 
+class QObject;
 class ObjectListModel;
 class WoolzObject;
 class WoolzDynWarpedObject ;
-class QObject;
-class WoolzDirectTransform;
+class WoolzTransform;
 
 /*!
  * \brief	Widget class for manipulating segmented Woolz Object (WoolzDynThresholdedObj) common properties 
@@ -69,7 +69,7 @@ public:
   * \par      Source:
   *                TransformWidget.cpp
   */
-  TransformWidget(QWidget *parent, ObjectListModel *objectListModel, WoolzDirectTransform *woolzTransform);
+  TransformWidget(QWidget *parent, ObjectListModel *objectListModel, WoolzTransform *woolzTransform);
 
  /*!
   * \ingroup      UI
@@ -202,11 +202,9 @@ private slots:
 
 protected:
   ObjectListModel* m_objectListModel;    /*!< the object list model*/
-  //LandmarkModel *m_landmarkModel;        /*!< the landmark model specifying the warping*/
-  WoolzDirectTransform *m_woolzTransform;          /*!< tranformation object */
+  WoolzTransform *m_woolzTransform;      /*!< tranformation object */
   WoolzDynWarpedObject * m_object;       /*!< current object*/
   WoolzObject *m_sourceObject;           /*!< the source (parent) object*/
-  //virtual QSize sizeHint () const;
 };
 
 #endif  //TRANSFORMWIDGET_H

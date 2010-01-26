@@ -70,13 +70,10 @@ static char _WarperController_cpp[] = "MRC HGU $Id$";
 #include "WoolzDynMeshObject.h"
 #include "LandmarkController.h"
 #include "ObjectViewerController.h"
-#include "WoolzDirectTransform.h"
+#include "WoolzTransform.h"
 
 //dialogs
-//#include "ViewToolDialog.h"
-//#include "ObjectToolDialog.h"
 #include "MeshDialog.h"
-//#include "LandmarkDialog.h"
 #include "PreferencesDialog.h"
 
 //widgets
@@ -112,9 +109,6 @@ WarperConfig config;
 WarperController::WarperController ( MainWindow * mainwindow, ProjectProperties *projectProperties): m_projectProperties(projectProperties) {
   mainWindow = mainwindow;
   Q_ASSERT(mainwindow != NULL);
-//  viewToolDialog   = NULL;
-//  objectToolDialog = NULL;
-//  landmarkDialog   = NULL;
   segmentWidget    = NULL;
   transformWidget  = NULL;
   warpingWidget    = NULL;
@@ -149,8 +143,8 @@ WarperController::WarperController ( MainWindow * mainwindow, ProjectProperties 
   landmarkModel = new LandmarkModel();
   Q_ASSERT(landmarkModel);
 
-  // create transform
-  m_woolzTransform = new WoolzDirectTransform(landmarkModel);
+  // create transform object
+  m_woolzTransform = new WoolzTransform(landmarkModel);
   Q_ASSERT(m_woolzTransform);
 
   // create object and view managers
@@ -438,15 +432,6 @@ WarperController::~WarperController ( ) {
   if (landmarkWidget)
       delete landmarkWidget;
 
-//  if (viewToolDialog)
-  //    delete viewToolDialog;
-
-/*  if (objectToolDialog )
-      delete objectToolDialog;*/
-
-/*  if (landmarkDialog)
-      delete landmarkDialog;*/
-
   if (segmentWidget)
       delete segmentWidget;
 
@@ -654,9 +639,6 @@ void  WarperController::connectSignals () {
     connect( mainWindow->actionSourceView, SIGNAL( triggered() ), this, SLOT( addSourceViewer() ) );
     connect( mainWindow->actionTargetView, SIGNAL( triggered() ), this, SLOT( addTargetViewer() ) );
     connect( mainWindow->actionResultView, SIGNAL( triggered() ), this, SLOT( addResultViewer() ) );
-    //connect( mainWindow->actionObjects, SIGNAL( triggered() ), this, SLOT( openObjectDialog() ) );
-    //connect( mainWindow->actionViews, SIGNAL( triggered() ), this, SLOT( openViewDialog() ) );
-    //connect( mainWindow->actionLandmarks, SIGNAL( triggered() ), this, SLOT( openLandmarkDialog()) );
     connect( mainWindow->actionMinimize, SIGNAL( triggered() ), this, SLOT( minimizeSubWindow() ) );
     connect( mainWindow->actionMaximize, SIGNAL( triggered() ), this, SLOT( maximizeSubWindow() ) );
     connect( mainWindow->actionRestore, SIGNAL( triggered() ), this, SLOT( restoreSubWindow() ) );
@@ -810,51 +792,6 @@ void WarperController::init() {
   connectSignals();
 }
 
-/*void WarperController::openViewDialog () {
-  getViewToolDialog()->show();
-  getViewToolDialog()->raise();
-  getViewToolDialog()->activateWindow();
-  return;
-}*/
-
-/*void WarperController::openLandmarkDialog () {
-  getLandmarkDialog()->show(); 
-  getLandmarkDialog()->raise();
-  getLandmarkDialog()->activateWindow();
-  return;
-}*/
-
-/*ViewToolDialog* WarperController::getViewToolDialog(void) {
-  if (!viewToolDialog) {
-    viewToolDialog = new ViewToolDialog( m_objectViewerController->model(), mainWindow);
-    Q_ASSERT(viewToolDialog);
-  }
-  return viewToolDialog;
-}*/
-
-/*void WarperController::openObjectDialog () {
-  getObjectToolDialog()->show();
-  getObjectToolDialog()->raise();
-  getObjectToolDialog()->activateWindow();
-  return;
-}*/
-/*
-ObjectToolDialog* WarperController::getObjectToolDialog(void) {
-  if (!objectToolDialog) {
-    objectToolDialog = new ObjectToolDialog( objectListModel, mainWindow);
-    Q_ASSERT(objectToolDialog);
-  }
-  return objectToolDialog;
-}*/
-
-/*LandmarkDialog* WarperController::getLandmarkDialog(void) {
-  if (!landmarkDialog) {
-    landmarkDialog = new LandmarkDialog( landmarkController, mainWindow);
-    Q_ASSERT(landmarkDialog);
-  }
-  return landmarkDialog;
-}
-*/
 void WarperController::minimizeSubWindow() {
   QMdiSubWindow *subWindow =  mainWindow->getWorkspace()->activeSubWindow();
   if (subWindow)
@@ -928,11 +865,6 @@ void WarperController::saveWarpedObject () {
 }
 
 void WarperController::saveWarpingTransform  () {
-  //WoolzObject *warpedObject = objectListModel->getFirstWarped();
-   /*if (!warpedObject || warpedObject->isEmpty()) {
-      QMessageBox::warning(NULL, "Save warped object", "No available warped object.");
-      return;
-  }*/
   QString filename = QFileDialog::getSaveFileName(mainWindow, tr("Save warping transform"),
                                                 getLastPath(),
                                                 tr("Warping transform (*.wlz)"));
@@ -1229,7 +1161,6 @@ void WarperController::setProjectProperties() {
 
 bool WarperController::parseProject(const QDomElement &element) {
   {
-    //QDomText child = element.firstChildElement("Name").toText();
     QDomElement child = element.firstChildElement("Name").toElement();
     if (!child.isNull()) {
         m_projectProperties->m_projectName = child.text();
@@ -1238,7 +1169,6 @@ bool WarperController::parseProject(const QDomElement &element) {
         m_projectProperties->m_isNameSet = false;
   }
   undoStack->clear();
-  //bool update = config.globalAutoUpdate();
   config.setGlobalAutoUpdate(false);
   objectListModel->parseDOM(element.firstChildElement(ObjectListModel::xmlTag).toElement());
   m_objectViewerController->parseDOM(element.firstChildElement(ObjectViewerController::xmlTag));
