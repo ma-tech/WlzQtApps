@@ -308,7 +308,7 @@ signals:
   * \par      Source:
   *                ObjectListModel.cpp
   */
-  void updateAllSignal();
+  void updateAllSignal(bool);
 
   /*!
   * \ingroup      Control
@@ -318,7 +318,7 @@ signals:
   * \par      Source:
   *                ObjectListModel.cpp
   */
-  void updateAllWarpedSignal();
+  void updateAllWarpedSignal(bool);
 
  /*!
   * \ingroup      Control
