@@ -97,6 +97,7 @@ public:
   void setValue( unsigned char value) {
     if (m_value != value) {
        m_value = value;
+       emit updated(false);
        emit objectPropertyChanged();
    }
   }
@@ -121,6 +122,7 @@ public:
   void setSubsample( unsigned char subsample) {
     if (m_subsample != subsample) {
        m_subsample = subsample;
+       emit updated(false);
        emit objectPropertyChanged();
    }
   }
@@ -145,6 +147,7 @@ public:
   void setBoundary( bool boundary) {
     if (m_boundary != boundary) {
        m_boundary = boundary;
+       emit updated(false);
        emit objectPropertyChanged();
    }
   }
@@ -169,6 +172,7 @@ public:
   void setFilter( bool filter) {
     if (m_filter != filter) {
        m_filter = filter;
+       emit updated(false);
        emit objectPropertyChanged();
    }
   }
@@ -192,6 +196,7 @@ public:
   */
   void setSelection( int selection) {
     if (m_selection != selection) {
+       emit updated(false);
        m_selection = selection;
     }
   }
@@ -252,6 +257,15 @@ public:
   */
   virtual bool isContourPreRead () { return (m_obj== NULL && m_srcObjID!=-1) || isContour();}
 
+ /*!
+  * \ingroup      Control
+  * \brief        Checks if object parameters changes requiring update
+  * \return       true if object needs update
+  * \par      Source:
+  *                WoolzDynContourISO.cpp
+  */
+  virtual bool needsUpdate();
+
 
 protected:
  /*!
@@ -263,7 +277,7 @@ protected:
   */
   void doUpdate ();
 
-  /*!
+ /*!
   * \ingroup      Control
   * \brief        Saves object details in xml format.
   * \param        xmlWriter output xml stream
@@ -301,15 +315,6 @@ private:
   *                WoolzDynContourISO.cpp
   */
   void recomputeFullContour();
-
- /*!
-  * \ingroup      Control
-  * \brief        Checks if object parameters changes requiring update
-  * \return       true if object needs update
-  * \par      Source:
-  *                WoolzDynContourISO.cpp
-  */
-  virtual bool needsUpdate();
 
  /*!
   * \ingroup      Control

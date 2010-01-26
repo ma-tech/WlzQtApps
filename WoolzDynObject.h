@@ -191,6 +191,15 @@ public slots:
   */
   void removedSourceObject();
 
+  /*!
+   * \ingroup      Control
+   * \brief        Checks if object parameters changes requireing update
+   * \return       true if object needs update
+   * \par      Source:
+   *                WoolzDynMeshObject.cpp
+   */
+   virtual bool needsUpdate();
+
 protected:
   /*!
   * \ingroup      Control
@@ -212,14 +221,6 @@ protected:
   */
   virtual bool parseDOMLine(const QDomElement &element);
 
- /*!
-  * \ingroup      Control
-  * \brief        Checks if object parameters changes requiring update
-  * \return       true if object needs update
-  * \par      Source:
-  *                WoolzDynMeshObject.cpp
-  */
-  virtual bool needsUpdate();
 
  /*!
   * \ingroup      Control
@@ -235,7 +236,7 @@ protected:
   * \brief        Checks without reading the whole file if the object is 3D
   * \return       true if is a 3D and false if not
   * \par      Source:
-  *                WoolzObject.cpp
+  *                WoolzDynObject.cpp
   */
  bool is3DPreRead ( ) { return (!m_obj && (sourceObj()) && sourceObj()->is3DPreRead()) || is3D();}
 
@@ -244,9 +245,19 @@ protected:
   * \brief        Checks without reading the whole file if the object is 2D
   * \return       true if is a 2D and false if not
   * \par      Source:
-  *                WoolzObject.cpp
+  *                WoolzDynObject.cpp
   */
   bool is2DPreRead ( ) { return (!m_obj && (sourceObj()) && sourceObj()->is2DPreRead()) || is2D();}
+
+
+  /*!
+   * \ingroup      Control
+   * \brief        Signals when an object parameters are changed and object needs update.
+   * \return       void
+   * \par      Source:
+   *                WoolzDynObject.cpp
+   */
+//   void outdated();
 
 protected:
   bool m_autoUpdate;                   /*!< auto update flag: update() performs

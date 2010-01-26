@@ -96,6 +96,7 @@ public:
   void setLowThreshold ( unsigned char lowTh) {
     if (m_lowTh != lowTh) {
       m_lowTh = lowTh;
+      emit updated(false);
       emit objectPropertyChanged();
     }
   }
@@ -111,6 +112,7 @@ public:
   void setHighThreshold ( unsigned char highTh) {
     if (m_highTh != highTh) {
        m_highTh = highTh;
+       emit updated(false);
        emit objectPropertyChanged();
    }
   }
@@ -125,6 +127,7 @@ public:
   */
   void setChannel ( enum channelTypes channel) {
     m_channel = channel;
+    emit updated(false);
   }
 
  /*!
@@ -201,6 +204,15 @@ public:
   */
   virtual bool isValuePreRead () { return (!m_obj && (sourceObj()) && sourceObj()->isValuePreRead()) || isValue();}
 
+  /*!
+   * \ingroup      Control
+   * \brief        Checks if object parameters changes requiring update
+   * \return       true if object needs update
+   * \par      Source:
+   *                WoolzDynThresholdedObj.cpp
+   */
+   virtual bool needsUpdate();
+
 protected:
  /*!
   * \ingroup      Control
@@ -230,15 +242,6 @@ protected:
   *                WoolzDynThresholdedObj.cpp
   */
   virtual bool parseDOMLine(const QDomElement &element);
-
- /*!
-  * \ingroup      Control
-  * \brief        Checks if object parameters changes requiring update
-  * \return       true if object needs update
-  * \par      Source:
-  *                WoolzDynThresholdedObj.cpp
-  */
-  virtual bool needsUpdate();
 
  /*!
   * \ingroup      Control

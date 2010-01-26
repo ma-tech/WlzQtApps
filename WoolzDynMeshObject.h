@@ -90,6 +90,7 @@ public:
   */
   void setMinDist ( double meshMinDist)  {
     m_meshMinDist = meshMinDist;
+    emit updated(false);
   }
 
  /*!
@@ -102,6 +103,7 @@ public:
   */
   void setMaxDist ( double meshMaxDist) {
     m_meshMaxDist = meshMaxDist;
+    emit updated(false);
   }
 
  /*!

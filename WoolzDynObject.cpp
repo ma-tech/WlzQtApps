@@ -50,6 +50,9 @@ WoolzDynObject::WoolzDynObject(ObjectListModel * objectListModel) : WoolzObject(
   m_autoUpdate = false;
   m_srcObjID = -1;
   m_srcObjIDUsed = 0;
+  connect( this, SIGNAL(updated(bool)),
+    m_objectListModel, SLOT(objectUpdated(bool)));
+  emit updated(false);
 }
 
 WoolzDynObject::~WoolzDynObject() {
@@ -93,8 +96,9 @@ void WoolzDynObject::setSourceObj(WoolzObject *src) {
       connect( dynobj, SIGNAL(objectChanged()),
         this, SLOT(sourceChanged()));
     setTypeFromSource();
-} else
-    m_srcObjID = -1;
+  } else
+   m_srcObjID = -1;
+  emit updated(false);
 }
 
 void WoolzDynObject::setSourceObj(int srcID) {
@@ -107,6 +111,7 @@ void WoolzDynObject::setSourceObj(int srcID) {
   if (dynobj)
     connect( dynobj, SIGNAL(objectChanged()), this, SLOT(sourceChanged()));
   setTypeFromSource();
+  emit updated(false);
 }
 
 
@@ -158,4 +163,5 @@ bool  WoolzDynObject::needsUpdate() {
 
 void WoolzDynObject::saveUsedParameters() {
     m_srcObjIDUsed = m_srcObjID;
+    emit updated(true);
 }
