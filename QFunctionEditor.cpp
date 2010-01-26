@@ -133,11 +133,13 @@ void QFunctionEditor::paintEvent(QPaintEvent *e ) {
 	drawFrame(&painter);
 	drawTicks(&painter);
         if (m_nInternalMode == INTERNAL_MODE_COLOR_TABLE) {
-                drawHistogram(&painter,region.x()-m_nBorder_x-2, region.x() + region.width()+4-m_nBorder_x);
-                drawColorTable(&painter,region.x()-2, region.x() + region.width()+5);// 4 changed to 5 Zsolt Husz 16/07/09
+            drawHistogram(&painter, 0, 255);
+//          drawHistogram(&painter,region.x()-m_nBorder_x-2, region.x() + region.width()+4-m_nBorder_x);
+            drawColorTable(&painter,region.x()-2, region.x() + region.width()+5);// 4 changed to 5 Zsolt Husz 16/07/09
 	} else {
-                drawHistogram(&painter,region.x()-m_nBorder_x-2, region.x() + region.width()+4-m_nBorder_x);
-                drawColorMap(&painter,region.x()-2, region.x() + region.width()+5); // 4 changed to 5 Zsolt Husz 16/07/09
+            drawHistogram(&painter, 0, 255);
+//          drawHistogram(&painter,region.x()-m_nBorder_x-2, region.x() + region.width()+4-m_nBorder_x);
+            drawColorMap(&painter,region.x()-2, region.x() + region.width()+5); // 4 changed to 5 Zsolt Husz 16/07/09
 	}
         drawLimits(&painter);
 }
@@ -246,7 +248,7 @@ void QFunctionEditor::drawHistogram(QPainter *pPainter,int start,int end) {
     int nMin_y = m_nBorder_y;
     int nRange_y = 255;
     
-    for(int x = start; x < end; x++) {
+    for(int x = start; x <= end; x++) {
       nEnd_y = nMax_y - (int) (nRange_y * m_fHistScale * m_pHistogram[x]/m_fHistogramMax);
       if (nEnd_y < nMin_y) nEnd_y = nMin_y;
       pPainter->drawLine(m_nBorder_x + x, nMax_y, 
