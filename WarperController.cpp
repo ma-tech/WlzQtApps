@@ -144,7 +144,7 @@ WarperController::WarperController ( MainWindow * mainwindow, ProjectProperties 
   Q_ASSERT(landmarkModel);
 
   // create transform object
-  m_woolzTransform = new WoolzTransform(landmarkModel);
+  m_woolzTransform = new WoolzTransform(landmarkModel, mainwindow);
   Q_ASSERT(m_woolzTransform);
 
   // create object and view managers

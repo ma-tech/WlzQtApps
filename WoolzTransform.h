@@ -62,10 +62,11 @@ public:
     * \ingroup      Control
     * \brief        Constructor
     * \param        landmarkModel landmark model
+    * \param        parent is the parent object
     * \par      Source:
     *                WoolzTransform.cpp
     */
-    WoolzTransform(LandmarkModel *landmarkModel);
+    WoolzTransform(LandmarkModel *landmarkModel, QObject *parent);
 
    /*!
     * \ingroup      Control
@@ -172,6 +173,18 @@ protected:
     *                WoolzTransform.cpp
     */
     WlzErrorNum updateInverseTransform();
+
+signals:
+    /*!
+     * \ingroup      Control
+     * \brief        Signals the status bar update request
+     * \param        message new message
+     * \param        timeout timeout of the new message
+     * \return       void
+     * \par      Source:
+     *                WoolzTransform.cpp
+     */
+     void statusChange(QString message, int timeout);
 
 private slots:
    /*!

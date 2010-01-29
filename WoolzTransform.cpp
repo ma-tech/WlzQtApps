@@ -42,8 +42,10 @@ static char _WoolzDynObject_cpp[] = "MRC HGU $Id$";
 
 #include "WoolzTransform.h"
 #include "Wlz.h"
+#include <QApplication>
 
-WoolzTransform::WoolzTransform(LandmarkModel *landmarkModel) : m_landmarkModel(landmarkModel), m_meshObject (NULL) {
+
+WoolzTransform::WoolzTransform(LandmarkModel *landmarkModel, QObject *parent) : QObject(parent), m_landmarkModel(landmarkModel), m_meshObject (NULL) {
     Q_ASSERT(landmarkModel); // must be not NULL, no further update is posssible
     basisTr = NULL;
     transformObj = NULL;
@@ -53,6 +55,8 @@ WoolzTransform::WoolzTransform(LandmarkModel *landmarkModel) : m_landmarkModel(l
     connect(m_landmarkModel, SIGNAL(movedSourceLandmark(const int, const WlzDVertex3)), this, SLOT(update()));
     connect(m_landmarkModel, SIGNAL(movedTargetLandmark(const int, const WlzDVertex3)), this, SLOT(update()));
     connect(m_landmarkModel, SIGNAL(warpingChanged()), this, SLOT(update()));
+
+    connect(this, SIGNAL(statusChange(QString, int)), parent, SLOT(statusChanged(QString, int)));
 }
 
 WoolzTransform::~WoolzTransform() {
@@ -69,10 +73,8 @@ void WoolzTransform::update() {
 }
 
 void WoolzTransform::setMeshObject( WoolzObject *meshObject) {
-    m_meshObject = meshObject;
-
-    // transform.obj = WlzAssignObject(meshObject->getObj(), NULL);
-   basisTr = NULL;
+     m_meshObject = meshObject;
+     basisTr = NULL;
 }
 
 bool WoolzTransform::isValidLandmarkSet() {
@@ -94,8 +96,9 @@ bool WoolzTransform::isReadyForWarp(QString &errorMsg) {
 WlzErrorNum WoolzTransform::updateBasisTr() {
     WlzErrorNum errNum = WLZ_ERR_NONE;
     if (!basisTr) {
+      statusChange("Computing basis transform.",0);
       basisTr = m_landmarkModel->getBasisTransform(m_meshObject, errNum, m_meshObject->type() == WoolzObject::source);
-
+      statusChange("Computing basis transform done.",0);
       if (transformObj) {
         WlzFreeObj(transformObj);
         transformObj = NULL;
@@ -113,10 +116,11 @@ WlzErrorNum WoolzTransform::updateDirectTransform() {
     errNum = updateBasisTr();
     if (transformObj)
         return errNum;
-
     WlzCMeshP meshp;
     meshp.m3 = m_meshObject->getObj()->domain.cm3;
+    statusChange("Computing direct transform.",0);
     transformObj = WlzBasisFnMakeCMeshTr(basisTr, meshp, &errNum);
+    statusChange("Computing direct transform done.",0);
     return errNum;
 }
 
@@ -130,7 +134,9 @@ WlzErrorNum WoolzTransform::updateInverseTransform() {
     if (errNum == WLZ_ERR_NONE) {
          WlzCMeshP meshp;
          meshp.m3 = m_meshObject->getObj()->domain.cm3;
+         statusChange("Computing direct transform.",0);
          invertedtransformObj = WlzBasisFnInvertMakeCMeshTr(basisTr, meshp, &errNum);
+         statusChange("Computing inverse transform done.",0);
      }
     return errNum;
 }
@@ -141,6 +147,8 @@ WlzObject* WoolzTransform::Transform(WoolzObject *srcObj,const WlzInterpolationT
 
   if (!srcObj->isValue())
       errNum = WLZ_ERR_VALUES_DATA;
+
+  QApplication::setOverrideCursor(Qt::WaitCursor);
   bool direct  = (m_meshObject->type() == WoolzObject::source) == (srcObj->type() == WoolzObject::source);
   if (errNum == WLZ_ERR_NONE) {
     if (direct) {
@@ -151,10 +159,14 @@ WlzObject* WoolzTransform::Transform(WoolzObject *srcObj,const WlzInterpolationT
   }
 
   if (errNum == WLZ_ERR_NONE) {
+      statusChange("Computing transformed object.",0);
       result=WlzCMeshTransformObj( srcObj->getObj(), direct ? transformObj: invertedtransformObj, interp, &errNum);  //volume transform
+      statusChange("Computing transformed done object.",0);
   }
   if (perrNum)
       *perrNum  = errNum;
+
+  QApplication::restoreOverrideCursor();
   return result;
 }
 
@@ -164,15 +176,19 @@ WlzObject* WoolzTransform::TransformedMesh(WlzErrorNum *perrNum) {
 
   if (!m_meshObject || !m_meshObject->isMesh())
     return NULL;
+  QApplication::setOverrideCursor(Qt::WaitCursor);
 
   updateInverseTransform();
   if (errNum == WLZ_ERR_NONE && invertedtransformObj) {          // mesh transform
        WlzValues     val;
        val.core = NULL;
+       statusChange("Computing transformed mesh.", 0);
        result = WlzMakeMain(m_meshObject->is3D() ? WLZ_CMESH_3D : WLZ_CMESH_2D, invertedtransformObj->domain, val, NULL, NULL, &errNum);
+       statusChange("Computing transformed mesh done.", 0);
   }
   if (perrNum)
       *perrNum  = errNum;
+  QApplication::restoreOverrideCursor();
   return result;
 }
 
@@ -181,6 +197,7 @@ bool WoolzTransform::needsupdate() {
 }
 
 WlzObject* WoolzTransform::getTransformObj(WlzErrorNum *perrNum) {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     WlzObject *result = NULL;
     WlzErrorNum errNum = WLZ_ERR_NONE;
     if (m_meshObject->type() == WoolzObject::source) { // direct mesh is used
@@ -192,5 +209,6 @@ WlzObject* WoolzTransform::getTransformObj(WlzErrorNum *perrNum) {
     }
     if (perrNum)
         *perrNum  = errNum;
+    QApplication::restoreOverrideCursor();
     return result;
 }
