@@ -70,3 +70,6 @@ Fixes:
 Known bugs:
  - on 32 bits the volume rendering does not render correctly transparent regions
  - after removing an object the View tool looses '+' icon for all windows that contained that object
+ 
+v.0.9.7b - 8 February 2010
+         - Minor fixes for Volume rendering
