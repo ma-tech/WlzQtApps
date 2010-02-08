@@ -36,6 +36,32 @@
       {
         this->fragmentprogramid[0] = this->fragmentprogramid[1] = 0;
       }
+#created with diff -crB SIMVoleon-2.0.1/lib/VolumeViz/nodes/VolumeRender.cpp 2/SIMVoleon-2.0.1/lib/VolumeViz/nodes/VolumeRender.cpp
+*** lib/VolumeViz/nodes/VolumeRender.cpp        2010-02-08 12:14:41.213453357 +0000
+--- other
+***************
+*** 459,468 ****
+    // need to "fake" transparency onto the state stack, e.g. by pushing
+    // a material element. Investigate the SoShape::shouldGLRender()
+    // code to find out exactly how. 20040707 mortene.
+!   if (!action->isRenderingDelayedPaths()) {
+      action->addDelayedPath(action->getCurPath()->copy());
+      return;
+!   }
+
+    if (CvrUtil::debugRayPicks()) { PRIVATE(this)->rayPickDebug(action); }
+    SoState * state = action->getState();
+--- 459,468 ----
+    // need to "fake" transparency onto the state stack, e.g. by pushing
+    // a material element. Investigate the SoShape::shouldGLRender()
+    // code to find out exactly how. 20040707 mortene.
+!   /*if (!action->isRenderingDelayedPaths()) {
+      action->addDelayedPath(action->getCurPath()->copy());
+      return;
+!   }*/
+
+    if (CvrUtil::debugRayPicks()) { PRIVATE(this)->rayPickDebug(action); }
+    SoState * state = action->getState();
 #created with diff -crB SIMVoleon-2.0.1/lib/VolumeViz/render/common/CvrTextureObject.h 1/SIMVoleon-2.0.1/lib/VolumeViz/render/common/CvrTextureObject.h
 *** lib/VolumeViz/render/common/CvrTextureObject.h	2004-12-20 14:54:48.000000000 +0000
 --- other
