@@ -67,7 +67,7 @@ static char _VolumeView_cpp[] = "MRC HGU $Id$";
 //intialise section transfer function
 SoTransferFunction *VolumeView::m_tfSection = NULL;
 
- const long VolumeView::maxVoxels = 256 * 256 * 256;
+ const long VolumeView::maxVoxels = 512 * 512 * 512;
 
 
 // Constructors/Destructors
@@ -161,6 +161,11 @@ void VolumeView::generateSceneGraph ( bool /*bForce*/ ) {
      if (maxVoxels < sz.vtX * sz.vtY* sz.vtZ) { //do subsampling
 
           m_scaleFactor = ceil(pow(((double)sz.vtX * sz.vtY * sz.vtZ) / maxVoxels, 1.0f/3.0f));
+
+          if (m_scaleFactor % 2 ==1) m_scaleFactor++;//make scale factor even. If not some crashed do happen
+          //TODO: the above line fixes some crashes, however is not understood why
+          //other memory allocation problems may exists that cause the above crash
+
           Q_ASSERT(m_scaleFactor > 1);
    /*
           WlzIVertex3 scale;
@@ -170,7 +175,7 @@ void VolumeView::generateSceneGraph ( bool /*bForce*/ ) {
           sampledObj = WlzSampleObj(obj->getObj(), scale, WLZ_SAMPLEFN_POINT, &errNum);*/
           double scale = (double)1/m_scaleFactor;
           WlzAffineTransform *trans=WlzAffineTransformFromScale(WLZ_TRANSFORM_3D_AFFINE, scale, scale, scale, &errNum);
-          sampledObj = WlzAffineTransformObj(obj->getObj(), trans, WLZ_INTERPOLATION_LINEAR, &errNum);
+          sampledObj = WlzAffineTransformObj(obj->getObj(), trans, WLZ_INTERPOLATION_NEAREST, &errNum);
           WlzFreeAffineTransform(trans);
           if(errNum == WLZ_ERR_NONE) {
               sampledObj = WlzAssignObject(sampledObj, &errNum);
