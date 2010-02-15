@@ -387,7 +387,7 @@ public:
   * \par      Source:
   *                LandmarkModel.cpp
   */
-  bool isDraggerValid(IndexType indexType, const PointPair *pp);
+  bool isDraggerValid(IndexType indexType, const PointPair *pp) const;
 
  /*!
   * \ingroup      Control

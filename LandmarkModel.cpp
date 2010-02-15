@@ -123,6 +123,13 @@ QVariant LandmarkModel::data(const QModelIndex & index, int role ) const {
             return QString("%1").arg(pp->V[targetV].vtY,  0, 'f', 2);
       } //switch
     }
+  } else if (role == Qt::TextColorRole) {
+      PointPair *pp = listPointPair.at(index.row());
+      Q_ASSERT(pp);
+      if (!isDraggerValid(sourceV, pp) || !isDraggerValid(targetV, pp))
+          return Qt::red;
+      else
+          return Qt::black;
   } else if (role == Qt::EditRole) {
     PointPair *pp = listPointPair.at(index.row());
     Q_ASSERT(pp);
@@ -694,7 +701,7 @@ void LandmarkModel::meshChanged() {
   emit warpingChanged();
 }
 
-bool LandmarkModel::isDraggerValid(IndexType indexType, const PointPair *pp) {
+bool LandmarkModel::isDraggerValid(IndexType indexType, const PointPair *pp) const {
   if ( !m_mesh  || (m_mesh->isSource() != (indexType == sourceV)) )    //if mesh type is different then indexType
      return true;
 
