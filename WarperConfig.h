@@ -98,12 +98,58 @@ public:
   *                WarperConfig.h
   */
   void setGlobalWarpUpdate(bool newWarpAutoUpdate);
+
+/**
+  * \ingroup      Control
+  * \brief        Returns the project directory
+  * \return       void
+  * \par      Source:
+  *                WarperConfig.h
+  */
+  QString projectDir() {return m_strProjectDir;}
+
+/**
+  * \ingroup      Control
+  * \brief        Sets the project base
+  * \param        dir directory to set
+  * \return       void
+  * \par      Source:
+  *                WarperConfig.h
+  */
+  void setProjectDir(QString dir);
+
+/**
+  * \ingroup      Control
+  * \brief        Sets the project base from the filename
+  * \param        filename file to get the directory from
+  * \return       void
+  * \par      Source:
+  *                WarperConfig.h
+  */
+  void setProjectDirFromFile(QString filename);
+
 signals:
-  void updateAllWarped();
+/**
+  * \ingroup      Control
+  * \brief        Signals need to update all dynamic objects
+  * \return       void
+  * \par      Source:
+  *                WarperConfig.h
+  */
   void updateAll();
+
+/**
+  * \ingroup      Control
+  * \brief        Signals need to update all warped objects
+  * \return       void
+  * \par      Source:
+  *                WarperConfig.h
+  */
+  void updateAllWarped();
 private:
    bool m_globalAutoUpdate;                 /*!< if enables/disables warping updates*/
    bool m_globalWarpUpdate;                 /*!< if enables/disables updates for all dynamic objects*/
+   QString m_strProjectDir;                 /*!< directory of the project*/
 };
 
 extern WarperConfig config;

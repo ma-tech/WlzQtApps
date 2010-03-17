@@ -42,6 +42,8 @@ static char _WarperConfig_cpp[] = "MRC HGU $Id$";
 
 #include "WarperConfig.h"
 #include <QApplication>
+#include <QFileInfo>
+#include "WoolzFileObject.h"
 
 WarperConfig::WarperConfig() : QObject(), m_globalAutoUpdate (true), m_globalWarpUpdate (true) {}
 
@@ -65,4 +67,13 @@ void WarperConfig::setGlobalWarpUpdate(bool newWarpAutoUpdate) {
           QApplication::restoreOverrideCursor();
       }
   }
+}
+
+void WarperConfig::setProjectDir(QString dir) {
+    m_strProjectDir =  dir;
+    WoolzFileObject::setBaseDir(m_strProjectDir);
+}
+
+void WarperConfig::setProjectDirFromFile(QString filename) {
+    setProjectDir(QFileInfo(filename).canonicalPath());
 }
