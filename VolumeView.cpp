@@ -67,8 +67,11 @@ static char _VolumeView_cpp[] = "MRC HGU $Id$";
 //intialise section transfer function
 SoTransferFunction *VolumeView::m_tfSection = NULL;
 
- const long VolumeView::maxVoxels = 512 * 512 * 512;
-
+#ifdef _32BITWARP
+const long VolumeView::maxVoxels = 256 * 256 * 256;
+#else
+const long VolumeView::maxVoxels = 512 * 512 * 512;
+#endif
 
 // Constructors/Destructors
 //  
@@ -278,31 +281,32 @@ void VolumeView::generateSceneGraph ( bool /*bForce*/ ) {
 }
 
 void VolumeView::addedClipPlane(SoClipPlane * plane){
-    if (!m_volumerenderSep) {
+  if (!m_volumerenderSep) {
         m_clipPlane = plane;
         if (m_clipPlane)
           m_clipPlane ->ref();
         return;
-    }
+  }
 
-    if (m_clipPlane) {
-     m_volumerenderSep->removeChild(0);
-     m_clipPlane ->unref();
-   }
-   if (!plane) {
-      m_clipPlane  = NULL;
-      m_section->removeAllChildren();  // remove ortho plane
-      return;
-   }
+  if (m_clipPlane) {
+        m_volumerenderSep->removeChild(0);
+        m_clipPlane ->unref();
+  }
 
-   bool needOrthoslice = m_orthoOn && !m_clipPlane;
-   m_clipPlane = plane;
-   m_clipPlane ->ref();
+  if (!plane) {
+        m_clipPlane  = NULL;
+        m_section->removeAllChildren();  // remove ortho plane
+        return;
+  }
 
-   if (needOrthoslice)
-      setObliqueSlice(m_orthoOn);
+  bool needOrthoslice = m_orthoOn && !m_clipPlane;
+  m_clipPlane = plane;
+  m_clipPlane->ref();
 
-   m_volumerenderSep->insertChild(plane,0);
+  if (needOrthoslice)
+     setObliqueSlice(m_orthoOn);
+
+  m_volumerenderSep->insertChild(plane,0);
 }
 
 void VolumeView::updateMaterial() {
