@@ -54,9 +54,9 @@ static char _Viewer2D_cpp[] = "MRC HGU $Id$";
 #include <QObject>
 #include <QPushButton>
 
-Viewer2D::Viewer2D(QWidget * parent, QLayout *slider) :  SoQtPlaneViewer(parent, NULL, TRUE,
+Viewer2D::Viewer2D(QWidget * parent, QLayout *slider, QList <QWidget*> *buttons) :  SoQtPlaneViewer(parent, NULL, TRUE,
                             SoQtFullViewer::BUILD_ALL, SoQtFullViewer::EDITOR,
-                            FALSE), m_slider (slider) {
+                            FALSE), m_slider (slider), m_buttons(buttons) {
 
     // Explicitly trigger the construction of viewer decorations.
     QWidget * widget = this->buildWidget(this->getParentWidget());
@@ -65,8 +65,14 @@ Viewer2D::Viewer2D(QWidget * parent, QLayout *slider) :  SoQtPlaneViewer(parent,
 }
 
 Viewer2D::~Viewer2D() {
+   if (m_buttons) {
+     QListIterator<QWidget*> i(*m_buttons);
+     while (i.hasNext())
+        delete i.next();
+     delete m_buttons;
+   }
    if (getBaseWidget()) {
-      delete getBaseWidget();
+     delete getBaseWidget();
    }
 }
 
@@ -97,6 +103,12 @@ void Viewer2D::createViewerButtons(QWidget * parent, SbPList * buttonlist) {
    ((QPushButton *)buttonlist->get(1))->setToolTip("View mode");
    ((QPushButton *)buttonlist->get(2))->setToolTip("View all");
    ((QPushButton *)buttonlist->get(3))->setVisible(false);   //don't show: button is reffered elsewhere, can't be removed
+
+   if (m_buttons) {
+     QListIterator<QWidget*> i(*m_buttons);
+     while (i.hasNext())
+        buttonlist->append(i.next());
+   }
 }
 
 QWidget * Viewer2D::buildRightTrim ( QWidget * parent) {

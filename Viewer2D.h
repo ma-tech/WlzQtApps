@@ -42,6 +42,7 @@ static char _Viewer2D_h[] = "MRC HGU $Id$";
 #ifndef VIEWER2D_H
 #define VIEWER2D_H
 
+#include <QList>
 #include <Inventor/Qt/viewers/SoQtPlaneViewer.h>
 
 class SoCamera;
@@ -62,17 +63,16 @@ public:
   * \brief        Constructor
   * \param        parent parent widget
   * \param        slider, if exists mixing slider is generated and signals will be passed to this object
-  *
+  * \param        buttons custom buttons at the right handside
   * \return       void
   * \par      Source:
   *                Viewer2D.cpp
   */
-  Viewer2D(QWidget * parent, QLayout *slider = NULL);
+  Viewer2D(QWidget * parent, QLayout *slider = NULL, QList <QWidget*> *buttons = NULL);
 
  /*!
   * \ingroup      UI
   * \brief        Destructor
-  *
   * \return       void
   * \par      Source:
   *                Viewer2D.cpp
@@ -83,9 +83,7 @@ public:
   * \ingroup      UI
   * \brief        Replaces viewing camera and calls Viewer::replaceCamera() callback of the parent
   * \param        cam new camera
-  *
   *               Reimplements SoQtPlaneViewer::setCamera().
-  *
   * \return       void
   * \par      Source:
   *                Viewer2D.cpp
@@ -98,7 +96,6 @@ protected:
   * \brief        Creates view buttons, without adding Z, Y and Z plane selection buttons.
   * \param        parent parent widget
   * \param        buttonList additional buttons
-  *
   * \return       void
   * \par      Source:
   *                Viewer2D.cpp
@@ -109,7 +106,6 @@ protected:
   * \ingroup      UI
   * \brief        Redefines the right trim with and adds mixing scrollbar if requested
   * \param        parent parent widget
-  *
   * \return       void
   * \par      Source:
   *                Viewer2D.cpp
@@ -117,7 +113,8 @@ protected:
   virtual QWidget * buildRightTrim ( QWidget * parent);
 
 protected:
-  QLayout *m_slider;           /*!< object to witch mixing slider signals are connected */
+  QLayout *m_slider;                 /*!< object to witch mixing slider signals are connected */
+  QList <QWidget*> *m_buttons;       /*!< other buttons*/
 };
 
 #endif
