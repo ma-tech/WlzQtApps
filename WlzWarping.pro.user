@@ -24,6 +24,7 @@
   <variable>RunConfiguration0-UserEnvironmentChanges</variable>
   <valuelist type="QVariantList">
    <value type="QString">COIN_SORTED_LAYERS_USE_NVIDIA_RC =1</value>
+   <value type="QString">VERBOSITY=5</value>
   </valuelist>
  </data>
  <data>
@@ -166,17 +167,17 @@
     <value type="QString">BLAST_HOME=/opt/blast</value>
     <value type="QString">CLASSPATH=.:/opt/java/jre/lib/rt.jar:/opt/java/lib/tools.jar:/opt/vtk/java</value>
     <value type="QString">CVSROOT=:pserver:zsolth@macvs.hgu.mrc.ac.uk:2401/rep/MouseAtlas</value>
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-Z4uSlOJFed,guid=d833bd506c0ac22c0cea00004b5dc1df</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-XUrDNpspaB,guid=efdb7a2721f4ea1fbbe608004b9f4295</value>
     <value type="QString">DESKTOP_LAUNCH=kde-open</value>
     <value type="QString">DESKTOP_SESSION=default</value>
-    <value type="QString">DISPLAY=:0.0</value>
+    <value type="QString">DISPLAY=:0</value>
     <value type="QString">DM_CONTROL=/var/run/xdmctl</value>
     <value type="QString">EDITOR=vi</value>
     <value type="QString">FONTPATH=</value>
     <value type="QString">FROM_HEADER=</value>
     <value type="QString">GNOME_HOME=</value>
     <value type="QString">GNU_HOME=/opt/gnu</value>
-    <value type="QString">GPG_AGENT_INFO=/tmp/gpg-oUmAzV/S.gpg-agent:4434:1</value>
+    <value type="QString">GPG_AGENT_INFO=/tmp/gpg-iq41PI/S.gpg-agent:4643:1</value>
     <value type="QString">GROUP=ma</value>
     <value type="QString">GS_LIB=/net/homehost/export/home/zsolth/.fonts</value>
     <value type="QString">GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/usr/share/themes//QtCurve/gtk-2.0/gtkrc:/net/homehost/export/home/zsolth/.gtkrc-2.0-qtengine:/net/homehost/export/home/zsolth/.gtkrc-2.0:/net/homehost/export/home/zsolth/.kde/share/config/gtkrc-2.0</value>
@@ -197,14 +198,14 @@
     <value type="QString">KDE_NO_IPV6=1</value>
     <value type="QString">KDE_SESSION_UID=10613</value>
     <value type="QString">LANG=en_GB.UTF-8</value>
-    <value type="QString">LD_LIBRARY_PATH=/opt/qthome/lib/qtcreator:.:/net/homehost/export/home/zsolth/lib:/opt/qt/lib:/usr/local/lib:/opt/local/lib:/home/zsolth/home/ma-week/MouseAtlas/lib::/opt/java/lib:/opt/kde3/lib:/opt/gnu/lib:/opt/vtk/lib:/opt/intel/Compiler/11.0/083/lib/intel64</value>
+    <value type="QString">LD_LIBRARY_PATH=.:/net/homehost/export/home/zsolth/lib:/opt/qt/lib:/usr/local/lib:/opt/local/lib:/home/zsolth/home/ma-week/MouseAtlas/lib::/opt/java/lib:/opt/kde3/lib:/opt/gnu/lib:/opt/vtk/lib:/opt/intel/Compiler/11.0/083/lib/intel64</value>
     <value type="QString">LM_LICENSE_FILE=/opt/SUNWspro/license_dir/sunpro.lic,1</value>
     <value type="QString">LOCAL_HOME=/opt/local</value>
     <value type="QString">LOGNAME=zsolth</value>
     <value type="QString">MACHTYPE=x86_64</value>
     <value type="QString">MANPATH=/net/homehost/export/home/zsolth/man:/opt/blast/man:/opt/bioinf/man:/opt/intel/Compiler/11.0/083/man:/opt/mpi/man:/opt/local/man:/opt/kde3/man:/opt/java/man:/usr/man:/usr/share/man:/usr/X11R6/man:/opt/gnu/man/man:/opt/kde3/man:/opt/java/man:/usr/man:/usr/share/man:/usr/X11R6/man:/opt/gnu/man:/opt/vtk/man</value>
     <value type="QString">MA_HOME=/home/zsolth/home/ma-week/Projects/MouseAtlasDebug</value>
-    <value type="QString">MEVISLAB_HOME=</value>
+    <value type="QString">MEVISLAB_HOME=/opt/MeVisLab</value>
     <value type="QString">MPIHOME=/opt/mpi</value>
     <value type="QString">MPI_HOME=/opt/mpi</value>
     <value type="QString">NNTPSERVER=news</value>
@@ -214,13 +215,13 @@
     <value type="QString">PWD=/net/homehost/export/home/zsolth</value>
     <value type="QString">QTDIR=/opt/qtsdk-2010.01/qt</value>
     <value type="QString">QT_HOME=/opt/qt</value>
-    <value type="QString">SESSION_MANAGER=local/kilchoman:/tmp/.ICE-unix/4492</value>
+    <value type="QString">SESSION_MANAGER=local/kilchoman:/tmp/.ICE-unix/4701</value>
     <value type="QString">SHELL=/bin/tcsh</value>
     <value type="QString">SHLVL=2</value>
     <value type="QString">SO_DRAGGER_DIR=/net/mahost/export/techcompwg1/zsolth/Warp/draggers</value>
-    <value type="QString">SSH_AGENT_PID=4435</value>
+    <value type="QString">SSH_AGENT_PID=4644</value>
     <value type="QString">SSH_ASKPASS=/usr/lib64/ssh/x11-ssh-askpass</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-NpDyE4381/agent.4381</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-GISXU4590/agent.4590</value>
     <value type="QString">TCLLIBPATH=/opt/vtk/lib/tcl</value>
     <value type="QString">TERM=xterm</value>
     <value type="QString">TMPDIR=/tmp</value>
@@ -237,10 +238,11 @@
     <value type="QString">WWW_HOME=http://www.hgu.mrc.ac.uk/Users/Bill.Hill/</value>
     <value type="QString">XAUTHLOCALHOSTNAME=kilchoman</value>
     <value type="QString">XCURSOR_THEME=DMZ</value>
-    <value type="QString">XDG_SESSION_COOKIE=3a6e93b7cfe2e92047b406004a265b00-1264435677.165762-1093183418</value>
+    <value type="QString">XDG_SESSION_COOKIE=3a6e93b7cfe2e92047b406004a265b00-1268728466.667250-25520132</value>
     <value type="QString">XDM_MANAGED=/var/run/xdmctl/xdmctl-:0,maysd,mayfn,sched,rsvd,method=classic</value>
     <value type="QString">XMODIFIERS=@im=local</value>
     <value type="QString">XSESSION_IS_UP=yes</value>
+    <value type="QString">_=/opt/kde3/bin/start_kdeinit_wrapper</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList">
     <value type="QString">/net/mahost/export/techcompwg0/zsolth/Projects/Warping/WlzWarp/WlzWarping.pro</value>
@@ -265,17 +267,17 @@
     <value type="QString">BLAST_HOME=/opt/blast</value>
     <value type="QString">CLASSPATH=.:/opt/java/jre/lib/rt.jar:/opt/java/lib/tools.jar:/opt/vtk/java</value>
     <value type="QString">CVSROOT=:pserver:zsolth@macvs.hgu.mrc.ac.uk:2401/rep/MouseAtlas</value>
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-Z4uSlOJFed,guid=d833bd506c0ac22c0cea00004b5dc1df</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-XUrDNpspaB,guid=efdb7a2721f4ea1fbbe608004b9f4295</value>
     <value type="QString">DESKTOP_LAUNCH=kde-open</value>
     <value type="QString">DESKTOP_SESSION=default</value>
-    <value type="QString">DISPLAY=:0.0</value>
+    <value type="QString">DISPLAY=:0</value>
     <value type="QString">DM_CONTROL=/var/run/xdmctl</value>
     <value type="QString">EDITOR=vi</value>
     <value type="QString">FONTPATH=</value>
     <value type="QString">FROM_HEADER=</value>
     <value type="QString">GNOME_HOME=</value>
     <value type="QString">GNU_HOME=/opt/gnu</value>
-    <value type="QString">GPG_AGENT_INFO=/tmp/gpg-oUmAzV/S.gpg-agent:4434:1</value>
+    <value type="QString">GPG_AGENT_INFO=/tmp/gpg-iq41PI/S.gpg-agent:4643:1</value>
     <value type="QString">GROUP=ma</value>
     <value type="QString">GS_LIB=/net/homehost/export/home/zsolth/.fonts</value>
     <value type="QString">GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/usr/share/themes//QtCurve/gtk-2.0/gtkrc:/net/homehost/export/home/zsolth/.gtkrc-2.0-qtengine:/net/homehost/export/home/zsolth/.gtkrc-2.0:/net/homehost/export/home/zsolth/.kde/share/config/gtkrc-2.0</value>
@@ -296,14 +298,14 @@
     <value type="QString">KDE_NO_IPV6=1</value>
     <value type="QString">KDE_SESSION_UID=10613</value>
     <value type="QString">LANG=en_GB.UTF-8</value>
-    <value type="QString">LD_LIBRARY_PATH=/opt/qthome/lib/qtcreator:.:/net/homehost/export/home/zsolth/lib:/opt/qt/lib:/usr/local/lib:/opt/local/lib:/home/zsolth/home/ma-week/MouseAtlas/lib::/opt/java/lib:/opt/kde3/lib:/opt/gnu/lib:/opt/vtk/lib:/opt/intel/Compiler/11.0/083/lib/intel64</value>
+    <value type="QString">LD_LIBRARY_PATH=.:/net/homehost/export/home/zsolth/lib:/opt/qt/lib:/usr/local/lib:/opt/local/lib:/home/zsolth/home/ma-week/MouseAtlas/lib::/opt/java/lib:/opt/kde3/lib:/opt/gnu/lib:/opt/vtk/lib:/opt/intel/Compiler/11.0/083/lib/intel64</value>
     <value type="QString">LM_LICENSE_FILE=/opt/SUNWspro/license_dir/sunpro.lic,1</value>
     <value type="QString">LOCAL_HOME=/opt/local</value>
     <value type="QString">LOGNAME=zsolth</value>
     <value type="QString">MACHTYPE=x86_64</value>
     <value type="QString">MANPATH=/net/homehost/export/home/zsolth/man:/opt/blast/man:/opt/bioinf/man:/opt/intel/Compiler/11.0/083/man:/opt/mpi/man:/opt/local/man:/opt/kde3/man:/opt/java/man:/usr/man:/usr/share/man:/usr/X11R6/man:/opt/gnu/man/man:/opt/kde3/man:/opt/java/man:/usr/man:/usr/share/man:/usr/X11R6/man:/opt/gnu/man:/opt/vtk/man</value>
     <value type="QString">MA_HOME=/home/zsolth/home/ma-week/Projects/MouseAtlasDebug</value>
-    <value type="QString">MEVISLAB_HOME=</value>
+    <value type="QString">MEVISLAB_HOME=/opt/MeVisLab</value>
     <value type="QString">MPIHOME=/opt/mpi</value>
     <value type="QString">MPI_HOME=/opt/mpi</value>
     <value type="QString">NNTPSERVER=news</value>
@@ -313,13 +315,13 @@
     <value type="QString">PWD=/net/homehost/export/home/zsolth</value>
     <value type="QString">QTDIR=/opt/qtsdk-2010.01/qt</value>
     <value type="QString">QT_HOME=/opt/qt</value>
-    <value type="QString">SESSION_MANAGER=local/kilchoman:/tmp/.ICE-unix/4492</value>
+    <value type="QString">SESSION_MANAGER=local/kilchoman:/tmp/.ICE-unix/4701</value>
     <value type="QString">SHELL=/bin/tcsh</value>
     <value type="QString">SHLVL=2</value>
     <value type="QString">SO_DRAGGER_DIR=/net/mahost/export/techcompwg1/zsolth/Warp/draggers</value>
-    <value type="QString">SSH_AGENT_PID=4435</value>
+    <value type="QString">SSH_AGENT_PID=4644</value>
     <value type="QString">SSH_ASKPASS=/usr/lib64/ssh/x11-ssh-askpass</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-NpDyE4381/agent.4381</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-GISXU4590/agent.4590</value>
     <value type="QString">TCLLIBPATH=/opt/vtk/lib/tcl</value>
     <value type="QString">TERM=xterm</value>
     <value type="QString">TMPDIR=/tmp</value>
@@ -336,10 +338,11 @@
     <value type="QString">WWW_HOME=http://www.hgu.mrc.ac.uk/Users/Bill.Hill/</value>
     <value type="QString">XAUTHLOCALHOSTNAME=kilchoman</value>
     <value type="QString">XCURSOR_THEME=DMZ</value>
-    <value type="QString">XDG_SESSION_COOKIE=3a6e93b7cfe2e92047b406004a265b00-1264435677.165762-1093183418</value>
+    <value type="QString">XDG_SESSION_COOKIE=3a6e93b7cfe2e92047b406004a265b00-1268728466.667250-25520132</value>
     <value type="QString">XDM_MANAGED=/var/run/xdmctl/xdmctl-:0,maysd,mayfn,sched,rsvd,method=classic</value>
     <value type="QString">XMODIFIERS=@im=local</value>
     <value type="QString">XSESSION_IS_UP=yes</value>
+    <value type="QString">_=/opt/kde3/bin/start_kdeinit_wrapper</value>
    </valuelist>
    <value key="abstractProcess.IgnoreReturnValue" type="bool">false</value>
    <valuelist key="abstractProcess.arguments" type="QVariantList">
@@ -360,17 +363,17 @@
     <value type="QString">BLAST_HOME=/opt/blast</value>
     <value type="QString">CLASSPATH=.:/opt/java/jre/lib/rt.jar:/opt/java/lib/tools.jar:/opt/vtk/java</value>
     <value type="QString">CVSROOT=:pserver:zsolth@macvs.hgu.mrc.ac.uk:2401/rep/MouseAtlas</value>
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-dVfFVADj5t,guid=d241311ea0d812beffb46e004b55711d</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-XUrDNpspaB,guid=efdb7a2721f4ea1fbbe608004b9f4295</value>
     <value type="QString">DESKTOP_LAUNCH=kde-open</value>
     <value type="QString">DESKTOP_SESSION=default</value>
-    <value type="QString">DISPLAY=:0.0</value>
+    <value type="QString">DISPLAY=:0</value>
     <value type="QString">DM_CONTROL=/var/run/xdmctl</value>
     <value type="QString">EDITOR=vi</value>
     <value type="QString">FONTPATH=</value>
     <value type="QString">FROM_HEADER=</value>
     <value type="QString">GNOME_HOME=</value>
     <value type="QString">GNU_HOME=/opt/gnu</value>
-    <value type="QString">GPG_AGENT_INFO=/tmp/gpg-uEFnDR/S.gpg-agent:4486:1</value>
+    <value type="QString">GPG_AGENT_INFO=/tmp/gpg-iq41PI/S.gpg-agent:4643:1</value>
     <value type="QString">GROUP=ma</value>
     <value type="QString">GS_LIB=/net/homehost/export/home/zsolth/.fonts</value>
     <value type="QString">GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/usr/share/themes//QtCurve/gtk-2.0/gtkrc:/net/homehost/export/home/zsolth/.gtkrc-2.0-qtengine:/net/homehost/export/home/zsolth/.gtkrc-2.0:/net/homehost/export/home/zsolth/.kde/share/config/gtkrc-2.0</value>
@@ -391,30 +394,30 @@
     <value type="QString">KDE_NO_IPV6=1</value>
     <value type="QString">KDE_SESSION_UID=10613</value>
     <value type="QString">LANG=en_GB.UTF-8</value>
-    <value type="QString">LD_LIBRARY_PATH=/opt/qtsdk-2009.05/lib/qtcreator:.:/net/homehost/export/home/zsolth/lib:/opt/qt/lib:/usr/local/lib:/opt/local/lib:/home/zsolth/home/ma-week/MouseAtlas/lib::/opt/java/lib:/opt/kde3/lib:/opt/gnu/lib:/opt/vtk/lib:/opt/intel/Compiler/11.0/083/lib/intel64</value>
+    <value type="QString">LD_LIBRARY_PATH=.:/net/homehost/export/home/zsolth/lib:/opt/qt/lib:/usr/local/lib:/opt/local/lib:/home/zsolth/home/ma-week/MouseAtlas/lib::/opt/java/lib:/opt/kde3/lib:/opt/gnu/lib:/opt/vtk/lib:/opt/intel/Compiler/11.0/083/lib/intel64</value>
     <value type="QString">LM_LICENSE_FILE=/opt/SUNWspro/license_dir/sunpro.lic,1</value>
     <value type="QString">LOCAL_HOME=/opt/local</value>
     <value type="QString">LOGNAME=zsolth</value>
     <value type="QString">MACHTYPE=x86_64</value>
     <value type="QString">MANPATH=/net/homehost/export/home/zsolth/man:/opt/blast/man:/opt/bioinf/man:/opt/intel/Compiler/11.0/083/man:/opt/mpi/man:/opt/local/man:/opt/kde3/man:/opt/java/man:/usr/man:/usr/share/man:/usr/X11R6/man:/opt/gnu/man/man:/opt/kde3/man:/opt/java/man:/usr/man:/usr/share/man:/usr/X11R6/man:/opt/gnu/man:/opt/vtk/man</value>
     <value type="QString">MA_HOME=/home/zsolth/home/ma-week/Projects/MouseAtlasDebug</value>
-    <value type="QString">MEVISLAB_HOME=</value>
+    <value type="QString">MEVISLAB_HOME=/opt/MeVisLab</value>
     <value type="QString">MPIHOME=/opt/mpi</value>
     <value type="QString">MPI_HOME=/opt/mpi</value>
     <value type="QString">NNTPSERVER=news</value>
     <value type="QString">OSTYPE=linux</value>
     <value type="QString">PAGER=less</value>
-    <value type="QString">PATH=/opt/qtsdk-2009.05/qt/bin:/opt/kde3/bin:.:/opt/qt/bin:/home/zsolth/home/bin:/home/zsolth/home/ma-week/Projects/MouseAtlas/bin:/opt/java/bin:/usr/bin:/sbin:/usr/sbin:/bin:/usr/X11R6/bin:/usr/games:/opt/JavaCC/bin:/usr/local/bin:/opt/local/bin:/opt/gnu/bin:/opt/MeVisLab/bin:/opt/MuPAD/share/bin:/opt/vtk/bin:/opt/intel/Compiler/11.0/083/bin/intel64</value>
+    <value type="QString">PATH=/opt/qtsdk-2010.01/qt/bin:/opt/kde3/bin:.:/opt/qt/bin:/home/zsolth/home/bin:/home/zsolth/home/ma-week/Projects/MouseAtlas/bin:/opt/java/bin:/usr/bin:/sbin:/usr/sbin:/bin:/usr/X11R6/bin:/usr/games:/opt/JavaCC/bin:/usr/local/bin:/opt/local/bin:/opt/gnu/bin:/opt/MeVisLab/bin:/opt/MuPAD/share/bin:/opt/vtk/bin:/opt/intel/Compiler/11.0/083/bin/intel64</value>
     <value type="QString">PWD=/net/homehost/export/home/zsolth</value>
-    <value type="QString">QTDIR=/opt/qtsdk-2009.05/qt</value>
+    <value type="QString">QTDIR=/opt/qtsdk-2010.01/qt</value>
     <value type="QString">QT_HOME=/opt/qt</value>
-    <value type="QString">SESSION_MANAGER=local/kilchoman:/tmp/.ICE-unix/4545</value>
+    <value type="QString">SESSION_MANAGER=local/kilchoman:/tmp/.ICE-unix/4701</value>
     <value type="QString">SHELL=/bin/tcsh</value>
     <value type="QString">SHLVL=2</value>
     <value type="QString">SO_DRAGGER_DIR=/net/mahost/export/techcompwg1/zsolth/Warp/draggers</value>
-    <value type="QString">SSH_AGENT_PID=4487</value>
+    <value type="QString">SSH_AGENT_PID=4644</value>
     <value type="QString">SSH_ASKPASS=/usr/lib64/ssh/x11-ssh-askpass</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-mYcAu4432/agent.4432</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-GISXU4590/agent.4590</value>
     <value type="QString">TCLLIBPATH=/opt/vtk/lib/tcl</value>
     <value type="QString">TERM=xterm</value>
     <value type="QString">TMPDIR=/tmp</value>
@@ -431,10 +434,11 @@
     <value type="QString">WWW_HOME=http://www.hgu.mrc.ac.uk/Users/Bill.Hill/</value>
     <value type="QString">XAUTHLOCALHOSTNAME=kilchoman</value>
     <value type="QString">XCURSOR_THEME=DMZ</value>
-    <value type="QString">XDG_SESSION_COOKIE=3a6e93b7cfe2e92047b406004a265b00-1263890714.981040-507796970</value>
+    <value type="QString">XDG_SESSION_COOKIE=3a6e93b7cfe2e92047b406004a265b00-1268728466.667250-25520132</value>
     <value type="QString">XDM_MANAGED=/var/run/xdmctl/xdmctl-:0,maysd,mayfn,sched,rsvd,method=classic</value>
     <value type="QString">XMODIFIERS=@im=local</value>
     <value type="QString">XSESSION_IS_UP=yes</value>
+    <value type="QString">_=/opt/kde3/bin/start_kdeinit_wrapper</value>
    </valuelist>
    <value key="abstractProcess.IgnoreReturnValue" type="bool">true</value>
    <valuelist key="abstractProcess.arguments" type="QVariantList">
