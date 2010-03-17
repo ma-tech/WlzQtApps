@@ -52,7 +52,6 @@ static char _Mesh3DView_cpp[] = "MRC HGU $Id$";
 #include <Inventor/nodes/SoIndexedFaceSet.h>
 #include <Inventor/nodes/SoShapeHints.h>
 #include <Inventor/nodes/SoDrawStyle.h>
-
 #include <Inventor/Qt/editors/SoQtMaterialEditor.h>
 #include <Inventor/Qt/editors/SoQtColorEditor.h>
 #include <Inventor/nodes/SoClipPlane.h>
@@ -65,18 +64,16 @@ static char _Mesh3DView_cpp[] = "MRC HGU $Id$";
 
 Mesh3DView::Mesh3DView ( QObject * parent, WoolzObject * object ): ObjectView(parent, object), m_clipOn(false), m_clipPlane(NULL) {
   Q_ASSERT(obj->isMesh() && obj->is3D());
-
   m_material = new SoMaterial;
   Q_ASSERT(m_material);
   m_material->ref();
-
   m_drawStyle = new SoDrawStyle;
   Q_ASSERT(m_drawStyle);
   m_drawStyle->ref();
-
   m_transparency = 0;
   m_visualStyle = FULL;
   connect(object, SIGNAL(objectVisualisationChange()), this, SLOT(objectColourChanged()));
+  connect(object, SIGNAL(removeMeshElement(int)), this, SLOT(removeElement(int)));
   connect(parent, SIGNAL(addedClipPlane(SoClipPlane *)), this, SLOT(addedClipPlane(SoClipPlane *)));
 }
 
@@ -88,8 +85,7 @@ Mesh3DView::~Mesh3DView ( ) {
 }
 
 bool Mesh3DView::compatible( ) {
- return obj->isMesh() && obj->is3D();
-
+  return obj->isMesh() && obj->is3D();
 }
 
 void Mesh3DView::generateSceneGraph ( bool /*bForce*/ ) {
@@ -106,10 +102,8 @@ void Mesh3DView::generateSceneGraph ( bool /*bForce*/ ) {
   else {
     cache = new SoGroup;
     WlzErrorNum errNum = WLZ_ERR_NONE;
-
     SoCoordinate3 * nodes;                   // nodes of the mesh
     SoIndexedFaceSet * faces;                // faces of the mesh
-
     nodes = Vertices3D(new SoCoordinate3, errNum);
     faces = Faces3D(new SoIndexedFaceSet, errNum);
 
@@ -135,6 +129,27 @@ void Mesh3DView::generateSceneGraph ( bool /*bForce*/ ) {
   return ;
 }
 
+void Mesh3DView::removeElement(int elemID) {
+    int           idE,
+                  nElm = 0;
+    SoGroup * cache = obj->cachedVisualisation();
+    if (!cache) {
+       Q_ASSERT(false);
+       return;
+    };
+
+    SoIndexedFaceSet * faces = (SoIndexedFaceSet * )cache->getChild(2);
+    /////////// chech if face
+    nElm=m_elemArray.getNum();
+    for(idE = 0; idE < nElm; ++idE) {
+        if (m_elemArray[idE] == elemID) {
+            faces->coordIndex.set1Value(idE*4+0, 0);
+            faces->coordIndex.set1Value(idE*4+1, 0);
+            faces->coordIndex.set1Value(idE*4+2, 0);
+            faces->coordIndex.set1Value(idE*4+3, -1);
+        }
+    }
+}
 
 SoCoordinate3 * Mesh3DView::Vertices3D(SoCoordinate3 * vertices, WlzErrorNum& errNum )
 {
@@ -170,20 +185,19 @@ SoCoordinate3 * Mesh3DView::Vertices3D(SoCoordinate3 * vertices, WlzErrorNum& er
 
 SoIndexedFaceSet * Mesh3DView::Faces3D(SoIndexedFaceSet * faces, WlzErrorNum& errNum ) {
   int           iFcount = 0; //face index count
+  int           iCount = 0;  //face number count index count
   int           idE,
                 idF,
                 nElm = 0;
   WlzCMeshElm3D  *elm;
   WlzCMeshFace	*fce;
   WlzCMesh3D *mesh = obj->getObj()->domain.cm3;
-
   // check if it is 3D mesh and if it has faces
   if(!(mesh && (mesh->type == WLZ_CMESH_TET3D) &&
     ((nElm = mesh->res.elm.maxEnt)>0)))
   {
       errNum = WLZ_ERR_DOMAIN_TYPE;
   }
-
   if (errNum == WLZ_ERR_NONE)
   {
     for(idE = 0; idE < nElm; ++idE)
@@ -202,6 +216,7 @@ SoIndexedFaceSet * Mesh3DView::Faces3D(SoIndexedFaceSet * faces, WlzErrorNum& er
           faces->coordIndex.set1Value(iFcount++, fce->edu[1].nod->idx);
           faces->coordIndex.set1Value(iFcount++, fce->edu[2].nod->idx);
           faces->coordIndex.set1Value(iFcount++, -1);
+          m_elemArray.set1Value(iCount++, idE);
           }
         }
       }

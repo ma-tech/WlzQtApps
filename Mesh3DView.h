@@ -44,6 +44,7 @@ static char _Mesh3DView_h[] = "MRC HGU $Id$";
 #define MESH3DVIEW_H
 #include "ObjectView.h"
 #include <Wlz.h>
+#include <Inventor/fields/SoMFInt32.h>
 
 class SoCoordinate3;
 class SoIndexedFaceSet;
@@ -224,6 +225,16 @@ private:
 public slots:
  /*!
   * \ingroup      Visualisation
+  * \brief        Processes face removal
+  *
+  * \return       void.
+  * \par      Source:
+  *                Mesh3DView.cpp
+  */
+  void removeElement(int i);
+
+ /*!
+  * \ingroup      Visualisation
   * \brief        Processes object colour change.
   *
   * \return       void.
@@ -232,7 +243,7 @@ public slots:
   */
   void objectColourChanged ();
 
-  /*!
+ /*!
   * \ingroup      Visualisation
   * \brief        Sets up or deletes clip plane
   * \param        plane new plane to use
@@ -244,11 +255,12 @@ public slots:
 
 protected:
   // protected attributes
-  SoMaterial *m_material;                    /*!< material of the contour */
-  SoDrawStyle *m_drawStyle;                  /*!< draw style of the contour */
+  SoMaterial*  m_material;                   /*!< material of the contour */
+  SoDrawStyle* m_drawStyle;                  /*!< draw style of the contour */
   enum {FULL = 0, LINES} m_visualStyle;      /*!< visualisation style of the mesh */
-  bool        m_clipOn;                      /*!< if the clip plane is on */
-  SoClipPlane *m_clipPlane;                  /*!< reference clip plane from viewer*/
+  bool         m_clipOn;                     /*!< if the clip plane is on */
+  SoClipPlane* m_clipPlane;                  /*!< reference clip plane from viewer */
+  SoMFInt32    m_elemArray;                  /*!< vertex to face mapping */
 };
 
 #endif // MESH3DVIEW_H
