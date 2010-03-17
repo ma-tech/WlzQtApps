@@ -48,6 +48,7 @@ static char _WarperController_h[] = "MRC HGU $Id$";
 #include <QColor>
 #include "WoolzObject.h"
 
+//Project objects
 class MainWindow;
 class WarperSourceViewer;
 class WarperTargetViewer;
@@ -64,12 +65,15 @@ class WoolzDynWarpedObject ;
 class SegmentationWidget;
 class ObjectPropertyWidget;
 class TransformWidget;
+class SectioningPlaneWidget;
 class WarpingWidget;
 class ContourISOSurfaceWidget;
 class TransferFunctionWidget;
 class LandmarkController;
 class ProjectProperties;
 class WoolzTransform;
+
+//Qt objects
 class QUndoStack;
 class QAction;
 class QDomElement;
@@ -380,7 +384,19 @@ public slots:
   */
   void restoreSubWindow();
 
- /*!
+  /*!
+  * \ingroup      Control
+  * \brief        Processes remove mesh mode selection
+  *
+  *               Add, delete and mesh remove elements are exclusive.
+  * \param        checked the checked state
+  * \return       void
+  * \par      Source:
+  *                WarperController.cpp
+  */
+  void removeElementToggled(bool checked);
+
+  /*!
   * \ingroup      Control
   * \brief        Processes add mode selection
   *
@@ -494,7 +510,6 @@ public slots:
    void updatePossibleChanged(bool possible);
 
 protected:
-
  /*!
   * \ingroup      Control
   * \brief        Sets up toolbars
@@ -549,7 +564,6 @@ private:
   */
   WoolzObject* loadValue(QString filename , WoolzObject::WoolzObjectType type);
 
-
  /*!
   * \ingroup      Control
   * \brief        Retruns the segmentation widget. It creates if did not exists.
@@ -567,7 +581,6 @@ private:
   *                WarperController.cpp
   */
   bool is2D3Dcompatibile(WoolzObject *object);
-
 
  /*!
   * \ingroup      Control
@@ -617,6 +630,7 @@ private:
   WarpingWidget* warpingWidget;                    /*!< object warping widget */
   ContourISOSurfaceWidget* contourWidget;          /*!< contour / ISO surface widget */
   TransferFunctionWidget* transferFunctionWidget;  /*!< transfer function editor widget */
+  SectioningPlaneWidget* sectioningPlaneWidget;    /*!< sectioning plane editor widget*/
   ObjectToolWidget * objectToolWidget;             /*!< tree list of objects */
   ViewToolWidget * viewToolWidget;                 /*!< view tool widget */
   LandmarkWidget * landmarkWidget;                 /*!< landmark widget */
@@ -629,6 +643,6 @@ private:
   QAction *actionUndo;                             /*!< action for Undo */
   QAction *actionRedo;                             /*!< action for Redo */
   ProjectProperties *m_projectProperties;          /*!< pointer to project properties */
-  WoolzTransform *m_woolzTransform;               /*!< tranformation object */
+  WoolzTransform *m_woolzTransform;                /*!< tranformation object */
 };
 #endif // WARPERCONTROLLER_H

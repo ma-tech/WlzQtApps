@@ -85,6 +85,7 @@ static char _WarperController_cpp[] = "MRC HGU $Id$";
 #include "TransferFunctionWidget.h"
 #include "ProjectPropertiesDialog.h"
 #include "ProjectProperties.h"
+#include "SectioningPlaneWidget.h"
 
 #include "ObjectToolWidget.h"
 #include "ViewToolWidget.h"
@@ -115,6 +116,7 @@ WarperController::WarperController ( MainWindow * mainwindow, ProjectProperties 
   objectPropertyWidget = NULL;
   contourWidget    = NULL;
   transferFunctionWidget = NULL;
+  sectioningPlaneWidget = NULL;
   objectToolWidget = NULL;
   viewToolWidget = NULL;
   landmarkWidget = NULL;
@@ -279,6 +281,19 @@ WarperController::WarperController ( MainWindow * mainwindow, ProjectProperties 
      widgetPos += sizeWidget.rwidth();
   }
 
+  if (!sectioningPlaneWidget) {
+     sectioningPlaneWidget = new SectioningPlaneWidget( mainWindow, m_objectViewerController);
+     Q_ASSERT(sectioningPlaneWidget);
+     sectioningPlaneWidget->setFloating(true);
+     sectioningPlaneWidget->hide();
+
+     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, sectioningPlaneWidget);
+     QSize sizeWidget = sectioningPlaneWidget->size();
+     sectioningPlaneWidget->move(widgetPos,
+          sizeMain.rheight()-sizeWidget.rheight());
+     widgetPos += sizeWidget.rwidth();
+  }
+
   if (!warpingWidget) {
      warpingWidget = new WarpingWidget( mainWindow, landmarkController);
      Q_ASSERT(warpingWidget);
@@ -296,6 +311,7 @@ WarperController::WarperController ( MainWindow * mainwindow, ProjectProperties 
   mainWindow->actionDeleteLandmark->setChecked(false);
   mainWindow->actionMoveLandmark->setChecked(false);
   mainWindow->actionShowLandmarks->setChecked(true);
+  mainWindow->actionRemoveMeshElement->setChecked(false);
 
   //set up connection between models
   connect(objectListModel, SIGNAL(addObjectSignal(WoolzObject*)), m_objectViewerController, SIGNAL(addObjectSignal(WoolzObject*)));
@@ -412,6 +428,15 @@ void WarperController::setupToolbars() {
      mainWindow->toolBarOperations->addAction(toggleAction );
      mainWindow->menuActions->addAction(toggleAction );
   }
+  if (sectioningPlaneWidget && projectInitialised && project3D) {
+     QAction *toggleAction = sectioningPlaneWidget->toggleViewAction();
+     QIcon icon;
+     icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/images/cuttingplaneon.png")), QIcon::Normal, QIcon::Off);
+     toggleAction->setIcon(icon);
+     mainWindow->toolBarOperations->addAction(toggleAction );
+     mainWindow->menuActions->addAction(toggleAction );
+  }
+
   mainWindow->toolBarModes->setVisible(true);
   mainWindow->toolBarWarpingMode->setVisible(true);
   mainWindow->toolBarOperations->setVisible(true);
@@ -449,6 +474,9 @@ WarperController::~WarperController ( ) {
 
   if (transferFunctionWidget)
       delete transferFunctionWidget;
+
+  if (sectioningPlaneWidget)
+      delete sectioningPlaneWidget;
 
   mainWindow->getWorkspace()->closeAllSubWindows();
   if (objectListModel) { //first delete object and their views
@@ -645,9 +673,11 @@ void  WarperController::connectSignals () {
     connect( mainWindow->actionDefaultLayout, SIGNAL( triggered() ), m_objectViewerController, SLOT( defaultLayout() ) );
     connect( mainWindow->actionDefaultViewLinks, SIGNAL( triggered() ), m_objectViewerController, SLOT( defaultViewLinks() ) );
     connect( mainWindow->getWorkspace(), SIGNAL( subWindowActivated(QMdiSubWindow*) ), m_objectViewerController, SLOT( updateActions() ) );
+    connect( mainWindow->getWorkspace(), SIGNAL( subWindowActivated(QMdiSubWindow*) ), sectioningPlaneWidget, SLOT( viewerSelected() ) );
     connect( mainWindow->actionAddLandmark, SIGNAL( toggled (bool) ), this, SLOT( addToggled(bool) ) );
     connect( mainWindow->actionDeleteLandmark, SIGNAL( toggled (bool) ), this, SLOT( deleteToggled(bool) ) );
     connect( mainWindow->actionMoveLandmark, SIGNAL( toggled (bool) ), this, SLOT( moveToggled(bool) ) );
+    connect( mainWindow->actionRemoveMeshElement, SIGNAL( toggled (bool) ), this, SLOT( removeElementToggled(bool) ) );
     connect( mainWindow->actionDeleteLandmark, SIGNAL( toggled (bool) ), landmarkController, SLOT( deleteHighlightedLandmark() ) );
     connect( mainWindow->actionRemoveAllLandmarks, SIGNAL(triggered()), landmarkController, SLOT(removeAllLandmarks()));
     connect( objectListModel, SIGNAL(replaceWarpMesh(WoolzObject *)), this, SLOT(updateShowMesh(WoolzObject*)));
@@ -823,11 +853,21 @@ bool WarperController::is2D3Dcompatibile(WoolzObject *object) {
 }
 
 void WarperController::addToggled(bool checked) {
-  if (checked)
-    mainWindow->actionDeleteLandmark->setChecked(false);
-  else
+    if (checked) {
+      mainWindow->actionRemoveMeshElement->setChecked(false);
+      mainWindow->actionDeleteLandmark->setChecked(false);
+    } else
     landmarkController->cancelIncompleteLandmarks();
 }
+
+void WarperController::removeElementToggled(bool checked) {
+  if (checked) {
+    mainWindow->actionAddLandmark->setChecked(false);
+    mainWindow->actionDeleteLandmark->setChecked(false);
+  } else
+    landmarkController->cancelIncompleteLandmarks();
+}
+
 
 void WarperController::landmarkVisibilityToggled(bool checked) {
   landmarkController->getLandmarkView(LandmarkModel::sourceV)->setVisibility(checked);
@@ -838,12 +878,15 @@ void WarperController::deleteToggled(bool checked) {
   if (checked) {
     mainWindow->actionAddLandmark->setChecked(false);
     mainWindow->actionMoveLandmark->setChecked(false);
+    mainWindow->actionRemoveMeshElement->setChecked(false);
   }
 }
 
 void WarperController::moveToggled(bool checked) {
-  if (checked)
+  if (checked) {
     mainWindow->actionDeleteLandmark->setChecked(false);
+    mainWindow->actionRemoveMeshElement->setChecked(false);
+  }
   landmarkController->setMove(checked);
 }
 
@@ -1047,13 +1090,14 @@ QString WarperController::getLastPath() {
 
 bool WarperController::saveXmlToolbars(QXmlStreamWriter *xmlWriter) {
   xmlWriter->writeStartElement("Toolbars");
-/*  Refresh state is not saved by the request of EO
-  xmlWriter->writeTextElement("Refresh", mainWindow->actionAutoWarp->isChecked() ? "Yes" : "No");*/
+  /*  Refresh state is not saved by the request of EO
+  xmlWriter->writeTextElement("Refresh", mainWindow->actionAutoWarp->isChecked() ? "Yes" : "No"); */
   xmlWriter->writeTextElement("Mesh", mainWindow->actionShowMesh->isChecked() ? "Yes" : "No");
   xmlWriter->writeTextElement("Add", mainWindow->actionAddLandmark->isChecked() ? "Yes" : "No");
   xmlWriter->writeTextElement("Delete", mainWindow->actionDeleteLandmark->isChecked() ? "Yes" : "No");
   xmlWriter->writeTextElement("Move", mainWindow->actionMoveLandmark->isChecked() ? "Yes" : "No");
   xmlWriter->writeTextElement("Landmarks", mainWindow->actionShowLandmarks->isChecked() ? "Yes" : "No");
+  xmlWriter->writeTextElement("RemoveElement", mainWindow->actionRemoveMeshElement->isChecked() ? "Yes" : "No");
   xmlWriter->writeEndElement();
   return true;
 }
@@ -1063,7 +1107,7 @@ bool WarperController::parseToolbarsDOM(const QDomElement &element) {
         return false;
   QDomNode child = element.firstChild();
   while (!child.isNull()) {
-/*  Refresh state is not saved by the request of EO
+       /* Refresh state is not saved by the request of EO
        if (child.toElement().tagName() == "Refresh") {
          QString str = child.toElement().text().toUpper();
          mainWindow->actionAutoWarp->setChecked(str=="YES");
@@ -1073,7 +1117,7 @@ bool WarperController::parseToolbarsDOM(const QDomElement &element) {
       } else if (child.toElement().tagName() == "Add") {
          QString str = child.toElement().text().toUpper();
          mainWindow->actionAddLandmark->setChecked(str=="YES");
-      } else if (child.toElement().tagName() == "Delete") {
+     } else if (child.toElement().tagName() == "Delete") {
          QString str = child.toElement().text().toUpper();
          mainWindow->actionDeleteLandmark->setChecked(str=="YES");
       } else if (child.toElement().tagName() == "Move") {
@@ -1083,12 +1127,14 @@ bool WarperController::parseToolbarsDOM(const QDomElement &element) {
       } else if (child.toElement().tagName() == "Landmarks") {
          QString str = child.toElement().text().toUpper();
          mainWindow->actionShowLandmarks->setChecked(str=="YES");
+     } else if (child.toElement().tagName() == "RemoveElement") {
+        QString str = child.toElement().text().toUpper();
+        mainWindow->actionRemoveMeshElement->setChecked(str=="YES");
       }
       child = child.nextSibling();
   }
   return true;
 }
-
 
 void WarperController::saveProject() {
   if (m_projectProperties->m_fileName=="") {
@@ -1104,6 +1150,9 @@ void WarperController::saveProject() {
     QMessageBox::warning(NULL, tr("Save project"), tr("Cannot create project file."));
     return;
   }
+
+  config.setProjectDirFromFile(m_projectProperties->m_fileName);
+
   QXmlStreamWriter xmlWriter(&file);
   xmlWriter.setAutoFormatting(true);
   xmlWriter.writeStartDocument();
@@ -1150,6 +1199,7 @@ void WarperController::saveProjectAs() {
 
   setLastPath(filename);
   saveProject();
+  mainWindow->setCurrentFile(filename);
 }
 
 
