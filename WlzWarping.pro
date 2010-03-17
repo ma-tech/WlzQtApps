@@ -53,7 +53,8 @@ HEADERS = WarperConfig.h \
     ObjectToolWidget.h \
     ViewToolWidget.h \
     LandmarkWidget.h \
-    WoolzTransform.h
+    WoolzTransform.h \
+    SectioningPlaneWidget.h
 SOURCES = WarperConfig.cpp \
     SnapSurfaceManip.cpp \
     SnapSurfaceDragger.cpp \
@@ -103,7 +104,8 @@ SOURCES = WarperConfig.cpp \
     ObjectToolWidget.cpp \
     ViewToolWidget.cpp \
     LandmarkWidget.cpp \
-    WoolzTransform.cpp
+    WoolzTransform.cpp \
+    SectioningPlaneWidget.cpp
 FORMS = MainWindow.ui \
     ViewToolDialog.ui \
     ObjectToolDialog.ui \
@@ -119,37 +121,47 @@ FORMS = MainWindow.ui \
     WarpingWidget.ui \
     ObjectToolWidget.ui \
     ViewToolWidget.ui \
-    LandmarkWidget.ui
+    LandmarkWidget.ui \
+    SectioningPlaneWidget.ui
 TEMPLATE = app
 VERSION = 0.9.7
 TYPE = 32
-
-openmp {
-  LIBS *= -openmp
-  message( Using openmp )
+openmp { 
+    contains( QMAKE_CC, icc):LIBS *= -openmp # for icc
+    else:LIBS *= -fopenmp # for gcc
+    message( Using openmp )
 }
-
 contains( QMAKE_CFLAGS, -m64):TYPE = 
-contains( QMAKE_LIBDIR_X11, /usr/X11R6/lib64):TYPE =
-
+contains( QMAKE_LIBDIR_X11, /usr/X11R6/lib64):TYPE = 
+isEmpty( TYPE):DEFINES += _64BITWARP
+else:DEFINES += _32BITWARP
 CONFIG(debug, debug|release):TARGET = Warping_d
 else:TARGET = Warping
 
 # Coin-Qt-Wlz glue libraries
 CONFIG(debug, debug|release):LIBS += -lWlzQtCoinGlue_d
-else { 
+else {
     LIBS += -lWlzQtCoinGlue
-    INCLUDEPATH *= /$(MA_HOME)/include/WlzQtCoinGlue
+    INCLUDEPATH *= $$(MA_HOME)/include/WlzQtCoinGlue
 }
-LIBS *= -L/$(MA_HOME)/lib
+
+# ###########
+# INCLUDEPATH *= $$(MA_HOME)/include/WlzQtCoinGlue
+LIBS *= -L$$(MA_HOME)/lib
 
 # Coin/Qt:
-SOQTINC = $$system(soqt-config --includedir)
-COININC = $$system(coin-config --includedir)
-SOQTLIB = $$system(soqt-config --libs)
-COINLIB = $$system(coin-config --libs)
-SOQTLDFLAGS = $$system(soqt-config --ldflags)
-COINLDFLAGS = $$system(coin-config --ldflags)
+SOQTINC = $$(SOQTINC)
+isEmpty( SOQTINC ):SOQTINC = $$system(soqt-config --includedir)
+COININC = $$(COININC)
+isEmpty( COININC ):COININC = $$system( coin-config --includedir )
+SOQTLIB = $$(SOQTLIB)
+isEmpty( SOQTLIB):SOQTLIB = $$system( soqt-config --libs )
+COINLIB = $$(COINLIB)
+isEmpty( COINLIB ):COINLIB = $$system(coin-config --libs)
+SOQTLDFLAGS = $$(SOQTLDFLAGS)
+isEmpty( SOQTLDFLAGS ):SOQTLDFLAGS = $$system(soqt-config --ldflags)
+COINLDFLAGS = $$(COINLDFLAGS)
+isEmpty( COINLDFLAGS ):COINLDFLAGS = $$system(coin-config --ldflags)
 INCLUDEPATH *= $$SOQTINC \
     $$COININC
 LIBS *= -lSimVoleon \
@@ -159,29 +171,40 @@ LIBS *= -lSimVoleon \
     $$SOQTLDFLAGS
 
 # static libraries for Woolz
-INCLUDEPATH *= /$(MA_HOME)/include
-LIBS *= -L/$(MA_HOME)/lib
+INCLUDEPATH *= $$(MA_HOME)/include
+LIBS *= -L$$(MA_HOME)/lib
 LIBS *= -lWlzExtFF \
     -lWlz \
     -lAlc \
     -lAlg \
     -ljpeg \
     -ltiff
-include(/$(MA_HOME)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
 draggers.files = draggers/*.iv
-draggers.path = /$(MA_HOME)/bin/draggers
+draggers.path = $$(MA_HOME)/bin/draggers
 
-# must precede win32 otherwise cross-compiling causes problems (both win32 and u
+# must precede win32 otherwise cross-compiling causes problems (both win32 and unix are defined)
 unix { 
     OUTDIR = linux$$TYPE
+    include($$(MA_HOME)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
     INSTALLS += draggers
 }
 macx { 
     ICON = icon_mac.png
+    include($$(MA_HOME)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
     QMAKE_INFO_PLIST = Info.plist
     OUTDIR = MacOSX
     QMAKE_POST_LINK = ./mac_deploy
 }
+win32 { 
+    include(../../External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
+    CONFIG += staticlib
+    OUTDIR = win
+    DEFINES += COIN_NOT_DLL \
+        SOQT_NOT_DLL \
+        SIMVOLEON_NOT_DLL
+    RC_FILE = windows.rc
+}
+contains( QMAKE_CC, icc):OUTDIR = $${OUTDIR}_icc
 CONFIG(debug, debug|release):OUTDIR = $${OUTDIR}_debug
 CONFIG(debug, debug|release) { 
     INCLUDEPATH *= ../WlzQtCoinGlue
@@ -198,6 +221,6 @@ RCC_DIR = $$OUTDIR/rcc
 
 # install
 RESOURCES += resource.qrc
-target.path = /$(MA_HOME)/bin
+target.path = $$(MA_HOME)/bin
 INSTALLS += target
 OTHER_FILES += openmp.prf
