@@ -21,6 +21,7 @@ VERSION = 0.9.7
 
 TYPE = 32
 contains( QMAKE_CFLAGS, -m64): TYPE =
+contains( QMAKE_LIBDIR_X11, /usr/X11R6/lib64):TYPE =
 
 CONFIG(debug, debug|release) { 
     TARGET = Viewer_d
@@ -34,12 +35,12 @@ else {
 CONFIG(debug, debug|release):LIBS += -lWlzQtCoinGlue_d
 else {
     LIBS += -lWlzQtCoinGlue
-    INCLUDEPATH *= /$(MA_HOME)/include/WlzQtCoinGlue
+    INCLUDEPATH *= $$(MA_HOME)/include/WlzQtCoinGlue
 }
 LIBS *= -L/$(MA_HOME)/lib
 
 # static libraries for Woolz
-INCLUDEPATH *= /$(MA_HOME)/include
+INCLUDEPATH *= $$(MA_HOME)/include
 LIBS *= -L/$(MA_HOME)/lib
 LIBS *= -lWlzExtFF \
         -lWlz \
@@ -48,25 +49,45 @@ LIBS *= -lWlzExtFF \
         -ljpeg \
         -ltiff
 
+
+
 # Coin/Qt:
-SOQTINC = $$system(soqt-config --includedir)
-COININC = $$system(coin-config --includedir)
+SOQTINC = $$(SOQTINC)
+isEmpty( SOQTINC ) {
+  SOQTINC = $$system(soqt-config --includedir)
+}
 
-SOQTLIB = $$system(soqt-config --libs)
-COINLIB = $$system(coin-config --libs)
+COININC = $$(COININC)
+isEmpty( COININC  ) {
+  COININC = $$system( coin-config --includedir )
+}
 
-SOQTLDFLAGS = $$system(soqt-config --ldflags)
-COINLDFLAGS = $$system(coin-config --ldflags)
+SOQTLIB = $$(SOQTLIB)
+isEmpty( SOQTLIB) {
+  SOQTLIB = $$system( soqt-config --libs )
+}
 
-INCLUDEPATH += $$SOQTINC $$COININC
+COINLIB = $$(COINLIB)
+isEmpty( COINLIB ) {
+  COINLIB = $$system(coin-config --libs)
+}
+
+SOQTLDFLAGS = $$(SOQTLDFLAGS)
+isEmpty( SOQTLDFLAGS ) {
+  SOQTLDFLAGS = $$system(soqt-config --ldflags)
+}
+
+COINLDFLAGS = $$(COINLDFLAGS)
+isEmpty( COINLDFLAGS ) {
+  COINLDFLAGS = $$system(coin-config --ldflags)
+}
+
 LIBS += -lSimVoleon $$COINLIB $$COINLDFLAGS $$SOQTLIB $$SOQTLDFLAGS
 
-include(/$(MA_HOME)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
-
-# must precede win32 otherwise cross-compiling causes problems (both win32 and u
-=
+# must precede win32 otherwise cross-compiling causes problems (both win32 and unix are defined)
 unix {
    OUTDIR  = linux$$TYPE
+   include($$(MA_HOME)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
 }
 
 macx {
@@ -74,6 +95,17 @@ macx {
     QMAKE_INFO_PLIST = Info.plist
     OUTDIR = MacOSX
     QMAKE_POST_LINK = ./mac_deploy
+    include($$(MA_HOME)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
+}
+win32 {
+    CONFIG += staticlib
+    OUTDIR = win
+    DEFINES += COIN_NOT_DLL SOQT_NOT_DLL SIMVOLEON_NOT_DLL
+    include(m:/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
+}
+
+contains( QMAKE_CC, icc) {
+    OUTDIR = $${OUTDIR}_icc
 }
 
 CONFIG(debug, debug|release) {
@@ -93,7 +125,7 @@ MOC_DIR = $$OUTDIR/moc
 UI_DIR = $$OUTDIR/ui
 RCC_DIR = $$OUTDIR/rcc
 
-target.path = /$(MA_HOME)/bin
+target.path = $$(MA_HOME)/bin
 INSTALLS += target
 
 RESOURCES += resource.qrc
