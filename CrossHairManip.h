@@ -43,7 +43,7 @@ static char _CrossHairManip_h[] = "MRC HGU $Id$";
 #ifndef  CROSSHAIRMANIP_H
 #define  CROSSHAIRMANIP_H
 
-#include <LandmarkManip.h>
+#include "LandmarkManip.h"
 
 /*!
  * \brief	 Manipulator class for manipulating 2D cross hair manipulator
