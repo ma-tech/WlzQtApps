@@ -105,6 +105,14 @@ private slots:
   */
   void apply();
 
+  /*!
+   * \ingroup      UI
+   * \brief        Creates a gama curve between the low and high tresholds
+   * \par      Source:
+   *                TransferFunctionWidget.cpp
+   */
+   void setGamma();
+
  /*!
   * \ingroup      UI
   * \brief        Processes object removal.
@@ -261,10 +269,11 @@ private:
 
 protected:
   ObjectListModelAbstract* m_objectListModel;      /*!< the object list model*/
-  WoolzObject * m_object;                  /*!< current object*/
-  QFunctionEditor *m_functionEditor;       /*!< widget for function editing*/
-  SoMFFloat m_colorMap;                    /*!< color map edited by the widget*/
-  float *m_pHist;                          /*!< histogram of the object*/
+  WoolzObject * m_object;                          /*!< current object*/
+  QFunctionEditor *m_functionEditor;               /*!< widget for function editing*/
+  SoMFFloat m_colorMap;                            /*!< color map edited by the widget*/
+  float *m_pHist;                                  /*!< histogram of the object*/
+  bool inUpdate;                                   /*!< in apply process, do not reload object properties*/
 };
 
 #endif  //TRANSFERFUNCTIONWIDGET_H

@@ -57,7 +57,7 @@ static char _TransferFunctionWidget_cpp[] = "MRC HGU $Id$";
 
 TransferFunctionWidget::TransferFunctionWidget(QWidget *parent,
    ObjectListModelAbstract *objectListModel): QDockWidget(parent), m_objectListModel(objectListModel),
-   m_object(NULL) {
+   m_object(NULL), inUpdate(false) {
 
   setupUi( this );
   connect( horizontalHighSlider, SIGNAL(valueChanged(int)),
@@ -84,6 +84,8 @@ TransferFunctionWidget::TransferFunctionWidget(QWidget *parent,
            this, SLOT(save(bool)));
   connect( pushButtonUpdate, SIGNAL(clicked(bool)),
            this, SLOT(apply()));
+  connect( pushButtonGamma, SIGNAL(clicked(bool)),
+           this, SLOT(setGamma()));
   connect( objectListModel, SIGNAL(removedObjectSignal(WoolzObject*)),
            this, SLOT(removedObjectSignal(WoolzObject*)));
   connect( objectListModel, SIGNAL(addObjectSignal(WoolzObject*)),
@@ -113,6 +115,8 @@ TransferFunctionWidget::TransferFunctionWidget(QWidget *parent,
   spinBoxLowCutOff->setEnabled(false);
   labelLowCutOff->setEnabled(false);
   pushButtonUpdate->setEnabled(false);
+  pushButtonGamma->setEnabled(false);
+  doubleSpinBoxGamma->setEnabled(false);
   checkBoxAutoUpdate->setEnabled(false);
   groupBoxComponents->setEnabled(false);
   groupBoxGroups->setEnabled(false);
@@ -120,11 +124,6 @@ TransferFunctionWidget::TransferFunctionWidget(QWidget *parent,
   checkBoxAutoUpdate->setEnabled(false);
   pushButtonLoad->setEnabled(false);
   pushButtonSave->setEnabled(false);
-
-
-
-
-
 
   selectAlpha(true);                // select alpha channel editing
   setMinimumSize(150,0);
@@ -167,20 +166,23 @@ void TransferFunctionWidget::recomputeHistogram() {
 }
 
 void TransferFunctionWidget::lowCutOffChanged() {
-  if (!m_object || !checkBoxAutoUpdate->isChecked())
+  if (!m_object)
     return ;
   unsigned char cutOff=spinBoxLowCutOff->value();
   m_functionEditor->setLowCutoff(cutOff);
+  if (!checkBoxAutoUpdate->isChecked())
+    return ;
   m_object->transferFunction()->setLowCutOff(spinBoxLowCutOff->value());
 }
 
 void TransferFunctionWidget::highCutOffChanged() {
-  if (!m_object || !checkBoxAutoUpdate->isChecked())
+  if (!m_object)
     return ;
   unsigned char cutOff=spinBoxHighCutOff->value();
   m_functionEditor->setHighCutoff(cutOff);
+  if (!checkBoxAutoUpdate->isChecked())
+    return ;
   m_object->transferFunction()->setHighCutOff(spinBoxHighCutOff->value());
-
 }
 
 void TransferFunctionWidget::loadProperties(WoolzObject *object) {
@@ -219,6 +221,8 @@ void TransferFunctionWidget::objectSelected(WoolzObject* object) {
   spinBoxLowCutOff->setEnabled(visible);
   labelLowCutOff->setEnabled(visible);
   pushButtonUpdate->setEnabled(visible);
+  pushButtonGamma->setEnabled(visible);
+  doubleSpinBoxGamma->setEnabled(visible);
   checkBoxAutoUpdate->setEnabled(visible);
   groupBoxComponents->setEnabled(visible);
   groupBoxGroups->setEnabled(visible);
@@ -240,6 +244,9 @@ void TransferFunctionWidget::addObjectSignal(WoolzObject* obj) {
 }
 
 void TransferFunctionWidget::objectPropertyChanged() {
+   if (inUpdate)
+       return;
+
   WoolzObject* obj = qobject_cast<WoolzObject*>(sender());
   if (!obj || obj != m_object)
     return;
@@ -248,9 +255,11 @@ void TransferFunctionWidget::objectPropertyChanged() {
 }
 
 void TransferFunctionWidget::apply() {
+    inUpdate = true; // disable control updates from object data
     m_object->transferFunction()->setHighCutOff(spinBoxHighCutOff->value());
     m_object->transferFunction()->setLowCutOff(spinBoxLowCutOff->value());
     m_object->transferFunction()->setColorMap(m_colorMap);
+    inUpdate = false; // re-enable control updates from object data
 }
 
 void TransferFunctionWidget::updateGroups() {
@@ -493,5 +502,32 @@ void TransferFunctionWidget::save(bool) {
     QMessageBox::warning(NULL, tr("Save transfer function"), tr("Error writing file."));
     file.remove();
     return;
+  }
+}
+
+void TransferFunctionWidget::setGamma() {
+  if (!m_object)
+    return ;
+  int index;
+  bool r = checkBoxRed->isChecked();
+  bool g = checkBoxGreen->isChecked();
+  bool b = checkBoxBlue->isChecked();
+  bool a = checkBoxAlpha->isChecked();
+  double gamma = doubleSpinBoxGamma->value();
+  int low = spinBoxLowCutOff->value();
+  int high = spinBoxHighCutOff->value();
+  double range = (high-low);
+  if (range  > 0) {
+      for (index=low; index<=high; index++) {
+          float value = pow((index-low)/range, gamma);
+          if (r) m_colorMap.set1Value(index*4  , value);
+          if (g) m_colorMap.set1Value(index*4+1, value);
+          if (b) m_colorMap.set1Value(index*4+2, value);
+          if (a) m_colorMap.set1Value(index*4+3, value);
+      }
+      m_functionEditor->update();
+      if (!checkBoxAutoUpdate->isChecked())
+        return ;
+      m_object->transferFunction()->setColorMap(m_colorMap);
   }
 }
