@@ -41,7 +41,7 @@ static char _ObjectListModelAbstract_cpp[] = "MRC HGU $Id$";
 */
 
 #include "ObjectListModelAbstract.h"
-#include <WoolzObject.h>
+#include "WoolzObject.h"
 
 ObjectListModelAbstract::ObjectListModelAbstract (QObject * parent):  QAbstractItemModel (parent), m_objectIDCounter(0), m_selectedObject(NULL) {
 }
