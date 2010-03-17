@@ -42,7 +42,7 @@ static char _WoolzDynMeshObject_h[] = "MRC HGU $Id$";
 #ifndef WOOLZDYNMESHOBJECT_H
 #define WOOLZDYNMESHOBJECT_H
 
-#include <WoolzDynObject.h>
+#include "WoolzDynObject.h"
 
 /*!
  * \brief	Class storing and managing and generated mesh woolz object

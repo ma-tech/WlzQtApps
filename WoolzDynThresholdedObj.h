@@ -42,7 +42,7 @@ static char _WoolzDynThresholdedObj_h[] = "MRC HGU $Id$";
 #ifndef WOOLZDYNTRESHOLDEDOBJECT_H
 #define WOOLZDYNTRESHOLDEDOBJECT_H
 
-#include <WoolzDynObject.h>
+#include "WoolzDynObject.h"
 
 class ObjectListModel;
 /*!

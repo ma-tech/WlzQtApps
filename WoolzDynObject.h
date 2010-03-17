@@ -42,7 +42,7 @@ static char _WoolzDynObject_h[] = "MRC HGU $Id$";
 #ifndef WOOLZDYNOBJECT_H
 #define WOOLZDYNOBJECT_H
 
-#include <WoolzObject.h>
+#include "WoolzObject.h"
 
 class ObjectListModel;
 

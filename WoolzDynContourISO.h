@@ -42,7 +42,7 @@ static char _WoolzDynContourISO_h[] = "MRC HGU $Id$";
 #ifndef WOOLZDYNCONTOURISO_H
 #define WOOLZDYNCONTOURISO_H
 
-#include <WoolzDynObject.h>
+#include "WoolzDynObject.h"
 
 class ObjectListModel;
 
