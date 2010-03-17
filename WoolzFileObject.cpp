@@ -39,14 +39,16 @@ static char _WoolzFileObject_cpp[] = "MRC HGU $Id$";
 * \ingroup      Control
 *
 */
-#include "WoolzFileObject.h"
 #include <QFileInfo>
 #include <WlzExtFF.h>
 
 #include <QtXml/QXmlStreamWriter>
 #include <QtXml/QDomElement>
+#include <QStringList>
+#include "WoolzFileObject.h"
 
 const char* WoolzFileObject::xmlTag = "FileObject";
+QString WoolzFileObject::m_baseDir = "";
 
 WoolzFileObject::WoolzFileObject() : WoolzObject() {
  m_filename = "";
@@ -163,20 +165,18 @@ bool WoolzFileObject::saveAsXml(QXmlStreamWriter *xmlWriter) {
 
 bool WoolzFileObject::saveAsXmlProperties(QXmlStreamWriter *xmlWriter) {
   WoolzObject::saveAsXmlProperties(xmlWriter);
-  xmlWriter->writeTextElement("Filename", m_filename);
+  xmlWriter->writeTextElement("Filename", stripedFilePath(m_filename));
   return true;
 }
 
-
 bool WoolzFileObject::parseDOMLine(const QDomElement &element) {
   if (element.tagName() == "Filename") {
-     setFileName(element.text());
+     setFileName(fullFilePath(element.text()));
      readType(m_filename);
      return true;
   } else
      return WoolzObject::parseDOMLine(element);
 }
-
 
 
 bool WoolzFileObject::isMesh ( ) {
@@ -194,4 +194,56 @@ bool WoolzFileObject::isContour ( ) {
 void WoolzFileObject::setupConnections(QObject *target) {
     WoolzObject::setupConnections(target);
     connect( target, SIGNAL(loadAllSignal()), this, SLOT(update()));
+}
+
+QString WoolzFileObject::fullFilePath(QString file) {
+    return (file.length()>1 && file[0]!='/') ? m_baseDir + '/' + file : file;
+}
+
+void WoolzFileObject::setBaseDir(QString baseDir) {
+    m_baseDir = baseDir;
+}
+
+QString RelativePath( QString absolutePath, QString relativeTo, bool bIsFile /*= false*/ )
+{
+QStringList absoluteDirectories = absolutePath.split( '/', QString::SkipEmptyParts );
+QStringList relativeDirectories = relativeTo.split( '/', QString::SkipEmptyParts );
+
+//Get the shortest of the two paths
+int length = absoluteDirectories.count() < relativeDirectories.count() ? absoluteDirectories.count() : relativeDirectories.count();
+
+//Use to determine where in the loop we exited
+int lastCommonRoot = -1;
+int index;
+
+//Find common root
+for (index = 0; index < length; index++)
+if (absoluteDirectories[index] == relativeDirectories[index])
+lastCommonRoot = index;
+else
+break;
+
+//If we didn't find a common prefix then throw
+if (lastCommonRoot == -1)
+throw QString("Paths do not have a common base");
+
+//Build up the relative path
+QString relativePath;
+
+//Add on the ..
+for (index = lastCommonRoot + 1; index < relativeDirectories.length(); index++)
+if (relativeDirectories[index].length() > 0)
+relativePath.append("../");
+
+//Add on the folders
+for (index = lastCommonRoot + 1; index < absoluteDirectories.length() - 1; index++)
+relativePath.append(absoluteDirectories[index] + "/");
+
+relativePath.append(absoluteDirectories[absoluteDirectories.length() - 1]);
+
+return relativePath;
+}
+
+QString WoolzFileObject::stripedFilePath(QString file) {
+   return RelativePath(file, m_baseDir, true);
 }

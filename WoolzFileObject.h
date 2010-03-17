@@ -43,7 +43,7 @@ static char _WoolzFileObject_h[] = "MRC HGU $Id$";
 #ifndef WOOLZFILEOBJECT_H
 #define WOOLZFILEOBJECT_H
 
-#include <WoolzObject.h>
+#include "WoolzObject.h"
 
 #include <QtXml/QXmlStreamWriter>
 class QDomElement;
@@ -122,7 +122,7 @@ public:
   *                WoolzFileObject.cpp
   */
   virtual QString notes ( )   {
-    return "file=" + m_filename;
+    return "file=" + stripedFilePath(m_filename);
   }
 
  /*!
@@ -228,6 +228,35 @@ public:
   */
   virtual void setupConnections(QObject *target);
 
+/*!
+ * \ingroup      Control
+ * \brief        Sets the base dir of all objects
+ * \param        baseDir base directory of all object
+ * \return       void
+ * \par      Source:
+ *                WoolzFileObject.cpp
+ */
+ static void setBaseDir(QString baseDir);
+
+protected:
+ /*!
+  * \ingroup      Control
+  * \brief        Return the file path striped of the project base path
+  * \return       file relative to the project
+  * \par      Source:
+  *                WoolzFileObject.h
+  */
+  QString stripedFilePath(QString file);
+
+ /*!
+  * \ingroup      Control
+  * \brief        Return the full file path
+  * \return       file relative to the project
+  * \par      Source:
+  *                WoolzFileObject.h
+  */
+  QString fullFilePath(QString file);
+
 public slots:
  /*!
   * \ingroup      Control
@@ -244,9 +273,11 @@ public slots:
 protected:
   QString m_filename;            /*!< the object filenam where is physicaly stored*/
   WlzObjectType m_fileObjType;   /*!< object type as read from the file*/
+  static QString m_baseDir;      /*!< the base dir of all objects*/
 
 public:
-    static const char* xmlTag;   /*!< xml section tag string */
+  static const char* xmlTag;     /*!< xml section tag string */
+
 };
 
 #endif
