@@ -73,7 +73,7 @@ public:
   *                WarperTargetViewer.cpp
   */
   WarperTargetViewer (ObjectViewerModel *objectViewerModel, bool is3D,
-      LandmarkController* landmarkController, QAction * AddAction, QAction * DeleteAction, QAction * MoveAction);
+      LandmarkController* landmarkController, QAction * AddAction, QAction * DeleteAction, QAction * MoveAction, QAction * RemovelElemAction);
 
  /*!
   * \ingroup      UI

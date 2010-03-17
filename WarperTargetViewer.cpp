@@ -47,7 +47,7 @@ static char _WarperTargetViewer_cpp[] = "MRC HGU $Id$";
 
 const char* WarperTargetViewer::xmlTag = "TargetViewer";
 
-WarperTargetViewer::WarperTargetViewer (ObjectViewerModel *objectViewerModel, bool is3D, LandmarkController* landmarkController, QAction * AddAction, QAction * DeleteAction, QAction * MoveAction) : WarperViewer (objectViewerModel, is3D, landmarkController, AddAction, DeleteAction, MoveAction) {
+WarperTargetViewer::WarperTargetViewer (ObjectViewerModel *objectViewerModel, bool is3D, LandmarkController* landmarkController, QAction * AddAction, QAction * DeleteAction, QAction * MoveAction, QAction * RemovelElemAction) : WarperViewer (objectViewerModel, is3D, landmarkController, AddAction, DeleteAction, MoveAction, RemovelElemAction) {
 }
 
 QColor WarperTargetViewer::getBackgroundColour() {

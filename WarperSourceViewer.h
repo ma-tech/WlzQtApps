@@ -74,7 +74,7 @@ public:
   *                WarperSourceViewer.cpp
   */
   WarperSourceViewer (ObjectViewerModel *objectViewerModel, bool is3D,
-     LandmarkController* fPointModel, QAction * AddAction, QAction * DeleteAction, QAction * MoveAction);
+     LandmarkController* fPointModel, QAction * AddAction, QAction * DeleteAction, QAction * MoveAction, QAction * RemovelElemAction);
 
  /*!
   * \ingroup      UI
