@@ -87,6 +87,8 @@ TransferFunctionWidget::TransferFunctionWidget(QWidget *parent,
            this, SLOT(save(bool)));
   connect( pushButtonUpdate, SIGNAL(clicked(bool)),
            this, SLOT(apply()));
+  connect( pushButtonGamma, SIGNAL(clicked(bool)),
+           this, SLOT(setGamma()));
   connect( objectListModel, SIGNAL(removedObjectSignal(WoolzObject*)),
            this, SLOT(removedObjectSignal(WoolzObject*)));
   connect( objectListModel, SIGNAL(addObjectSignal(WoolzObject*)),
@@ -162,18 +164,18 @@ void TransferFunctionWidget::recomputeHistogram() {
 }
 
 void TransferFunctionWidget::lowCutOffChanged() {
-  if (!m_object || !checkBoxAutoUpdate->isChecked())
-    return ;
   unsigned char cutOff=spinBoxLowCutOff->value();
   m_functionEditor->setLowCutoff(cutOff);
+  if (!m_object || !checkBoxAutoUpdate->isChecked())
+    return ;
   m_objectListModel->addCommand(new TransferFunctionSetLowCutOff(m_objectListModel, m_object->ID(), cutOff));
 }
 
 void TransferFunctionWidget::highCutOffChanged() {
-  if (!m_object || !checkBoxAutoUpdate->isChecked())
-    return ;
   unsigned char cutOff=spinBoxHighCutOff->value();
   m_functionEditor->setHighCutoff(cutOff);
+  if (!m_object || !checkBoxAutoUpdate->isChecked())
+    return ;
   m_objectListModel->addCommand(new TransferFunctionSetHighCutOff(m_objectListModel, m_object->ID(), cutOff));
 }
 
@@ -213,6 +215,8 @@ void TransferFunctionWidget::objectSelected(WoolzObject* object) {
   spinBoxLowCutOff->setEnabled(visible);
   labelLowCutOff->setEnabled(visible);
   pushButtonUpdate->setEnabled(visible);
+  pushButtonGamma->setEnabled(visible);
+  doubleSpinBoxGamma->setEnabled(visible);
   checkBoxAutoUpdate->setEnabled(visible);
   groupBoxComponents->setEnabled(visible);
   groupBoxGroups->setEnabled(visible);
@@ -416,5 +420,32 @@ void TransferFunctionWidget::save(bool) {
     QMessageBox::warning(NULL, tr("Save transfer function"), tr("Error writing file."));
     file.remove();
     return;
+  }
+}
+
+void TransferFunctionWidget::setGamma() {
+  int index;
+  bool r = checkBoxRed->isChecked();
+  bool g = checkBoxGreen->isChecked();
+  bool b = checkBoxBlue->isChecked();
+  bool a = checkBoxAlpha->isChecked();
+  double gamma = doubleSpinBoxGamma->value();
+  int low = spinBoxLowCutOff->value();
+  int high = spinBoxHighCutOff->value();
+  double range = (high-low);
+  if (range  > 0) {
+      for (index=low; index<=high; index++) {
+          float value = pow((index-low)/range, gamma);
+          if (r) m_colorMap.set1Value(index*4  , value);
+          if (g) m_colorMap.set1Value(index*4+1, value);
+          if (b) m_colorMap.set1Value(index*4+2, value);
+          if (a) m_colorMap.set1Value(index*4+3, value);
+      }
+      m_functionEditor->update();
+      if (!m_object || !checkBoxAutoUpdate->isChecked())
+        return ;
+      QUndoCommand *command = new TransferFunctionMapUpdate(m_objectListModel, m_object->ID(), m_colorMap, NULL);
+      command->setText("Set Gamma");
+      m_objectListModel->addCommand(command);
   }
 }

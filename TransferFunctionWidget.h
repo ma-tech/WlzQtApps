@@ -107,6 +107,14 @@ private slots:
 
  /*!
   * \ingroup      UI
+  * \brief        Creates a gama curve between the low and high tresholds
+  * \par      Source:
+  *                TransferFunctionWidget.cpp
+  */
+  void setGamma();
+
+ /*!
+  * \ingroup      UI
   * \brief        Processes object removal.
   * \return       void
   * \par      Source:
