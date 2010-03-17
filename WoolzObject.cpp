@@ -339,3 +339,27 @@ bool WoolzObject::parseDOM(const QDomElement &element) {
   }
   return true;
 }
+
+void WoolzObject::removeMeshElement(const WlzDVertex3 point) {
+  if (isMesh() && is3D()) {
+      int x,y,z;
+      const int dd=2;
+      const float dist = 1.0f;
+      for (x=-dd;x<=dd;x++)
+        for (y=-dd;y<dd;y++)
+            for (z=-dd;z<dd;z++) {
+                WlzCMesh3D *mesh = m_obj->domain.cm3;
+                int idE = WlzCMeshElmEnclosingPos3D(mesh , 0, point.vtX+x*dist, point.vtY+y*dist, point.vtZ+z*dist, 0, NULL);
+                if (idE>0) {
+                   WlzCMeshElm3D *elm = (WlzCMeshElm3D *)AlcVectorItemGet(mesh->res.elm.vec, idE);
+                   if (elm) {
+                      statusChange("Element to be removed", 5);
+                      removeMeshElement(idE); // must be before mesh is changed
+                      WlzCMeshDelElm3D(mesh, elm);
+                      statusChange("Element removed", 5);
+                   }
+                }
+            }
+  }
+}
+

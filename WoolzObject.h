@@ -610,6 +610,16 @@ public slots:
   */
   virtual void update ( bool force = false) = 0;
 
+ /*!
+  * \ingroup      Control
+  * \brief        Processes mess element removal
+  * \param        point coordinate of mesh element to be removed
+  * \return       void
+  * \par      Source:
+  *                WoolzObject.cpp
+  */
+  virtual void removeMeshElement(const WlzDVertex3 point);
+
 protected:
  /*!
   * \ingroup      Control
@@ -654,6 +664,15 @@ protected:
    void replaceTransferFunction(TransferFunction *tf);
 
 signals:
+ /*!
+  * \ingroup      Control
+  * \brief        Signals when an mesh element is removed.
+  * \return       void
+  * \par      Source:
+  *                WoolzObject.cpp
+  */
+  void removeMeshElement(int);
+
  /*!
   * \ingroup      Control
   * \brief        Signals when an object (non visual) property changes.
