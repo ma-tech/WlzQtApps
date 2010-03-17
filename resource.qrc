@@ -38,5 +38,7 @@
         <file>images/cuttingplanevisiblefliped.png</file>
         <file>images/cuttingplaneonfliped.png</file>
         <file>images/update.png</file>
+        <file>images/app.png</file>
+        <file>images/blink.png</file>
     </qresource>
 </RCC>
