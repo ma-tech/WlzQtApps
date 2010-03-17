@@ -56,15 +56,19 @@ static char _MainWindow_cpp[] = "MRC HGU $Id$";
 #include "CrossHairManip.h"
 #include "SnapSurfaceManip.h"
 #include "PreferencesDialog.h"
+#include "WarperConfig.h"
 
 //SoQt includes
 #include <Inventor/Qt/SoQt.h>
 #include <VolumeViz/nodes/SoVolumeRendering.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 
-MainWindow::MainWindow() : controler (NULL) {
+MainWindow::MainWindow() : controler (NULL), separatorAct(NULL) {
   SoQt::init(this);
   SoVolumeRendering::init();
+
+  for (int i = 0; i < MaxRecentFiles; ++i)
+      recentFileActs[i] = NULL;
 
   SnapSurfaceManip::initClass();
   TranslateRadialManip::initClass();
@@ -105,10 +109,19 @@ MainWindow::MainWindow() : controler (NULL) {
   toolBarWarpingMode->setVisible(false);
   toolBarOperations->setVisible(false);
 
-  //actionSwitchMode->setVisible(false);
-//  menuOpen_project->setVisible(false);
    menuFile->removeAction(menuOpen_project->menuAction());
    statusbar->showMessage("Application started", 5000);
+
+   for (int i = 0; i < MaxRecentFiles; ++i) {
+          recentFileActs[i] = new QAction(this);
+          recentFileActs[i]->setVisible(false);
+          connect(recentFileActs[i], SIGNAL(triggered()),
+                  this, SLOT(openRecentFile()));
+      }
+   for (int i = 0; i < MaxRecentFiles; ++i)
+        menuFile->insertAction(actionExit,recentFileActs[i]);
+   separatorAct = menuFile->insertSeparator(actionExit);
+   updateRecentFileActions();
 }
 
 void MainWindow::setDefaultConnections() {
@@ -376,12 +389,13 @@ void MainWindow::switchProjectType(ProjectProperties::ProjectTypes newType) {
       Q_ASSERT(FALSE);
       break;
   }
+  updateRecentFileActions();
 }
 
 void MainWindow::about()  {
       QMessageBox::about(this, "About Woolz Warping",
                                "<h3>Woolz Warping Interface</h3>"
-                               "<p>Copyright (C) 2009 MRC Human Genetcs Unit<p>");
+                               "<p>Copyright (C) 2010 MRC Human Genetcs Unit<p>");
 }
 
 void MainWindow::closeProject() {
@@ -442,6 +456,7 @@ void MainWindow::openProject () {
 }
 
 void MainWindow::loadProject(QString filename) {
+  setCurrentFile(filename);
   QApplication::setOverrideCursor(Qt::WaitCursor);
   QFile file(filename);
   if (!file.open(QFile::ReadOnly | QFile::Text)) {
@@ -449,6 +464,8 @@ void MainWindow::loadProject(QString filename) {
     QApplication::restoreOverrideCursor();
     return;
   }
+  config.setProjectDirFromFile(filename);
+
   QDomDocument doc;
   QString errorStr;
   int errorLine, errorColumn;
@@ -483,7 +500,7 @@ void MainWindow::loadProject(QString filename) {
 void MainWindow::setTitle(QString additionalTitle) {
   if (additionalTitle!="")
       additionalTitle = " - "+additionalTitle;
- setWindowTitle("Woolz Warping" + additionalTitle);
+  setWindowTitle("Woolz Warping" + additionalTitle);
 }
 
 void MainWindow::statusChanged(QString message, int timeout) {
@@ -491,3 +508,56 @@ void MainWindow::statusChanged(QString message, int timeout) {
    statusBar()->repaint();
 }
 
+void MainWindow::openRecentFile() {
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action)
+        loadProject(action->data().toString());
+}
+
+void MainWindow::setCurrentFile(const QString &fileName) {
+    QSettings settings;
+    QStringList files = settings.value("recentFileList").toStringList();
+    files.removeAll(fileName);
+    files.prepend(fileName);
+    while (files.size() > MaxRecentFiles)
+        files.removeLast();
+
+    settings.setValue("recentFileList", files);
+
+    foreach (QWidget *widget, QApplication::topLevelWidgets()) {
+        MainWindow *mainWin = qobject_cast<MainWindow *>(widget);
+        if (mainWin)
+            mainWin->updateRecentFileActions();
+    }
+}
+
+void MainWindow::updateRecentFileActions() {
+    QSettings settings;
+    QStringList files = settings.value("recentFileList").toStringList();
+
+    int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
+
+    if (projectSettings.projectType != ProjectProperties::noneProject)
+        numRecentFiles  = 0;
+    int i;
+    for (i = 0; i < numRecentFiles; ++i) {
+        QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
+        if (recentFileActs[i]) {
+          recentFileActs[i]->setText(text);
+          recentFileActs[i]->setData(files[i]);
+          recentFileActs[i]->setVisible(true);
+        }
+    }
+
+    for (int i = numRecentFiles; i < MaxRecentFiles; ++i) {
+        if (recentFileActs[i])
+          recentFileActs[i]->setVisible(false);
+    }
+
+    if (separatorAct)
+      separatorAct->setVisible(numRecentFiles > 0);
+}
+
+QString MainWindow::strippedName(const QString &fullFileName) {
+    return QFileInfo(fullFileName).fileName();
+}

@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>Woolz Warping</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resource.qrc">
+    <normaloff>:/icons/images/app.png</normaloff>:/icons/images/app.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
@@ -172,6 +176,7 @@
     <addaction name="actionMoveLandmark"/>
     <addaction name="actionDeleteCurrentLandmark"/>
     <addaction name="actionDropLandmark"/>
+    <addaction name="actionRemoveMeshElement"/>
     <addaction name="actionRemoveAllLandmarks"/>
     <addaction name="separator"/>
     <addaction name="actionAllEditing"/>
@@ -182,7 +187,6 @@
     <addaction name="separator"/>
     <addaction name="actionGenerateMesh"/>
     <addaction name="menuWarping_mesh"/>
-    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -249,6 +253,8 @@
    <addaction name="actionDeleteLandmark"/>
    <addaction name="separator"/>
    <addaction name="actionMoveLandmark"/>
+   <addaction name="separator"/>
+   <addaction name="actionRemoveMeshElement"/>
    <addaction name="separator"/>
    <addaction name="actionShowLandmarks"/>
    <addaction name="separator"/>
@@ -505,7 +511,7 @@
     <string>Open target image</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+T</string>
+    <string>Ctrl+Shift+T</string>
    </property>
   </action>
   <action name="actionOpenMeshTarget">
@@ -513,7 +519,7 @@
     <string>Open mesh</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+M</string>
+    <string>Ctrl+Shift+M</string>
    </property>
   </action>
   <action name="actionOpenSurfaceTarget">
@@ -533,7 +539,7 @@
     <string>Open source image</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+V</string>
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionOpenSurfaceSource">
@@ -787,7 +793,25 @@
      <normaloff>:/icons/images/update.png</normaloff>:/icons/images/update.png</iconset>
    </property>
    <property name="text">
-    <string>Update</string>
+    <string>Update All</string>
+   </property>
+   <property name="toolTip">
+    <string>Updates out of date objects</string>
+   </property>
+  </action>
+  <action name="actionRemoveMeshElement">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/icons/images/cut.png</normaloff>:/icons/images/cut.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove element</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove mesh element</string>
    </property>
   </action>
  </widget>

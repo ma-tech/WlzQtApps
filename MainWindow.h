@@ -112,6 +112,16 @@ public:
   */
   void setTitle(QString additionalTitle);
 
+ /*!
+  * \ingroup      UI
+  * \brief        Adds a file to the recent files list
+  * \param        filename path of the file to be added
+  * \return       void
+   * \par      Source:
+  *                MainWindow.cpp
+  */
+  void setCurrentFile(const QString &fileName);
+
 public slots:
  /*!
   * \ingroup      UI
@@ -252,10 +262,6 @@ public slots:
   */
   void statusChanged(QString message, int timeout);
 
-protected:
-    ProjectProperties projectSettings;   /*!< project settings */
-
-    WarperController *controler;       /*!< current controller (warping or mesh editing)*/
 private:
  /*!
   * \ingroup      UI
@@ -296,5 +302,42 @@ private:
   *                MainWindow.cpp
   */
   void checkAndSwitch(int result, ProjectProperties::ProjectTypes type);
+
+private slots:
+ /*!
+  * \ingroup      UI
+  * \brief        Reopens a file in the recent items list
+  * \return       void
+  * \par      Source:
+  *                MainWindow.cpp
+  */
+  void openRecentFile();
+
+private:
+ /*!
+  * \ingroup      UI
+  * \brief        Updates recent file item in the menu
+  * \return       void
+  * \par      Source:
+  *                MainWindow.cpp
+  */
+  void updateRecentFileActions();
+
+ /*!
+  * \ingroup      UI
+  * \brief        Strips the full path of a file and returns only the file name
+  * \param        fullFileName full file name to be stripped
+  * \return       stripped file name
+  * \par      Source:
+  *                MainWindow.cpp
+  */
+  QString strippedName(const QString &fullFileName);
+
+protected:
+    enum { MaxRecentFiles = 5 };              /*!< number of recent projects*/
+    ProjectProperties projectSettings;        /*!< project settings */
+    WarperController *controler;              /*!< current controller (warping or mesh editing) */
+    QAction *recentFileActs[MaxRecentFiles];  /*!< recent projects actions*/
+    QAction *separatorAct;                    /*!< separator of the recent projects*/
 };
 #endif
