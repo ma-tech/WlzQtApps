@@ -52,6 +52,7 @@ static char _Viewer3D_cpp[] = "MRC HGU $Id$";
 #include <QObject>
 #include <QPushButton>
 #include <QIcon>
+#include <QtOpenGL/QGLWidget>
 
 Viewer3D::Viewer3D(QWidget * parent, QLayout *slider, QList <QWidget*> *buttons) : SoQtExaminerViewer(parent, NULL, TRUE,
                             SoQtFullViewer::BUILD_ALL, SoQtFullViewer::EDITOR,
@@ -69,6 +70,9 @@ Viewer3D::~Viewer3D() {
      while (i.hasNext())
         delete i.next();
      delete m_buttons;
+   }
+   if (getBaseWidget()) {  // new code, copied from Viewer2D
+     delete getBaseWidget();
    }
 }
 
