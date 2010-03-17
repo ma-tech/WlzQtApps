@@ -59,6 +59,8 @@ static char _ObjectSimpleViewer_cpp[] = "MRC HGU $Id$";
 
 // Inventor includes
 #include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/nodes/SoBlinker.h>
+#include <Inventor/nodes/SoSwitch.h>
 #include <Inventor/nodes/SoCamera.h>
 #include <Inventor/nodes/SoPerspectiveCamera.h>
 #include <Inventor/sensors/SoNodeSensor.h>
@@ -68,6 +70,7 @@ static char _ObjectSimpleViewer_cpp[] = "MRC HGU $Id$";
 #include <Inventor/manips/SoClipPlaneManip.h>
 #include <VolumeViz/nodes/SoTransferFunction.h>
 #include <Inventor/nodes/SoClipPlane.h>
+#include <Inventor/draggers/SoJackDragger.h>
 #include <Inventor/actions/SoGetBoundingBoxAction.h>
 
 // Qt includes
@@ -85,9 +88,10 @@ static char _ObjectSimpleViewer_cpp[] = "MRC HGU $Id$";
 #include <QLabel>
 
 ObjectSimpleViewer::ObjectSimpleViewer (bool is3D, bool isBlending) :
-     QWidget(0, Qt::SubWindow | Qt::Window), m_clipPlaneManip(NULL), m_clipPlane(NULL),
-     m_clipManipulatorButtonBi(NULL), m_obliqueSliceButton(NULL), m_clipLandmarkButton(NULL), m_mixSlider(NULL), m_viewAll(true) {
-
+     QWidget(0, Qt::SubWindow | Qt::Window),
+     root(NULL), views_root_s(NULL), views_root_t(NULL), blinker_root(NULL),
+     m_clipPlaneManip(NULL), m_clipPlane(NULL),
+     m_clipManipulatorButtonBi(NULL), m_obliqueSliceButton(NULL), m_clipLandmarkButton(NULL), m_blinkButton(NULL), m_mixSlider(NULL), m_viewAll(true) {
 
     QLayout *mix = NULL;
     if (isBlending) {
@@ -109,16 +113,24 @@ ObjectSimpleViewer::ObjectSimpleViewer (bool is3D, bool isBlending) :
            this, SLOT(transparencyChanged(int)));
     }
 
+    QList <QWidget*> *buttons=new QList <QWidget*>;
+    QIcon icon;
+    //blink button on/off
+    icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/images/blink.png")), QIcon::Normal);
+    m_blinkButton=new QPushButton(this);
+    m_blinkButton->setCheckable(true);
+    m_blinkButton->setChecked(false);
+    m_blinkButton->setIcon(icon);
+    m_blinkButton->setToolTip("Flash source on/off");
+    m_blinkButton->setVisible(false);
+    connect(m_blinkButton, SIGNAL(clicked(bool)), this, SLOT(setFlashSourceTarget(bool)));
 
     if (is3D) {
-       QList <QWidget*> *buttons=new QList <QWidget*>;
-
        m_clipManipulatorButtonBi=new ClipPlaneButtonBiDirection(this);
        m_clipManipulatorButtonBi->setCheckable(false);
        m_clipManipulatorButtonBi->setToolTip("Clip manipulator on/clip/off");
        buttons->append(m_clipManipulatorButtonBi);
 
-       QIcon icon;
        icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/images/orthosliceon.png")), QIcon::Normal, QIcon::Off);
        icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/images/orthosliceoff.png")), QIcon::Normal, QIcon::On);
        m_obliqueSliceButton=new QPushButton(this);
@@ -139,11 +151,13 @@ ObjectSimpleViewer::ObjectSimpleViewer (bool is3D, bool isBlending) :
        m_clipLandmarkButton->setVisible(false);
        buttons->append(m_clipLandmarkButton);
 
+       buttons->append(m_blinkButton);
        m_viewer = (Viewer2D3D*) new Viewer3D(this, mix, buttons);
        connect(m_clipManipulatorButtonBi, SIGNAL(stateChanged(ClipPlaneButton::statetype)), this, SLOT(stateChanged(ClipPlaneButton::statetype)));
     }
     else {
-       m_viewer = (Viewer2D3D*) new Viewer2D(this, mix);
+       buttons->append(m_blinkButton);
+       m_viewer = (Viewer2D3D*) new Viewer2D(this, mix, buttons);
     }
     Q_ASSERT(m_viewer);
     root = new SoSeparator;
@@ -155,14 +169,36 @@ ObjectSimpleViewer::ObjectSimpleViewer (bool is3D, bool isBlending) :
                        mouseEventCB, this);
     root->insertChild(cb, 0);
 
-    views_root = new SoSeparator;
-    Q_ASSERT(views_root);
-    views_root->ref();
-    root->addChild(views_root);
+    blinker_root = new SoSwitch;
+    Q_ASSERT(blinker_root);
+    blinker_root->ref();
+    blinker_root->whichChild = 0; // select non blinking
+
+    SoSeparator* noblinker = new SoSeparator;
+    Q_ASSERT(noblinker);
+    blinker_root->addChild(noblinker);
+
+    SoBlinker* blinker = new SoBlinker;
+    Q_ASSERT(blinker);
+    blinker->on = true;
+
+    blinker_root->addChild(blinker);
+
+    views_root_s = new SoSeparator;
+    Q_ASSERT(views_root_s);
+    blinker->addChild(views_root_s);
+    noblinker->addChild(views_root_s);
+
+    views_root_t = new SoSeparator;
+    Q_ASSERT(views_root_t);
+    blinker->addChild(views_root_t);
+    noblinker->addChild(views_root_t);
+
+    root->addChild(blinker_root);
 
     m_viewer ->setSceneGraph(root);
 
-   //this has to go in the Editor
+    //this has to go in the Editor
     m_activateAction = new QAction (this);
     m_activateAction -> setCheckable(true);
     connect(m_activateAction, SIGNAL(triggered()), this, SLOT(show()));
@@ -188,7 +224,7 @@ ObjectSimpleViewer::~ObjectSimpleViewer ( ) {
      delete views.at(i);
   views.clear();
   root->unref();
-  views_root->unref();
+  blinker_root->unref();
 
   /*if (camera)
     camera->unref(); // remove camera and sensor;*/
@@ -206,7 +242,10 @@ void ObjectSimpleViewer::addObject (WoolzObject * object, bool doViewAll, Object
     if (!view)
         return;
     views.append(view);
-    views_root->insertChild(view->getSceneGraph(true),0);
+    if (object->isWarped())
+      views_root_s->insertChild(view->getSceneGraph(true),0);
+    else
+      views_root_t->insertChild(view->getSceneGraph(true),0);
 
     if (previousView) {
         view->setVisibility(previousView->getVisibility());
@@ -239,7 +278,11 @@ void ObjectSimpleViewer::removedObject ( WoolzObject * object ) {
       ObjectView* view = dynamic_cast<ObjectView*>(views.at(i));
       if (view && view->isUsing(object)) {// remove
         removedViewStart(view); //must be before removeAt, otherwise row number can't be found
-        views_root->removeChild(view->getSceneGraph(false));
+        if (object->isWarped())
+          views_root_s->removeChild(view->getSceneGraph(false));
+        else
+          views_root_t->removeChild(view->getSceneGraph(false));
+
         views.removeAt(i);
         removedViewFinish(view); //must be before removeAt, otherwise row number can't be found
         delete view;
@@ -254,7 +297,6 @@ void ObjectSimpleViewer::setWindowTitle(QString title) {
 }
 
 void ObjectSimpleViewer::closeEvent(QCloseEvent */*event*/) {
-//replacedCamera(NULL);
  emit removedViewerStart(); //force to be called now
 }
 
@@ -270,8 +312,6 @@ void ObjectSimpleViewer::activate() {
   mdiSubWindow->raise();
   mdiSubWindow->activateWindow();
 }
-
-
 
 void ObjectSimpleViewer::mouseEventCB(void *data, SoEventCallback * event){
    Q_ASSERT(data);
@@ -302,7 +342,11 @@ void ObjectSimpleViewer::regerateView() {
     return ;
   WoolzObject * object = senderView->object();
 
-  views_root->removeChild(senderView->getSceneGraph(false));
+  if (object->isWarped())
+    views_root_s->removeChild(senderView->getSceneGraph(false));
+  else
+    views_root_t->removeChild(senderView->getSceneGraph(false));
+
   emit removedViewStart(senderView);
   views.removeOne(senderView);
   emit removedViewFinish(senderView);
@@ -319,7 +363,7 @@ void ObjectSimpleViewer::stateChanged(ClipPlaneButton::statetype state) {
               m_clipPlaneManip = new SoClipPlaneManip;
               m_clipPlaneManip->ref();
               SoGetBoundingBoxAction ba(m_viewer->getViewportRegion());
-              ba.apply(views_root);
+              ba.apply(blinker_root);
               SbBox3f box = ba.getBoundingBox();
               m_clipPlaneManip->setValue(box, SbVec3f(1.0f, 0.0f, 0.0f), 1.00f);
           }
@@ -405,7 +449,6 @@ void ObjectSimpleViewer::setBackgroundColour() {
   m_viewer->setBackgroundColor(SbColor(color.red()/255.0f, color.green()/255.0f, color.blue()/255.0f));
 }
 
-
 QColor ObjectSimpleViewer::getBackgroundColour() {
   return QColor(0, 0, 0);
 }
@@ -413,7 +456,6 @@ QColor ObjectSimpleViewer::getBackgroundColour() {
 void ObjectSimpleViewer::init() {
   setBackgroundColour();
 }
-
 
 bool ObjectSimpleViewer::saveAsXml(QXmlStreamWriter *xmlWriter) {
   Q_ASSERT(xmlWriter);
@@ -427,6 +469,41 @@ bool ObjectSimpleViewer::saveAsXml(QXmlStreamWriter *xmlWriter) {
   xmlWriter->writeTextElement("Width", QString("%1").arg(geom .width()));
   xmlWriter->writeTextElement("Height", QString("%1").arg(geom .height()));
   xmlWriter->writeEndElement();
+
+  if (m_clipPlaneManip) {
+    xmlWriter->writeStartElement("ClipPlane");
+
+    SbPlane plane = m_clipPlaneManip->plane.getValue();
+    SbVec3f vec = plane.getNormal();
+    xmlWriter->writeStartElement("Normal");
+    xmlWriter->writeTextElement("X", QString("%1").arg(vec[0]));
+    xmlWriter->writeTextElement("Y", QString("%1").arg(vec[1]));
+    xmlWriter->writeTextElement("Z", QString("%1").arg(vec[2]));
+    xmlWriter->writeEndElement();
+
+    xmlWriter->writeTextElement("Distance", QString("%1").arg(plane.getDistanceFromOrigin()));
+
+    vec = m_clipPlaneManip->draggerPosition.getValue();
+    xmlWriter->writeStartElement("Position");
+    xmlWriter->writeTextElement("X", QString("%1").arg(vec[0]));
+    xmlWriter->writeTextElement("Y", QString("%1").arg(vec[1]));
+    xmlWriter->writeTextElement("Z", QString("%1").arg(vec[2]));
+    xmlWriter->writeEndElement();
+    SoDragger *dragger = m_clipPlaneManip->getDragger();
+    if (dragger && dragger->isOfType(SoJackDragger::getClassTypeId())) {
+        SoJackDragger *jd = (SoJackDragger*)dragger;
+        vec = jd->scaleFactor.getValue();
+        xmlWriter->writeStartElement("Scalefactor");
+        xmlWriter->writeTextElement("X", QString("%1").arg(vec[0]));
+        xmlWriter->writeTextElement("Y", QString("%1").arg(vec[1]));
+        xmlWriter->writeTextElement("Z", QString("%1").arg(vec[2]));
+        xmlWriter->writeEndElement();
+    }
+    xmlWriter->writeTextElement("Distance", QString("%1").arg(plane.getDistanceFromOrigin()));
+
+    xmlWriter->writeEndElement();
+  }
+
   for (int i = 0; i < views.size(); ++i) {
      views.at(i)->saveAsXml(xmlWriter);
   }
@@ -444,11 +521,67 @@ bool ObjectSimpleViewer::parseDOMLine(const QDomElement &element) {
     } else if (element.tagName() == "Geometry") {
         parseGeometry(element);
         return true;
+    } else if (element.tagName() == "ClipPlane") {
+        parseClipPlane(element);
+        return true;
     } else if (element.tagName() == View::xmlTag) {
         parseViews(element);
         return true;
     }
     return false;
+}
+
+bool ObjectSimpleViewer::parseClipPlane(const QDomElement &element) {
+  float distance=0;
+  SbVec3f pos;
+  SbVec3f normal;
+  SbVec3f scale(1.0f, 1.0f, 1.0f);
+
+  QDomNode child = element.firstChild();
+  while (!child.isNull()) {
+         const QDomElement &element = child.toElement();
+         if (element.tagName() == "Distance") {
+              distance = element.text().toFloat();
+         } else if (element.tagName() == "Position") {
+             pos = parseSbVec3f(element);
+         } else if (element.tagName() == "Normal") {
+             normal = parseSbVec3f(element);
+         } else if (element.tagName() == "Scalefactor") {
+             scale = parseSbVec3f(element);
+         }
+        child = child.nextSibling();
+  }
+  if (!m_clipPlaneManip) {  //create at first use
+         m_clipPlaneManip = new SoClipPlaneManip;
+         m_clipPlaneManip->ref();
+         m_clipPlaneManip->plane.setValue(SbPlane(normal, distance));
+         m_clipPlaneManip->draggerPosition = pos;
+         SoDragger *dragger = m_clipPlaneManip->getDragger();
+
+         if (dragger && dragger->isOfType(SoJackDragger::getClassTypeId())) {
+            SoJackDragger *jd = (SoJackDragger*)dragger;
+            jd->scaleFactor.setValue(scale);
+         }
+   }
+  return true;
+}
+
+SbVec3f ObjectSimpleViewer::parseSbVec3f(const QDomElement &element) const {
+  float x=0.0f, y=0.0f, z=0.0f;
+
+  QDomNode child = element.firstChild();
+  while (!child.isNull()) {
+         const QDomElement &element = child.toElement();
+         if (element.tagName() == "X") {
+              x = element.text().toFloat();
+         } else if (element.tagName() == "Y") {
+              y = element.text().toFloat();
+         } else if (element.tagName() == "Z") {
+              z = element.text().toFloat();
+         }
+        child = child.nextSibling();
+  }
+  return SbVec3f(x,y,z);
 }
 
 bool ObjectSimpleViewer::parseGeometry(const QDomElement &element) {
@@ -483,7 +616,6 @@ bool ObjectSimpleViewer::parseViews(const QDomElement& element) {
    return true;
 }
 
-
 bool ObjectSimpleViewer::parseDOM(const QDomElement &element) {
   QDomNode child = element.firstChild();
   while (!child.isNull()) {
@@ -493,3 +625,6 @@ bool ObjectSimpleViewer::parseDOM(const QDomElement &element) {
   return true;
 }
 
+void ObjectSimpleViewer::setFlashSourceTarget(bool on) {
+   blinker_root->whichChild= on ? 1 : 0;
+}

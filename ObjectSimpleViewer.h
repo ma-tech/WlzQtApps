@@ -45,6 +45,7 @@ static char _ObjectSimpleViewer_h[] = "MRC HGU $Id$";
 
 #include <QWidget>
 #include "ClipPlaneButtonBiDirection.h"
+#include <Inventor/SbLinear.h>
 
 //project objects
 class WoolzObject;
@@ -61,6 +62,7 @@ class SoNodeSensor;
 class SoSFPlane;
 class SoClipPlaneManip;
 class SoClipPlane;
+class SoSwitch;
 
 //Qt objects
 class QCloseEvent;
@@ -99,8 +101,17 @@ public:
   * \par      Source:
   *                ObjectSimpleViewer.cpp
   */
- ObjectSimpleViewer (bool is3D, bool isBlending = false);
+  ObjectSimpleViewer (bool is3D, bool isBlending = false);
 
+ /*!
+  * \ingroup      UI
+  * \brief        Configures the view
+  *
+  * \return       void
+  * \par      Source:
+  *                WarperSourceViewer.cpp
+  */
+  virtual void init();
  /*!
   * \ingroup      UI
   * \brief        Destructor
@@ -194,7 +205,27 @@ public:
   */
   bool parseGeometry(const QDomElement &element);
 
-  /*!
+ /*!
+  * \ingroup      Control
+  * \brief        Reads clip plane information
+  * \param        element current element of the DOM tree
+  * \return       true if succeded, false if not
+  * \par      Source:
+  *                ObjectSimpleViewer.cpp
+  */
+  bool parseClipPlane(const QDomElement &element);
+
+ /*!
+  * \ingroup      Control
+  * \brief        Reads a SbVec3f
+  * \param        element current element of the DOM tree
+  * \return       read vector value
+  * \par      Source:
+  *                ObjectSimpleViewer.cpp
+  */
+  SbVec3f parseSbVec3f(const QDomElement &element) const;
+
+ /*!
   * \ingroup      Control
   * \brief        Reads views from DOM node
   * \param        element current element of the DOM tree
@@ -230,7 +261,7 @@ public slots:
   * \par      Source:
   *                ObjectSimpleViewer.cpp
   */
-  void addObject (WoolzObject * object, bool doViewAll = true, ObjectView *previousView = NULL);
+  virtual void addObject (WoolzObject * object, bool doViewAll = true, ObjectView *previousView = NULL);
 
  /*!
   * \ingroup      UI
@@ -334,6 +365,25 @@ public slots:
   */
   QAction * activateAction() const {return m_activateAction;}
 
+ /*!
+  * \ingroup      UI
+  * \brief        Processes the blink button state change
+  *
+  * \return       void
+  * \par      Source:
+   *                ObjectSimpleViewer.cpp
+  */
+  virtual void setFlashSourceTarget(bool on);
+
+ /*!
+  * \ingroup      UI
+  * \brief        Return the clip plane of the viewer
+  * \return       clip plane used in the viewer
+  * \par      Source:
+  *                ObjectSimpleViewer.cpp
+  */
+  SoClipPlaneManip * clipPlaneManip() { return m_clipPlaneManip;}
+
 protected:
  /*!
   * \ingroup      UI
@@ -389,6 +439,18 @@ protected:
   *                ObjectSimpleViewer.cpp
   */
   virtual bool accepting(WoolzObject * object) {return object!=NULL;}
+
+ /*!
+  * \ingroup      UI
+  * \brief        Returns the background colour of the viewer
+  *
+  *               Reimplemented form ObjectViewer
+  * \return       colour
+  * \return       void
+  * \par      Source:
+  *                ObjectSimpleViewer.cpp
+  */
+  virtual QColor getBackgroundColour();
 
 private:
  /*!
@@ -505,42 +567,20 @@ protected:
   // protected attributes
   Viewer2D3D * m_viewer;            /*!< Inventor viewer that performs the viewing */
   SoSeparator *root;                /*!< secene grapg root*/
-  SoSeparator *views_root;          /*!< views root */
-  QList <ObjectView *> views;       /*!< list of views*/
+  SoSeparator *views_root_s;        /*!< views root source views*/
+  SoSeparator *views_root_t;        /*!< views root target views*/
+  SoSwitch *blinker_root;           /*!< blinker root allowing switching blink on / off */
+  QList <ObjectView *> views;       /*!< list of views */
 
-  QAction * m_activateAction ;
-
+  QAction * m_activateAction ;      /*!< action with the name of the window */
   SoClipPlaneManip *m_clipPlaneManip;          /*!< clip plane manipulator*/
   SoClipPlane *m_clipPlane;                    /*!< clip plane */
   ClipPlaneButtonBiDirection *m_clipManipulatorButtonBi;    /*!< clip manipulator button */
   QPushButton * m_obliqueSliceButton;          /*!< oblique slice button */
   QPushButton * m_clipLandmarkButton;          /*!< landmark clipping button */  //TODO: move from child class
+  QPushButton * m_blinkButton;                 /*!< blinking button */  //TODO: move from child class
   QSlider *m_mixSlider;                        /*!< mixing slider */
   bool m_viewAll;                              /*!< if true, after an object is inserted viewAll() is
                                                     called to change to view all object in the viewer*/
-public:
-
- /*!
-  * \ingroup      UI
-  * \brief        Configures the view
-  *
-  * \return       void
-  * \par      Source:
-  *                WarperSourceViewer.cpp
-  */
-  virtual void init();
-
-protected:
- /*!
-  * \ingroup      UI
-  * \brief        Returns the background colour of the viewer
-  *
-  *               Reimplemented form ObjectViewer
-  * \return       colour
-  * \return       void
-  * \par      Source:
-  *                ObjectSimpleViewer.cpp
-  */
-  virtual QColor getBackgroundColour();
 };
 #endif // OBJECTSIMPLEVIEWER_H
