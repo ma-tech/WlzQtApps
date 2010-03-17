@@ -46,6 +46,7 @@ static char _WoolzDynObject_cpp[] = "MRC HGU $Id$";
 #include "WarperConfig.h"
 #include <QtXml/QDomElement>
 #include <QtXml/QXmlStreamWriter>
+#include <QMessageBox>
 
 const char* WoolzDynWarpedObject::xmlTag = "WarpedObject";
 
@@ -104,6 +105,9 @@ void WoolzDynWarpedObject ::warp () {
   else {
       if (m_obj)
         WlzFreeObj(m_obj);
+      if (errNum == WLZ_ERR_MEM_ALLOC) {
+          QMessageBox::warning(NULL, "Warping failed", "Out of memory.");
+      }
       m_obj = WlzAssignObject( srcObj->getObj(), &errNum );
       statusChange("Warping " + m_name+ " failed.", 0);
       emit invalidWarping();
