@@ -82,7 +82,6 @@ void WoolzDynContourISO::doUpdate () {
 }
 
 void WoolzDynContourISO::recomputeShells() {
-  extern WarperConfig config;
   if ((m_autoUpdate && config.globalAutoUpdate())) {
     removeCachedVisualisation();
     recomputeShells_intern();
