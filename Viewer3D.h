@@ -62,7 +62,7 @@ public:
   * \brief        Constructor
   * \param        parent parent widget
   * \param        slider, if exists mixing slider is generated and signals will be passed to this object
-  *
+  * \param        buttons custom buttons at the right handside
   * \return       void
   * \par      Source:
   *                Viewer3D.cpp
@@ -98,7 +98,6 @@ protected:
   * \brief        Creates view buttons
   * \param        parent parent widget
   * \param        buttonList additional buttons
-  *
   * \return       void
   * \par      Source:
   *                Viewer2D.cpp
@@ -109,7 +108,6 @@ protected:
   * \ingroup      UI
   * \brief        Redefines the right trim with and adds mixing scrollbar if requested
   * \param        parent parent widget
-  *
   * \return       void
   * \par      Source:
   *                Viewer2D.cpp
