@@ -68,6 +68,7 @@ public:
   * \param        AddAction pointer referring add landmark action Qt event
   * \param        DeleteAction pointer referring delete landmark action Qt event
   * \param        MoveAction pointer referring move landmark action Qt event
+  * \param        RemovelElemAction pointer referring remove element action Qt event
   *
   * \return       void
   * \par      Source:
