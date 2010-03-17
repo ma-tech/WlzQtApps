@@ -44,16 +44,19 @@ static char _ObjectViewerController_h[] = "MRC HGU $Id$";
 #define OBJECTVIEWERCONTROLER_H
 
 #include <QObject>
-
 #include <QtXml/QXmlStreamWriter>
 
+//project objects
 class MainWindow;
 class ObjectViewer;
 class WoolzObject;
-class QActionGroup;
 class ObjectViewerModel;
 class LandmarkController;
+
+//Qt objects
+class QActionGroup;
 class QDomElement;
+
 /*!
  * \brief	Model of viewers. Manages the object viewers and views
  *
@@ -206,6 +209,15 @@ public slots:
   */
   void addResultViewer (bool force = false);
 
+ /*!
+  * \ingroup      Control
+  * \brief        Retruns the active viewer
+  * \return       active viewer or NULL if there is no active viewer
+  * \par      Source:
+  *                ObjectViewerController.cpp
+  */
+  ObjectViewer* activeWindow();
+
 signals:
  /*!
   * \ingroup      Control
@@ -274,15 +286,6 @@ signals:
   void signalRequestAllObjects(ObjectViewer *);
 
 private:
- /*!
-  * \ingroup      Control
-  * \brief        Retruns the active viewer
-  * \return       active viewer or NULL if there is no active viewer
-  * \par      Source:
-  *                ObjectViewerController.cpp
-  */
-  ObjectViewer* activeWindow();
-
  /*!
   * \ingroup      Control
   * \brief        Sets up UI connections to a new viewer

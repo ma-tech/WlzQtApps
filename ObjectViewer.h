@@ -59,9 +59,9 @@ class SoSeparator;
 class SoCamera;
 class SoNodeSensor;
 class SoSFPlane;
-
 class SoClipPlaneManip;
 class SoClipPlane;
+
 //Qt objects
 class QCloseEvent;
 class QXmlStreamWriter;
@@ -92,18 +92,15 @@ public:
   * \brief        Constructor
   * \param        objectViewerModel model managing the viewer
   * \param        is3D if viewer is for 3D objects
-  *
   * \return       void
   * \par      Source:
   *                ObjectViewer.cpp
   */
-// ObjectViewer(){}
  ObjectViewer (ObjectViewerModel *objectViewerModel, bool is3D, bool isBlending = false);
 
  /*!
   * \ingroup      UI
   * \brief        Destructor
-  *
   * \return       void
   * \par      Source:
   *                Viewer3D.cpp
@@ -113,7 +110,6 @@ public:
  /*!
   * \ingroup      UI
   * \brief        Returns view list
-  *
   * \return       view list
   * \par      Source:
   *                ObjectViewer.cpp
@@ -124,7 +120,6 @@ public:
   * \ingroup      UI
   * \brief        Callback function to notify in the camera was replaced.
   * \param        cam new camera
-  *
   * \return       void
   * \par      Source:
   *                ObjectViewer.cpp
@@ -133,32 +128,57 @@ public:
 
  /*!
   * \ingroup      UI
-  * \brief        Activates and deactivates linked camera view
-  * \param        isLinked true of viewer view is set to be linked
-  *
+  * \brief        Sets a new viewer ID
+  * \param        ID new id
   * \return       void
   * \par      Source:
   *                ObjectViewer.cpp
   */
-  void setIsLinked ( bool isLinked )   {
-      m_isLinked = isLinked;
-  }
+  void setID( int ID ) {m_ID = ID;}
 
  /*!
   * \ingroup      UI
-  * \brief        Rerturns the status of linking
-  *
+  * \brief        Rerturns the viewer ID
   * \return       true if viewer is linked, false otherwise
   * \par      Source:
   *                ObjectViewer.cpp
   */
-  bool getIsLinked ( )   { return m_isLinked; }
+  int ID( )   { return m_ID; }
+
+ /*!
+  * \ingroup      UI
+  * \brief        Rerturns the status of linking
+  * \return       true if viewer is linked, false otherwise
+  * \par      Source:
+  *                ObjectViewer.cpp
+  */
+  void setLinkedIDs ( )   {
+      m_linkedViewerID = m_linkedTo ? m_linkedTo->m_ID : -1;
+      m_linkedPlaneID = m_linkedPlaneTo ? m_linkedPlaneTo->m_ID : -1;
+  }
+
+ /*!
+  * \ingroup      UI
+  * \brief        Rerturns the linked viewer ID
+  * \return       linked viewerID
+  * \par      Source:
+  *                ObjectViewer.cpp
+  */
+  int getLinkedID( )   { return m_linkedViewerID; }
+
+ /*!
+  * \ingroup      UI
+  * \brief        Rerturns the linked viewer ID
+  * \return       linked viewerID
+  * \par      Source:
+  *                ObjectViewer.cpp
+  */
+  int getLinkedPlaneID( )   { return m_linkedPlaneID; }
 
  /*!
   * \ingroup      UI
   * \brief        Sets the viewer that imposes the current viewer camera view
   * \param        viewer Viewer to whitch the current viewer will be linked to
-  *
   * \return       void
   * \par      Source:
   *                ObjectViewer.cpp
@@ -168,7 +188,6 @@ public:
  /*!
   * \ingroup      UI
   * \brief        Rerturns linked viewer
-  *
   * \return       linked viewer
   * \par      Source:
   *                ObjectViewer.cpp
@@ -195,11 +214,29 @@ public:
   */
   bool parseDOMLine(const QDomElement &element);
 
+ /*!
+  * \ingroup      UI
+  * \brief        Sets the viewer that imposes plane copied in this viewer
+  * \param        viewer Viewer to whitch the current viewer will be linked to
+  * \return       void
+  * \par      Source:
+  *                ObjectViewer.cpp
+  */
+  void setLinkedPlaneTo ( ObjectViewer * viewer );
+
+ /*!
+  * \ingroup      UI
+  * \brief        Rerturns linked plane viewer
+  * \return       linked viewer
+  * \par      Source:
+  *                ObjectViewer.cpp
+  */
+  ObjectViewer * getLinkedPlaneTo ( )   { return m_linkedPlaneTo;}
+
 public slots:
  /*!
   * \ingroup      UI
   * \brief        Processes camera changes in other viewers.
-  *
   * \return       void
   * \par      Source:
   *                ObjectViewer.cpp
@@ -243,7 +280,6 @@ private:
  /*!
   * \ingroup      UI
   * \brief        Update Inventor's viewer camera
-  *
   * \return       void
   * \par      Source:
   *                ObjectViewer.cpp
@@ -262,23 +298,10 @@ private:
   */
   static void cameraCB(void *data, SoSensor  *);
 
- /*!
-  * \ingroup      UI
-  * \brief        Static event handler for camera mouse events.
-  *
-  *               Calls notifyCameraChanged().
-  *
-  * \return       void
-  * \par      Source:
-  *                ObjectViewer.cpp
-  */
-//  static void mouseEventCB(void *data, SoEventCallback * event);
-
 signals:
  /*!
   * \ingroup      UI
   * \brief        Notifies changed camera
-  *
   * \return       void
   * \par      Source:
   *                ObjectViewer.cpp
@@ -287,11 +310,12 @@ signals:
 
 protected:
   // protected attributes
-  SoCamera *m_camera;                 /*!< current camera */
+  SoCamera *m_camera;               /*!< current camera */
   SoNodeSensor *m_sensor;           /*!< camera sensor*/
-
-//  QPushButton * m_clipLandmarkButton;          /*!< landmark clipping button */
-  bool m_isLinked;                  /*!< if has camera views linked to another view */
   ObjectViewer * m_linkedTo;        /*!< viewer linked to */
+  ObjectViewer * m_linkedPlaneTo;   /*!< sectioning plane linked to*/
+  int m_ID;                         /*!< viewer ID to save and recoved links*/
+  int m_linkedViewerID;             /*!< linked viewer ID*/
+  int m_linkedPlaneID;              /*!< linked section plane ID*/
 };
 #endif // OBJECTVIEWER_H

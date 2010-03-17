@@ -85,7 +85,8 @@ static char _ObjectViewer_cpp[] = "MRC HGU $Id$";
 #include <QtXml/QDomElement>
 
 ObjectViewer::ObjectViewer (ObjectViewerModel *objectViewerModel, bool is3D, bool isBlending) :
-        ObjectSimpleViewer(is3D, isBlending), m_camera(NULL), m_sensor(NULL), m_isLinked(false), m_linkedTo(NULL) {
+        ObjectSimpleViewer(is3D, isBlending), m_camera(NULL), m_sensor(NULL), /*m_isLinked(false), */m_linkedTo(NULL), m_linkedPlaneTo(NULL),
+        m_ID(-1), m_linkedViewerID(-1), m_linkedPlaneID(-1) {
     if (is3D)
        m_camera = new SoPerspectiveCamera;
     else
@@ -114,6 +115,8 @@ ObjectViewer::ObjectViewer (ObjectViewerModel *objectViewerModel, bool is3D, boo
     connect(this, SIGNAL(changedViewer()), objectViewerModel, SLOT(changedViewer()));
 
     connect(objectViewerModel, SIGNAL(setBackgroundColour()), this, SLOT(setBackgroundColour()));
+
+    m_blinkButton->setVisible(true); //enale blinking button
 }
 
 ObjectViewer::~ObjectViewer ( ) { 
@@ -133,6 +136,20 @@ void ObjectViewer::setLinkedTo ( ObjectViewer * new_var )   {
         connect( m_linkedTo, SIGNAL( cameraChanged() ), this, SLOT( cameraChangedIn() ) );
         updateCameraLink();
         emit changedViewer();
+     }
+   }
+}
+
+void ObjectViewer::setLinkedPlaneTo ( ObjectViewer * viewer )   {
+   if (viewer != this) {
+     m_linkedPlaneTo = viewer;
+     if (m_clipPlaneManip) {
+         if (m_linkedPlaneTo && m_linkedPlaneTo->m_clipPlaneManip) {
+             m_clipPlaneManip->plane.connectFrom(&(m_linkedPlaneTo->m_clipPlaneManip->plane));
+             m_clipPlaneManip->draggerPosition.connectFrom(&(m_linkedPlaneTo->m_clipPlaneManip->draggerPosition));
+         } else {
+             m_clipPlaneManip->plane.disconnect();
+         }
      }
    }
 }
@@ -157,8 +174,8 @@ void ObjectViewer::notifyCameraChanged() {
 
 void ObjectViewer::cameraChangedIn() {
   ObjectViewer * senderView = qobject_cast<ObjectViewer*>(sender());
-  if (senderView) 
-  {  if (!(m_camera->fieldsAreEqual (senderView->m_camera)))
+  if (senderView) {
+    if (!(m_camera->fieldsAreEqual (senderView->m_camera)))
        m_viewer->changeCameraValues(senderView->m_camera);
   }
 }
@@ -184,27 +201,29 @@ void ObjectViewer::replacedCamera ( SoCamera *cam ) {
 
 bool ObjectViewer::saveAsXml(QXmlStreamWriter *xmlWriter) {
   Q_ASSERT(xmlWriter);
-  xmlWriter->writeTextElement("Linked", m_isLinked ? "Yes":"No");
-  /*if (m_isLinked)
-    xmlWriter->writeTextElement("LinkedTo", "NA");*/
-
+  xmlWriter->writeTextElement("ID", QString("%1").arg(m_ID));
+  xmlWriter->writeTextElement("LinkedViewerID", QString("%1").arg(m_linkedViewerID));
+  xmlWriter->writeTextElement("LinkedPlaneID", QString("%1").arg(m_linkedPlaneID));
   ObjectSimpleViewer::saveAsXml(xmlWriter);
   return true;
 }
 
 bool ObjectViewer::parseDOMLine(const QDomElement &element) {
-    if (element.tagName() == "Linked") {
-         QString str = element.text().toUpper();
-         m_isLinked = str == "YES";
+  if (element.tagName() == "ID") {
+        m_ID = element.text().toInt();
         return true;
-    } else return ObjectSimpleViewer::parseDOMLine(element);
-    return false;
+  } else if (element.tagName() == "LinkedViewerID") {
+        m_linkedViewerID = element.text().toInt();
+        return true;
+  } else if (element.tagName() == "LinkedPlaneID") {
+        m_linkedPlaneID = element.text().toInt();
+       return true;
+  } else return ObjectSimpleViewer::parseDOMLine(element);
 }
 
 void ObjectViewer::alphaChanged(bool alpha) {
   if (!m_viewer)
       return;
-
    if (alpha)
        m_viewer->setTransparencyType(SoGLRenderAction::SORTED_LAYERS_BLEND);
    else

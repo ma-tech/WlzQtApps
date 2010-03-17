@@ -44,6 +44,7 @@ static char _ObjectViewerModel_h[] = "MRC HGU $Id$";
 #define OBJECTVIEWERMODEL_H
 
 #include <QAbstractItemModel>
+#include <QList>
 
 class QMdiArea ;
 class ObjectView; 
@@ -230,8 +231,46 @@ public:
   */
   void listenToObject(ObjectView *view);
 
-public slots:
+ /*!
+  * \ingroup      Control
+  * \brief        Prepares viewer IDs for saving
+  * \return       void
+  * \par      Source:
+  *                ObjectViewerModel.cpp
+  */
+  void prepareIDs();
+
+ /*!
+  * \ingroup      Control
+  * \brief        Restores links after viewer are read from disk
+  * \return       void
+  * \par      Source:
+  *                ObjectViewerController.cpp
+  */
+  void restoreLinks();
+
+ /*!
+  * \ingroup      Control
+  * \brief        Provides the list of ObjectViewers
+  * \return       list of object viewers
+  * \par      Source:
+  *                ObjectViewerController.cpp
+  */
+  QList<ObjectViewer *>  getViewers() const;
+
+protected:
   /*!
+  * \ingroup      Control
+  * \brief        Provides the ObjectViewer with the given ID
+  * \param        ID ID of the object to be searched
+  * \return       object with the given ID or NULL if such does not exists
+  * \par      Source:
+  *                ObjectViewerController.cpp
+  */
+  ObjectViewer* findViewerByID(int ID);
+
+public slots:
+ /*!
   * \ingroup      Control
   * \brief        Processes configuration changes
   * \return       void
@@ -330,7 +369,7 @@ signals:
   */
   void setBackgroundColour();
 
-  /*!
+ /*!
   * \ingroup      Control
   * \brief        Requesting objects.
   * \return       void
@@ -353,7 +392,7 @@ protected:
 protected:
   QMdiArea *m_mdiArea;           /*!< MDI area managing viewers */
 private:
-  bool deleteInProgress;       /*!< deletion in progress flag */
+  bool deleteInProgress;         /*!< deletion in progress flag */
 };
 
 #endif // OBJECTVIEWERMODEL_H

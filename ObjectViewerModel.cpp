@@ -418,3 +418,59 @@ ObjectViewer * ObjectViewerModel::getViewerOf(const QModelIndex & index) const {
   // if index is a view
   return (ObjectViewer *)view->getParent();
 }
+
+
+QList<ObjectViewer *>  ObjectViewerModel::getViewers() const {
+    QList<ObjectViewer *> list;
+    QList<QMdiSubWindow *> windows = m_mdiArea->subWindowList();
+    QListIterator<QMdiSubWindow *> i(windows);
+    while (i.hasNext()) {
+        ObjectViewer* viewer = qobject_cast<ObjectViewer*>(i.next()->widget());
+        if (viewer)
+           list.append(viewer);
+    }
+    return list;
+}
+
+void ObjectViewerModel::prepareIDs() {
+    int id = 0;
+    QList<QMdiSubWindow *> windows = m_mdiArea->subWindowList();
+    QListIterator<QMdiSubWindow *> i(windows);
+    while (i.hasNext()) {
+        ObjectViewer* viewer = qobject_cast<ObjectViewer*>(i.next()->widget());
+        if (viewer)
+           viewer->setID(id++);
+    }
+
+    QListIterator<QMdiSubWindow *> i2(windows);
+    while (i2.hasNext()) {
+        ObjectViewer* viewer = qobject_cast<ObjectViewer*>(i2.next()->widget());
+        if (viewer)
+           viewer->setLinkedIDs();
+    }
+}
+
+ObjectViewer* ObjectViewerModel::findViewerByID(int ID) {
+    if (ID<0)
+        return NULL;
+    QList<QMdiSubWindow *> windows = m_mdiArea->subWindowList();
+    QListIterator<QMdiSubWindow *> i(windows);
+    while (i.hasNext()) {
+        ObjectViewer* viewer = qobject_cast<ObjectViewer*>(i.next()->widget());
+        if (viewer && viewer->ID() == ID)
+           return viewer;
+    }
+    return NULL;
+}
+
+void ObjectViewerModel::restoreLinks() {
+    QList<QMdiSubWindow *> windows = m_mdiArea->subWindowList();
+    QListIterator<QMdiSubWindow *> i(windows);
+    while (i.hasNext()) {
+        ObjectViewer* viewer = qobject_cast<ObjectViewer*>(i.next()->widget());
+        if (viewer) {
+           viewer->setLinkedTo(findViewerByID(viewer->getLinkedID()));
+           viewer->setLinkedPlaneTo(findViewerByID(viewer->getLinkedPlaneID()));
+       }
+    }
+}

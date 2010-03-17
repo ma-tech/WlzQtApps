@@ -68,7 +68,6 @@ static char _ObjectViewerController_cpp[] = "MRC HGU $Id$";
 
 const char* ObjectViewerController::xmlTag = "Viewers";
 
-
 ObjectViewerController::ObjectViewerController (MainWindow * mainWindow, LandmarkController *landmarkController, QObject * parent):  QObject(parent), m_mainWindow(mainWindow),
    m_landmarkController(landmarkController), lastSourceViewer(NULL), lastTargetViewer(NULL), lastResultViewer (NULL),
    sourceViewerCounter(0), targetViewerCounter(0), resultViewerCounter(0)
@@ -87,12 +86,9 @@ ObjectViewerController::~ObjectViewerController ( ) {
     delete m_objectViewerModel;
 }
 
-/*void ObjectViewerController::listenToObject(ObjectView *view) {
-    connect(view, SIGNAL(viewPropertyChanged()), this, SLOT(viewPropertyChanged()));
-}
-*/
 bool ObjectViewerController::saveAsXml(QXmlStreamWriter *xmlWriter) {
   Q_ASSERT(xmlWriter);
+  model()->prepareIDs();
   xmlWriter->writeStartElement(xmlTag);
   QList<QMdiSubWindow *> windows = m_mainWindow->getWorkspace()->subWindowList();
 
@@ -116,7 +112,7 @@ bool ObjectViewerController::saveAsXml(QXmlStreamWriter *xmlWriter) {
 }
 
 bool ObjectViewerController::parseDOM(const QDomElement &element) {
-  if (element.tagName() != "Viewers")
+  if (element.tagName() != ObjectViewerController::xmlTag)
       return false;
   QDomNode child = element.firstChild();
   while (!child.isNull()) {
@@ -133,6 +129,7 @@ bool ObjectViewerController::parseDOM(const QDomElement &element) {
         };
         child = child.nextSibling();
   }
+  model()->restoreLinks();
   return true;
 }
 
@@ -142,7 +139,7 @@ void ObjectViewerController::addSourceViewer(bool force)
         return;
 
     WarperSourceViewer *sourceViewer = new WarperSourceViewer(m_objectViewerModel, m_is3D, m_landmarkController,
-      m_mainWindow->actionAddLandmark, m_mainWindow->actionDeleteLandmark, m_mainWindow->actionMoveLandmark);
+      m_mainWindow->actionAddLandmark, m_mainWindow->actionDeleteLandmark, m_mainWindow->actionMoveLandmark, m_mainWindow->actionRemoveMeshElement);
 
     Q_ASSERT(sourceViewer);
     sourceViewer->init();
@@ -169,7 +166,7 @@ void ObjectViewerController::addTargetViewer(bool force)
         return;
 
     WarperTargetViewer *targetViewer = new WarperTargetViewer(m_objectViewerModel, m_is3D, m_landmarkController,
-      m_mainWindow->actionAddLandmark, m_mainWindow->actionDeleteLandmark, m_mainWindow->actionMoveLandmark);
+      m_mainWindow->actionAddLandmark, m_mainWindow->actionDeleteLandmark, m_mainWindow->actionMoveLandmark, m_mainWindow->actionRemoveMeshElement);
 
     Q_ASSERT(targetViewer );
     targetViewer->init();
@@ -254,7 +251,7 @@ void ObjectViewerController::updateActions() {
       lastSourceViewer = qobject_cast <WarperSourceViewer*> (aw);
     if (qobject_cast <WarperTargetViewer*> (aw) !=NULL)
       lastTargetViewer = qobject_cast <WarperTargetViewer*> (aw);
-    if (qobject_cast <WarperSourceViewer*> (aw) !=NULL)
+    if (qobject_cast <WarperResultViewer*> (aw) !=NULL)
       lastResultViewer = qobject_cast <WarperResultViewer*> (aw);
   }
 }
