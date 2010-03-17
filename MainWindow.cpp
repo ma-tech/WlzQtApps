@@ -60,7 +60,7 @@ static char _MainWindow_cpp[] = "MRC HGU $Id$";
 #include <WoolzFileObject.h>
 
 
-#include <ObjectListModel.h>
+#include "ObjectListModel.h"
 #include <ObjectSimpleViewer.h>
 
 //dialogs
