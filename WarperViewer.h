@@ -43,7 +43,7 @@ static char _WarperViewer_h[] = "MRC HGU $Id$";
 #ifndef WARPERVIEWER_H
 #define WARPERVIEWER_H
 
-#include <ObjectViewer.h>
+#include "ObjectViewer.h"
 #include "LandmarkController.h"
 
 class LandmarkView;
@@ -79,13 +79,14 @@ public:
   * \param        AddAction pointer referring add landmark action Qt event
   * \param        DeleteAction pointer referring delete landmark action Qt event
   * \param        MoveAction pointer referring move landmark action Qt event
+  * \param        RemovelElemAction pointer referring remove element action Qt event
   *
   * \return       void
   * \par      Source:
   *                WarperViewer.cpp
   */
   WarperViewer (ObjectViewerModel *objectViewerModel, bool is3D,
-      LandmarkController* landmarkController, QAction * AddAction, QAction * DeleteAction, QAction * MoveAction);
+      LandmarkController* landmarkController, QAction * AddAction, QAction * DeleteAction, QAction * MoveAction, QAction * RemovelElemAction);
 
  /*!
   * \ingroup      Views
@@ -132,28 +133,17 @@ public:
   */
   virtual void addLandmark(const WlzDVertex3 point) = 0;
 
-   /*!
+ /*!
   * \ingroup      UI
-  * \brief        Activates and deactivates linked camera view
-  * \param        isLinked true of viewer view is set to be linked
-  *
+  * \brief        Adds new object to the viewer.
+  * \param        object object to be added
+  * \param        doViewAll if true and no view all was done in the viewer then it also viewer will be adjusted to include all objects
+  * \param        previousView if not NULL, copies transparencu and visibility values to the new view
   * \return       void
   * \par      Source:
   *                WarperViewer.cpp
   */
-  void setIsLinked ( bool isLinked )   {
-      m_isLinked = isLinked;
-  }
-
- /*!
-  * \ingroup      UI
-  * \brief        Rerturns the status of linking
-  *
-  * \return       true if viewer is linked, false otherwise
-  * \par      Source:
-  *                WarperViewer.cpp
-  */
-  bool getIsLinked ( )   { return m_isLinked; }
+  virtual void addObject (WoolzObject * object, bool doViewAll = true, ObjectView *previousView = NULL);
 
 public slots:
  /*!
@@ -164,7 +154,6 @@ public slots:
   *                WarperViewer.cpp
   */
   void modeUpdated ( );
-
 
 private slots:
  /*!
@@ -222,6 +211,16 @@ protected:
   */
   void setupLandmarkView(LandmarkModel::IndexType indexType);
 
+signals:
+ /*!
+  * \ingroup      UI
+  * \brief        Signals request to remove an element
+  * \param        point to be removed
+  * \return       void
+  * \par      Source:
+  *                WarperViewer.cpp
+  */
+  void removeMeshElementSignal(const WlzDVertex3 point);
 
 private:
  /*!
@@ -234,7 +233,6 @@ private:
   */
   void updateCameraLink();
 
-
 protected:
   LandmarkView * landmarkView;              /*!< landmark view */
   LandmarkController* m_landmarkController; /*!< landmark model */
@@ -242,6 +240,7 @@ protected:
   QAction * addAction;                      /*!< action allowing landmark addition model */
   QAction * deleteAction;                   /*!< action allowing landmark deletion model */
   QAction * moveAction;                     /*!< action allowing landmark move model */
+  QAction * removeMeshElementAction;        /*!< action allowing mesh element removal */
 
   SoPickStyle *m_pickStyle;                 /*!< specifies if views object are pickable or not*/
   SoClipPlane *m_clipPlane;                 /*!< clip plane */

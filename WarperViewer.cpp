@@ -67,14 +67,16 @@ static char _WarperViewer_cpp[] = "MRC HGU $Id$";
 #include "LandmarkController.h"
 #include "LandmarkView.h"
 #include "ObjectView.h"
+#include "WoolzObject.h"
 
 // Constructors/Destructors
 //
 
 WarperViewer::WarperViewer (ObjectViewerModel *objectViewerModel, bool is3D, LandmarkController* landmarkController,
-                            QAction * AddAction, QAction * DeleteAction, QAction * MoveAction) :
+                            QAction * AddAction, QAction * DeleteAction, QAction * MoveAction, QAction * RemovelElemAction) :
                       ObjectViewer (objectViewerModel, is3D, true), landmarkView(NULL), m_landmarkController(landmarkController),
-                      addAction(AddAction), deleteAction(DeleteAction), moveAction(MoveAction), m_pickStyle(NULL), m_clipPlane(NULL), m_clipOn(true)
+                      addAction(AddAction), deleteAction(DeleteAction), moveAction(MoveAction), removeMeshElementAction(RemovelElemAction),
+                      m_pickStyle(NULL), m_clipPlane(NULL), m_clipOn(true)
 {
   setEditingMode();  //switch to editing mode
   if (m_clipLandmarkButton) {
@@ -89,8 +91,6 @@ WarperViewer::WarperViewer (ObjectViewerModel *objectViewerModel, bool is3D, Lan
 
   connect( addAction, SIGNAL( triggered() ), this, SLOT( modeUpdated() ) );
   connect( deleteAction, SIGNAL( triggered() ), this, SLOT( modeUpdated() ) );
-//  connect( moveAction, SIGNAL( triggered() ), this, SLOT( modeUpdated() ) );
-//  connect( deleteAction, SIGNAL( triggered() ), this, SLOT( modeUpdated() ) );
 }
 
 WarperViewer::~WarperViewer ( ) {
@@ -102,7 +102,6 @@ WarperViewer::~WarperViewer ( ) {
       m_pickStyle->unref();
       m_pickStyle = NULL;
     }
-
 }
 
 WlzDVertex3 WarperViewer::covertSbVec3f2WlzDVertex3(const SbVec3f point) {
@@ -138,6 +137,20 @@ void WarperViewer::notifyMouseEvent(SoEventCallback * event) {
         return;
       }
        addLandmark(covertSbVec3f2WlzDVertex3(point->getPoint()));
+       event->setHandled();
+     }
+     //////////////////////////////////////// remove element
+     if (removeMeshElementAction->isChecked()) {
+       rp.apply(root);
+       SoPickedPoint * point = rp.getPickedPoint();
+       if (point == NULL) {
+         return;
+       }
+       SoPath *path = point ->getPath();
+
+       if (!path ->getTail()->isOfType(SoIndexedFaceSet::getClassTypeId()) || (0))
+        return;
+       emit removeMeshElementSignal(covertSbVec3f2WlzDVertex3(point->getPoint()));
        event->setHandled();
      }
      //////////////////////////////////////// delete mode?
@@ -177,7 +190,6 @@ void WarperViewer::setupLandmarkView(LandmarkModel::IndexType indexType) {
   ps->style = SoPickStyle::SHAPE;
   root->addChild(ps);
   root->addChild(m_landmarks);
-
   connect(this, SIGNAL(addedClipPlane(SoClipPlane *)), this, SLOT(addedClipPlaneSlot(SoClipPlane *)));
 }
 
@@ -202,8 +214,16 @@ void WarperViewer::transparencyChanged(int transparency) {
   }
 }
 
-void WarperViewer::modeUpdated ( )
-{
+void WarperViewer::modeUpdated ( ) {
     m_pickStyle->style = (addAction->isChecked() || moveAction->isChecked()) ? (SoPickStyle::SHAPE) : (SoPickStyle::UNPICKABLE);
     m_pickStyle->style = (addAction->isChecked()) ? (SoPickStyle::SHAPE) : (SoPickStyle::UNPICKABLE);
+}
+
+void WarperViewer::addObject (WoolzObject * object, bool doViewAll, ObjectView *previousView) {
+  ObjectViewer::addObject(object, doViewAll, previousView);
+  if (accepting(object)) {
+      if (object->isMeshPreRead()) {
+         connect(this, SIGNAL(removeMeshElementSignal(const WlzDVertex3)), object, SLOT(removeMeshElement(const WlzDVertex3)));
+      }
+  }
 }
