@@ -204,46 +204,45 @@ void WoolzFileObject::setBaseDir(QString baseDir) {
     m_baseDir = baseDir;
 }
 
-QString RelativePath( QString absolutePath, QString relativeTo, bool bIsFile /*= false*/ )
-{
-QStringList absoluteDirectories = absolutePath.split( '/', QString::SkipEmptyParts );
-QStringList relativeDirectories = relativeTo.split( '/', QString::SkipEmptyParts );
+QString RelativePath( QString absolutePath, QString relativeTo) {
+    QStringList absoluteDirectories = absolutePath.split( '/', QString::SkipEmptyParts );
+    QStringList relativeDirectories = relativeTo.split( '/', QString::SkipEmptyParts );
 
-//Get the shortest of the two paths
-int length = absoluteDirectories.count() < relativeDirectories.count() ? absoluteDirectories.count() : relativeDirectories.count();
+    //Get the shortest of the two paths
+    int length = absoluteDirectories.count() < relativeDirectories.count() ? absoluteDirectories.count() : relativeDirectories.count();
 
-//Use to determine where in the loop we exited
-int lastCommonRoot = -1;
-int index;
+    //Use to determine where in the loop we exited
+    int lastCommonRoot = -1;
+    int index;
 
-//Find common root
-for (index = 0; index < length; index++)
-if (absoluteDirectories[index] == relativeDirectories[index])
-lastCommonRoot = index;
-else
-break;
+    //Find common root
+    for (index = 0; index < length; index++)
+    if (absoluteDirectories[index] == relativeDirectories[index])
+      lastCommonRoot = index;
+    else
+      break;
 
-//If we didn't find a common prefix then throw
-if (lastCommonRoot == -1)
-throw QString("Paths do not have a common base");
+    //If we didn't find a common prefix then throw
+    if (lastCommonRoot == -1)
+        return absolutePath;
 
-//Build up the relative path
-QString relativePath;
+    //Build up the relative path
+    QString relativePath;
 
-//Add on the ..
-for (index = lastCommonRoot + 1; index < relativeDirectories.length(); index++)
-if (relativeDirectories[index].length() > 0)
-relativePath.append("../");
+    //Add on the ..
+    for (index = lastCommonRoot + 1; index < relativeDirectories.length(); index++)
+      if (relativeDirectories[index].length() > 0)
+        relativePath.append("../");
 
-//Add on the folders
-for (index = lastCommonRoot + 1; index < absoluteDirectories.length() - 1; index++)
-relativePath.append(absoluteDirectories[index] + "/");
+    //Add on the folders
+    for (index = lastCommonRoot + 1; index < absoluteDirectories.length() - 1; index++)
+      relativePath.append(absoluteDirectories[index] + "/");
 
-relativePath.append(absoluteDirectories[absoluteDirectories.length() - 1]);
+    relativePath.append(absoluteDirectories[absoluteDirectories.length() - 1]);
 
-return relativePath;
+    return relativePath;
 }
 
 QString WoolzFileObject::stripedFilePath(QString file) {
-   return RelativePath(file, m_baseDir, true);
+   return RelativePath(file, m_baseDir);
 }
