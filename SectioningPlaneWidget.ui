@@ -261,11 +261,25 @@
       <property name="text">
        <string>Apply</string>
       </property>
+      <property name="autoDefault">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>doubleSpinBoxNX</tabstop>
+  <tabstop>doubleSpinBoxNY</tabstop>
+  <tabstop>doubleSpinBoxNZ</tabstop>
+  <tabstop>doubleSpinBoxDist</tabstop>
+  <tabstop>doubleSpinBoxPositionX</tabstop>
+  <tabstop>doubleSpinBoxPositionY</tabstop>
+  <tabstop>doubleSpinBoxPositionZ</tabstop>
+  <tabstop>comboBoxLinked</tabstop>
+  <tabstop>pushButtonApply</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
