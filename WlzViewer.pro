@@ -20,6 +20,11 @@ TEMPLATE = app
 VERSION = 0.9.7
 
 TYPE = 32
+openmp { 
+    contains( QMAKE_CC, icc):LIBS *= -openmp # for icc
+    else:LIBS *= -fopenmp # for gcc
+    message( Using openmp )
+}
 contains( QMAKE_CFLAGS, -m64): TYPE =
 contains( QMAKE_LIBDIR_X11, /usr/X11R6/lib64):TYPE =
 
