@@ -25,7 +25,7 @@ HEADERS = WarperConfig.h \
     ViewerDelegate.h \
     ObjectDelegate.h \
     ViewerListEditor.h \
-    LoadViewThread.h \
+#    LoadViewThread.h \
     ObjectPropertyWidget.h \
     LandmarkView.h \
     LandmarkDragger.h \
@@ -79,7 +79,7 @@ SOURCES = WarperConfig.cpp \
     ViewerDelegate.cpp \
     ObjectDelegate.cpp \
     ViewerListEditor.cpp \
-    LoadViewThread.cpp \
+#    LoadViewThread.cpp \
     ObjectPropertyWidget.cpp \
     LandmarkView.cpp \
     LandmarkManip.cpp \
