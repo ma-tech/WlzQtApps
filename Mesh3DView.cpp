@@ -159,7 +159,7 @@ SoCoordinate3 * Mesh3DView::Vertices3D(SoCoordinate3 * vertices, WlzErrorNum& er
   WlzCMesh3D *mesh = obj->getObj()->domain.cm3;
 
   // check if 3D mesh and if it has vertices
-  if(!(mesh && (mesh->type == WLZ_CMESH_TET3D) &&
+  if(!(mesh && (mesh->type == WLZ_CMESH_3D) &&
     ((nNod = mesh->res.nod.maxEnt) > 0)))
   {
       errNum = WLZ_ERR_DOMAIN_TYPE;
@@ -193,7 +193,7 @@ SoIndexedFaceSet * Mesh3DView::Faces3D(SoIndexedFaceSet * faces, WlzErrorNum& er
   WlzCMeshFace	*fce;
   WlzCMesh3D *mesh = obj->getObj()->domain.cm3;
   // check if it is 3D mesh and if it has faces
-  if(!(mesh && (mesh->type == WLZ_CMESH_TET3D) &&
+  if(!(mesh && (mesh->type == WLZ_CMESH_3D) &&
     ((nElm = mesh->res.elm.maxEnt)>0)))
   {
       errNum = WLZ_ERR_DOMAIN_TYPE;

@@ -127,7 +127,7 @@ SoCoordinate3 * Mesh2DView::Vertices2D(SoCoordinate3 * vertices, WlzErrorNum& er
   WlzCMeshNod2D	*nod;
   WlzCMesh2D *mesh=obj->getObj()->domain.cm2;
 
-  if(!(mesh && (mesh->type == WLZ_CMESH_TRI2D) &&
+  if(!(mesh && (mesh->type == WLZ_CMESH_2D) &&
     ((nNod = mesh->res.nod.maxEnt) > 0)))
   {
       errNum = WLZ_ERR_DOMAIN_TYPE;
@@ -157,7 +157,7 @@ SoIndexedFaceSet * Mesh2DView::Faces2D(SoIndexedFaceSet * faces, WlzErrorNum& er
   WlzCMesh2D *mesh=obj->getObj()->domain.cm2;
 
   // check if it is 2D mesh and if it has faces
-  if(!(mesh && (mesh->type == WLZ_CMESH_TRI2D) &&
+  if(!(mesh && (mesh->type == WLZ_CMESH_2D) &&
     ((nElm = mesh->res.elm.maxEnt) > 0)))
   {
       errNum = WLZ_ERR_DOMAIN_TYPE;
