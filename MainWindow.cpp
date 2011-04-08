@@ -39,6 +39,7 @@ static char _MainWindow_cpp[] = "MRC HGU $Id$";
 * \ingroup      UI
 *
 */
+#include <iostream>
 
 // Qt4 includes
 #include <QtGui>
@@ -68,8 +69,13 @@ static char _MainWindow_cpp[] = "MRC HGU $Id$";
 
 //widgets
 #include "TransferFunctionWidget.h"
-
 MainWindow::MainWindow() : m_objectToolDialog(NULL), m_objectListModel(NULL), m_transferFunctionWidget(NULL) {
+    cout << "SHIT" << endl;
+    ;
+}
+MainWindow::MainWindow(int fileNo,char *files[]) : m_objectToolDialog(NULL), m_objectListModel(NULL), m_transferFunctionWidget(NULL) {
+  cout << ":::" << fileNo << endl;
+
   SoQt::init(this);
   SoVolumeRendering::init();
 
@@ -92,7 +98,50 @@ MainWindow::MainWindow() : m_objectToolDialog(NULL), m_objectListModel(NULL), m_
   //Menu global menu signals
   connect( actionAbout, SIGNAL( triggered() ), this, SLOT( about() ) ); 
   connect( actionExit, SIGNAL( triggered() ), this, SLOT( close() ) ); 
-  connect( actionOpenObject, SIGNAL( triggered() ), this, SLOT( openObject() ) );
+  //for(int i = 1; i < fileNo ; i++){
+      //connect( actionOpenObject, SIGNAL( triggered() ), this, SLOT( openObject() ) );
+      connect( actionObjects, SIGNAL( triggered() ), this, SLOT( openObjectDialog() ) );
+
+      connect( actionMinimize, SIGNAL( triggered() ), this, SLOT( minimizeSubWindow() ) );
+      connect( actionMaximize, SIGNAL( triggered() ), this, SLOT( maximizeSubWindow() ) );
+      connect( actionRestore, SIGNAL( triggered() ), this, SLOT( restoreSubWindow() ) );
+
+      m_viewer=NULL;
+      m_objectListModel = new ObjectListModel();
+      Q_ASSERT(m_objectListModel );
+      m_project3D = true;  ///TODO
+    //if I iterate for each file in here, only the last .wlz is being loaded.
+
+      if (!m_transferFunctionWidget) {
+          m_transferFunctionWidget= new TransferFunctionWidget( this, m_objectListModel);
+          Q_ASSERT(m_transferFunctionWidget);
+          m_transferFunctionWidget->setFloating(true);
+          m_transferFunctionWidget->hide();
+
+          QSize sizeWidget = m_transferFunctionWidget->size();
+          QSize sizeMain = size();
+
+          m_transferFunctionWidget->move(0,
+                                         sizeMain.rheight()-sizeWidget.rheight());
+          addDockWidget(Qt::LeftDockWidgetArea, m_transferFunctionWidget);
+          QAction *toggleAction = m_transferFunctionWidget->toggleViewAction();
+          QIcon icon;
+          icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/images/transferfunction.png")), QIcon::Normal, QIcon::Off);
+          toggleAction->setIcon(icon);
+          toolBar->addAction(toggleAction);
+      }
+      toolBar->setVisible(true);
+      menuWindow->addAction(toolBar->toggleViewAction());
+  if (fileNo == 1)
+    connect( actionOpenObject, SIGNAL( triggered() ), this, SLOT( openObject() ) );
+    //  ;
+  else{
+
+          openObject(fileNo, files) ;
+      //}
+      return;
+  }
+  /*
   connect( actionObjects, SIGNAL( triggered() ), this, SLOT( openObjectDialog() ) );
 
   connect( actionMinimize, SIGNAL( triggered() ), this, SLOT( minimizeSubWindow() ) );
@@ -124,14 +173,17 @@ MainWindow::MainWindow() : m_objectToolDialog(NULL), m_objectListModel(NULL), m_
   }
   toolBar->setVisible(true);
   menuWindow->addAction(toolBar->toggleViewAction());
+  */
 }
 
 //      connect( actionOpenMeshTarget, SIGNAL( triggered() ), this, SLOT( openMeshTarget( ) ) );
 
 void MainWindow::openObject() {
+    cout << "hehe" << endl;
     QString filename = QFileDialog::getOpenFileName(this, tr("Open object"),
                                                 ".",
                                                 WoolzFileObject::getValueFormats());
+    //printf("hehe %s",filename.constData());
     if (filename.isEmpty())
       return;
     WoolzObject *newVolumeObject;
@@ -139,10 +191,31 @@ void MainWindow::openObject() {
                 QApplication::setOverrideCursor(Qt::WaitCursor);
                 addViewer();   // will be default show mesh object and value (if loaded) objects
                 newVolumeObject->update(true);
+                if (m_objectListModel == NULL)
+                    cout << "NULL HERE" << endl;
                 m_objectListModel->addObject(newVolumeObject);
                 QApplication::restoreOverrideCursor();
     }
 }
+
+void MainWindow::openObject(int fileNo, char* files[]) {
+    cout << "hehe22" << endl;
+    for(int i = 1; i < fileNo ; i++){
+        cout << ">>>>>>argv[" << i << "] = " << files[i] << endl;
+        QString filename = files[i];
+        if (filename.isEmpty())
+            return;
+        WoolzObject *newVolumeObject;
+        if ((newVolumeObject = load(filename, WoolzObject::target)))  {
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            addViewer();   // will be default show mesh object and value (if loaded) objects
+            newVolumeObject->update(true);
+            m_objectListModel->addObject(newVolumeObject);
+            QApplication::restoreOverrideCursor();
+        }
+    }
+}
+
 
 void MainWindow::about()  {
       QMessageBox::about(this, "About Woolz viewing",
