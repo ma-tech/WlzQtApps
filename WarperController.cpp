@@ -899,12 +899,13 @@ void WarperController::saveWarpedObject () {
   QString filename = QFileDialog::getSaveFileName(mainWindow, tr("Save warped object"),
                                                 getLastPath(),
                                                 tr("Woolz object (*.wlz)"));
-  if (!filename.isEmpty())
-    if (!warpedObject->saveAs(filename))
-        QMessageBox::warning(NULL, "Save warped object", "Cannot save object to file " + filename + ".") ;
-    else
-        setLastPath(filename);
-
+  if (!filename.isEmpty()) {
+	if (!warpedObject->saveAs(filename)) {
+	    QMessageBox::warning(NULL, "Save warped object", "Cannot save object to file " + filename + ".") ;
+	} else {
+	    setLastPath(filename);
+        }
+    }
 }
 
 void WarperController::saveWarpingTransform  () {
@@ -915,10 +916,12 @@ void WarperController::saveWarpingTransform  () {
       QString ext = QFileInfo(filename).suffix().toUpper();
       if (ext.isEmpty()) {
           filename += ".wlz";
-          if (!saveWarpingTransformToFile(filename))
-            QMessageBox::warning(NULL, "Save warping transform", "Canot save transform to file.") ;
-      } else
+      }
+      if (!saveWarpingTransformToFile(filename)) {
+	  QMessageBox::warning(NULL, "Save warping transform", "Canot save transform to file.") ;
+      } else {
             setLastPath(filename);
+      }
   }
 }
 
