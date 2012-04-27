@@ -1,0 +1,75 @@
+Version information:
+
+v.0.9.5 - November 2009
+        - version for EO testing
+
+  Source code labels: 
+        Wlz           WlzWarp_v0_9_5 
+        WlzWarp       WlzWarp_v0_9_5 
+	WlzView       WlzWarp_v0_9_5 
+	WlzQtCoinGlue WlzWarp_v0_9_5 
+
+  Library versions:
+        Coin  3.1.1
+	SoQt  1.4.1
+	SimVoleon 2.0.1
+	Qt 2009.04.01
+
+
+New:
+ - support for 3D SHORT volume objects
+ 
+v.0.9.6 - December 2009
+        - /opt/MouseAtlas version
+
+  Source code labels: 
+        Wlz           WlzWarp_v0_9_5 
+        WlzWarp       WlzWarp_v0_9_6 
+	WlzQtCoinGlue WlzWarp_v0_9_6
+
+  Library versions:
+        Coin  3.1.2
+	SoQt  1.4.1
+	SimVoleon 2.0.1
+	Qt 2009.05.01
+
+Additional features:
+ - added alpha channel
+Fixes:
+ - histogram for non UBYTE objects
+
+v.0.9.7 - 26 January 2010
+        - Newcastle version for domain object reads
+
+  Source code labels: 
+        Wlz           WlzWarp_v0_9_7 
+        WlzWarp       WlzWarp_v0_9_7 
+	WlzQtCoinGlue WlzWarp_v0_9_7
+
+  Library versions:
+        Coin  3.1.2
+	SoQt  1.4.1
+	SimVoleon 2.0.1
+	Qt 2010.01 (4.6.1)
+
+Additional features:
+ - object/view/landmark dialogs changed to widgets
+ - direct and indirect transform factored out
+ - underlying Woolz warp changed the transform into WlzObject
+ - saving transform object
+ - update button added
+ - objects 'know' if they need to be updated
+ - auto-update icon changed
+ - openmp CONFIG option added
+ - build tested with icc 
+ - sub-sampling large objects 
+Fixes:
+ - histogram at right hand side not always drawn
+ - thresholding bug: high threshold  -1 was incorrectly used
+ 
+Known bugs:
+ - on 32 bits the volume rendering does not render correctly transparent regions
+ - after removing an object the View tool looses '+' icon for all windows that contained that object
+ 
+v.0.9.7b - 8 February 2010
+         - Minor fixes for Volume rendering

@@ -1,0 +1,89 @@
+#Inventor V2.0 ascii
+#
+# \file         crossHairDragger.ov
+# \author       Zsolt Husz
+# \date         September 2009
+# \version      $Id$
+# \par
+# Address:
+#               MRC Human Genetics Unit,
+#               Western General Hospital,
+#               Edinburgh, EH4 2XU, UK.
+# \par
+# Copyright (C) 2008 Medical research Council, UK.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be
+# useful but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; if not, write to the Free
+# Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA  02110-1301, USA.
+# \brief        3D dragger geometry snapping to 3D object surface
+# \ingroup      UI
+#
+# Geometry resource file for the SnapSurfaceDragger
+
+DEF translatePlacedMaterialSnap Material { 
+        diffuseColor 1 0 0 
+        shininess 0
+        ambientColor 0 0 0
+        emissiveColor 0 0 0
+}
+
+DEF translateActiveMaterialSnap Material { 
+        diffuseColor 1 0 0 
+        shininess 0
+        ambientColor 0 0 0
+        emissiveColor 0 0 0
+}
+
+DEF translateNormalMaterialSnap Material { 
+        diffuseColor 0 1 0 
+        shininess 0
+        ambientColor 0 0 0
+        emissiveColor 0 0 0
+}
+
+DEF translateInvalidMaterialSnap Material { 
+        diffuseColor 0 0 0 
+        shininess 0
+        ambientColor 0 0 0
+        emissiveColor 0.94 0.77 0.25
+}
+
+DEF translateSnapTranslator Separator {
+    DrawStyle { style FILLED }
+#    DrawStyle { style LINES }
+    Sphere {
+	radius 0.5
+    }
+}
+
+DEF translateSnapTranslatorActive Separator {
+    DrawStyle { style LINES }
+    Sphere {
+       radius 0.5
+    }
+}
+
+# Don't show anything for feedback during inactive state
+DEF translateSnapFeedback Separator {
+}
+
+DEF translateSnapFeedbackActive Separator {
+    Material { diffuseColor .5  .9 .9 }
+    # An arrow aligned with the x axis.
+}
+
+DEF scaleSnap Scale {
+        scaleFactor 1 1 1
+    }
