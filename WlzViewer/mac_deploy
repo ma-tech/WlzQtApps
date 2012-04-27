@@ -1,0 +1,24 @@
+#!/bin/sh
+# creates standalone package
+
+FD=$MA_HOME/frameworks
+APP=MacOSX/bin/Viewer.app/Contents/MacOS/Viewer
+FMW=MacOSX/bin/Viewer.app/Contents/Frameworks
+LIBGUIDIR=$MA_HOME/libUI
+
+macdeployqt MacOSX/bin/Viewer.app 
+#-no-plugins
+
+install_name_tool -change $LIBGUIDIR/libWlzQtCoinGlue.0.dylib @executable_path/../Frameworks/libWlzQtCoinGlue.0.dylib $APP
+install_name_tool -change $FD/SoQt.framework/Versions/A/SoQt @executable_path/../Frameworks/SoQt.framework/Versions/A/SoQt $APP
+install_name_tool -change $FD/Inventor.framework/Versions/C/Inventor @executable_path/../Frameworks/Inventor.framework/Versions/C/Inventor $APP
+install_name_tool -change $FD/Inventor.framework/Versions/C/Inventor @executable_path/../Frameworks/Inventor.framework/Versions/C/Inventor $FMW/SoQt.framework/Versions/A/SoQt
+install_name_tool -change $FD/Inventor.framework/Versions/C/Inventor @executable_path/../Frameworks/Inventor.framework/Versions/C/Inventor $FMW/libSimVoleon.40.dylib
+install_name_tool -change $FD/Inventor.framework/Versions/C/Inventor @executable_path/../Frameworks/Inventor.framework/Versions/C/Inventor $FMW/libWlzQtCoinGlue.0.dylib
+install_name_tool -change $FD/SoQt.framework/Versions/A/SoQt @executable_path/../Frameworks/SoQt.framework/Versions/A/SoQt $FMW/libWlzQtCoinGlue.0.dylib
+
+rm -R MacOSX/bin/Viewer.app/Contents/Frameworks/Inventor.framework/Resources/
+mkdir MacOSX/bin/Viewer.app/Contents/Frameworks/Inventor.framework/Resources/
+
+
+
