@@ -1,0 +1,6 @@
+export SOQTINC=`soqt-config --includedir`
+export COININC=`coin-config --includedir`
+export SOQTLIB=`soqt-config --libs`
+export COINLIB=`coin-config --libs`
+export SOQTLDFLAGS=`soqt-config --ldflags`
+export COINLDFLAGS=`coin-config --ldflags`

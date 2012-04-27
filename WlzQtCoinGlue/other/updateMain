@@ -1,0 +1,16 @@
+#!/bin/tcsh
+# this updates the library links to crate a standalone MacOS X application,
+# with all libraries and frameworks included
+setenv MA_HOME $1
+setenv FD $MA_HOME/frameworks
+
+install_name_tool -id $FD/Inventor.framework/Versions/C/Inventor $FD/Inventor.framework/Versions/C/Inventor
+install_name_tool -id $FD/SoQt.framework/Versions/A/SoQt $FD/SoQt.framework/Versions/A/SoQt
+#install_name_tool -id $MA_HOME/lib/libWlzQtCoinGlue.0.dylib $MA_HOME/libUI/libWlzQtCoinGlue.0.dylib
+install_name_tool -id $MA_HOME/lib/libSimVoleon.40.dylib $MA_HOME/lib/libSimVoleon.40.dylib
+install_name_tool -id $MA_HOME/lib/libtiff.3.dylib $MA_HOME/lib/libtiff.3.dylib
+
+install_name_tool -change Inventor.framework/Versions/C/Inventor  $FD/Inventor.framework/Versions/C/Inventor $FD/SoQt.framework/Versions/A/SoQt
+install_name_tool -change Inventor.framework/Versions/C/Inventor $FD/Inventor.framework/Versions/C/Inventor $MA_HOME/lib/libSimVoleon.40.dylib
+
+#?? tiff?? lib is ok?

@@ -1,0 +1,13 @@
+#!/bin/tcsh
+
+# this updates the WlzQtCoinGlue library dynamic library links on Mac
+setenv MA_HOME $1
+setenv FD $MA_HOME/frameworks
+
+#install_name_tool -change SoQt.framework/Versions/A/SoQt $FD/SoQt.framework/Versions/A/SoQt $MA_HOME/libUI/libWlzQtCoinGlue.0.dylib
+#install_name_tool -change Inventor.framework/Versions/C/Inventor $FD/Inventor.framework/Versions/C/Inventor $MA_HOME/libUI/libWlzQtCoinGlue.0.dylib
+install_name_tool -id $MA_HOME/lib/libWlzQtCoinGlue.0.dylib $MA_HOME/lib/libWlzQtCoinGlue.0.dylib
+
+#otool -L install_name_tool -id $MA_HOME/libUI/libWlzQtCoinGlue.0.dylib $MA_HOME/libUI/libWlzQtCoinGlue.0.dylib
+#otool -D install_name_tool -id $MA_HOME/libUI/libWlzQtCoinGlue.0.dylib $MA_HOME/libUI/libWlzQtCoinGlue.0.dylib
+

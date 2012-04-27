@@ -1,0 +1,21 @@
+# use patch -p0 < filename
+# created with diff -crB
+*** src/Inventor/Qt/SoQtComponent.cpp	2006-10-30 22:09:20.000000000 +0000
+--- other
+***************
+*** 100,106 ****
+    this->parent->removeEventFilter(this);
+  }
+  
+! static void delete_dict_value(unsigned long key, void * value)
+  {
+    delete (QCursor *)value;
+  }
+--- 100,106 ----
+    this->parent->removeEventFilter(this);
+  }
+  
+! static void delete_dict_value(SbDictKeyType /*key*/, void * value)
+  {
+    delete (QCursor *)value;
+  }
