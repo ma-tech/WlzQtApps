@@ -67,6 +67,10 @@ int main(int argc, char *argv[])
       MainWindow mainWindow;
 
       SoQt::show(&mainWindow);
+      for(int idx = 1; idx < argc; ++idx) 
+      {
+        mainWindow.openObject(argv[idx]);
+      }
       SoQt::mainLoop();
      }
 

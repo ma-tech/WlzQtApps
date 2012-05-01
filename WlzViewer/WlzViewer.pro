@@ -1,5 +1,8 @@
-# CONFIG += debug_and_release build_all
-QT +=xml
+#CONFIG += debug_and_release
+#CONFIG += build_all
+CONFIG += debug
+CONFIG += openmp
+QT += xml
 
 HEADERS = MainWindow.h \
     ObjectToolDialog.h \
@@ -52,7 +55,10 @@ LIBS *= -lWlzExtFF \
         -lAlc \
         -lAlg \
         -ljpeg \
-        -ltiff
+        -ltiff \
+	-lniftiio \
+	-lznz \
+	-lz
 
 
 

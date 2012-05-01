@@ -1,6 +1,5 @@
-# CONFIG += debug_and_release build_all
-# CONFIG += openmp
-CONFIG += sse2
+CONFIG += debug_and_release build_all
+CONFIG += openmp
 QT += xml
 HEADERS = WarperConfig.h \
     WarperController.h \
@@ -178,7 +177,10 @@ LIBS *= -lWlzExtFF \
     -lAlc \
     -lAlg \
     -ljpeg \
-    -ltiff
+    -ltiff \
+    -lniftiio \
+    -lznz \
+    -lz
 draggers.files = draggers/*.iv
 draggers.path = $$(MA_HOME)/bin/draggers
 

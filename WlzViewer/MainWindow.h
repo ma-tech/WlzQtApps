@@ -154,10 +154,22 @@ public slots:
   *
   *               Changes project mode to warping, updates main menu.
   * \return       void
+  * \param	  filename path to file.
   * \par      Source:
   *                MainWindow.cpp
   */
-  void openObject();
+  void openObject(QString filename);
+
+ /*!
+  * \ingroup      UI
+  * \brief        Opens a value target object
+  *
+  *               Changes project mode to warping, updates main menu.
+  * \return       void
+  * \par      Source:
+  *                MainWindow.cpp
+  */
+  void openObjectFromDialog();
 
  /*!
   * \ingroup      Control
