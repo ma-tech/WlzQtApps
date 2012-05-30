@@ -112,7 +112,8 @@ public:
   * \brief        Returns the number of rows.
 
   * \param        parent parent index
-  * \return       the number of landmarks for the root index and 0 for any other index.
+  * \return       the number of landmarks for the root index and 0 for any
+  *               other index.
   * \par      Source:
   *                LandmarkModel.cpp
   */
@@ -130,7 +131,8 @@ public:
 
  /*!
   * \ingroup      Control
-  * \brief        Returns the data stored under the given role for the item referred to by the index.
+  * \brief        Returns the data stored under the given role for the item
+  *               referred to by the index.
   * \param        index of requested data
   * \param        role requested role
   * \return       data requested
@@ -141,7 +143,8 @@ public:
 
  /*!
   * \ingroup      Control
-  * \brief        Returns the data for the given role and section in the header with the specified orientation.
+  * \brief        Returns the data for the given role and section in the
+  *               header with the specified orientation.
   * \param        section requested section
   * \param        orientation requested orientation 
   * \param        role requested role
@@ -149,7 +152,8 @@ public:
   * \par      Source:
   *                LandmarkModel.cpp
   */
-  QVariant headerData(int section, Qt::Orientation orientation, int role ) const;
+  QVariant headerData(int section, Qt::Orientation orientation, int role )
+  	const;
 
  /*!
   * \ingroup      Control
@@ -163,7 +167,8 @@ public:
 
  /*!
   * \ingroup      Control
-  * \brief        Returns the index of the item in the model specified by the given row, column and parent index.
+  * \brief        Returns the index of the item in the model specified by the
+  * 		  given row, column and parent index.
   * \param        row row number
   * \param        column column number
   * \param        parent index of the parent item
@@ -175,7 +180,8 @@ public:
                               const QModelIndex &parent) const ;
  /*!
   * \ingroup      Control
-  * \brief        Returns the parent of the model index, or QModelIndex() if it has no parent.
+  * \brief        Returns the parent of the model index, or QModelIndex() if
+  *               it has no parent.
   * \param        child index of the child
   * \return       index of the parent item
   * \par      Source:
@@ -185,7 +191,8 @@ public:
 
  /*!
   * \ingroup      Control
-  * \brief        Sets the role data for the item at index to value. Returns true if successful; otherwise returns false.
+  * \brief        Sets the role data for the item at index to value. Returns
+  * 	   	  true if successful; otherwise returns false.
   * \param        index to be set
   * \param        value new value
   * \param        role to be set
@@ -209,7 +216,8 @@ public:
 
  /*!
   * \ingroup      Control
-  * \brief        Returns the coordinates of the source or target landmarks of a PointPair
+  * \brief        Returns the coordinates of the source or target landmarks
+  * 		  of a PointPair
   * \param        index of the pointpair requested
   * \param        indexType part type requested (sourceV or targetV)
   * \return       landmark point coordinates
@@ -222,7 +230,8 @@ public:
   * \ingroup      Control
   * \brief        Returns the array of the source or target 2D landmarks.
   *
-  *               Note: To avoid memory leaks, array must be deleted by the user.
+  *               Note: To avoid memory leaks, array must be deleted by the
+  *               user.
   * \param        indexType part type requested (sourceV or targetV)
   * \param        n size of the returned array
   * \return       array of 2D landmark coordiantes
@@ -235,7 +244,8 @@ public:
   * \ingroup      Control
   * \brief        Returns the array of the source or target 3D landmarks.
   *
-  *               Note: To avoid memory leaks, array must be deleted by the user.
+  *               Note: To avoid memory leaks, array must be deleted by the
+  *               user.
   * \param        indexType part type requested (sourceV or targetV)
   * \param        n size of the returned array
   * \return       array of 3D landmark coordiantes
@@ -285,7 +295,8 @@ public:
 
  /*!
   * \ingroup      Control
-  * \brief        Move source or target component of a landmark pair copying half of a new landmark pair
+  * \brief        Move source or target component of a landmark pair copying
+  * 		  half of a new landmark pair
   * \param        index index of landmark to be moved
   * \param        newPP point pair with new location
   * \param        indexType part type to be moved
@@ -305,11 +316,26 @@ public:
   * \par      Source:
   *                LandmarkModel.cpp
   */
-  void move(int index, const SbVec3f newPosition, LandmarkModel::IndexType indexType);
+  void move(int index, const SbVec3f newPosition,
+            LandmarkModel::IndexType indexType);
 
  /*!
   * \ingroup      Control
-  * \brief        Set 3D flag of the model. Should be used only after the model is created.
+  * \brief        Move source of target component of a landmark pair
+  * \param        index index of landmark to be moved
+  * \param        newPosition new position
+  * \param        indexType part type to be moved
+  * \return       void
+  * \par      Source:
+  *                LandmarkModel.cpp
+  */
+  void move(int index, const WlzDVertex3 newPosition,
+            LandmarkModel::IndexType indexType);
+
+ /*!
+  * \ingroup      Control
+  * \brief        Set 3D flag of the model. Should be used only after the
+  * 		  model is created.
   * \param        b true if model is 3D, false if model is 2D
   * \return       void
   * \par      Source:
@@ -371,12 +397,14 @@ public:
   * \brief        Generates the basis function tranfrom
   * \param        cMesh mesh to be transformed
   * \param        errNum error number
-  * \param        isSource true if transformation uses source Mesh, false if uses target mesh
+  * \param        isSource true if transformation uses source Mesh, false if
+  *               uses target mesh
   * \return       basis function transform sturcture.
   * \par      Source:
   *                LandmarkModel.cpp
   */
-  WlzBasisFnTransform *getBasisTransform(WoolzObject *cMesh, WlzErrorNum& errNum,
+  WlzBasisFnTransform *getBasisTransform(WoolzObject *cMesh,
+                                         WlzErrorNum& errNum,
        bool isSource);
  /*!
   * \ingroup      Control
@@ -643,10 +671,12 @@ private:
   void invalidateBasisTr();
 
 protected:
-  bool is3D;                               /*!< if this is a 3D or 2D landmark model */
+  bool is3D;                               /*!< if this is a 3D or 2D landmark
+                                                model */
 
   QList <PointPair*> listPointPair;        /*!< list of node corespondences */
-  WlzBasisFnTransform *basisTr;            /*!< basis function transform defined by the landmark set */
+  WlzBasisFnTransform *basisTr;            /*!< basis function transform
+                                                defined by the landmark set */
 
   WoolzObject *m_mesh;                     /*!< mesh data for warping */
 

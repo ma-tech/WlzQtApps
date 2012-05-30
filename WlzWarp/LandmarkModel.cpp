@@ -126,7 +126,8 @@ QVariant LandmarkModel::data(const QModelIndex & index, int role ) const {
   } else if (role == Qt::TextColorRole) {
       PointPair *pp = listPointPair.at(index.row());
       Q_ASSERT(pp);
-      if (!isDraggerValid(sourceV, pp) || !isDraggerValid(targetV, pp))
+      if (!isDraggerValid(sourceV, pp) ||
+          !isDraggerValid(targetV, pp))
           return Qt::red;
       else
           return Qt::black;
@@ -368,7 +369,70 @@ WlzDVertex3* LandmarkModel::extractVertex3D(IndexType indexType, int& n){
   return vertex;
 }
 
-void LandmarkModel::move(int index, PointPair newPP, LandmarkModel::IndexType indexType) {
+#define HACK_NEW_CODE
+#ifdef HACK_NEW_CODE
+void LandmarkModel::move(int index, PointPair newPP,
+                         LandmarkModel::IndexType indexType) {
+ move(index, newPP[indexType], indexType);
+}
+
+void LandmarkModel::move(int index, const SbVec3f newPosition,
+                         LandmarkModel::IndexType indexType) {
+ WlzDVertex3 p;
+ p.vtX=newPosition[0];
+ p.vtY=newPosition[1];
+ p.vtZ=newPosition[2];
+ move(index, p, indexType);
+}
+
+void LandmarkModel::move(int index, const WlzDVertex3 newPosition,
+                         LandmarkModel::IndexType indexType) {
+  double maxDist = 25.0; // TODO this need to be set via GUI
+  WlzDVertex3 p3 = newPosition;
+  PointPair *pp=listPointPair.at(index);
+  Q_ASSERT(pp);
+  if(maxDist > WLZ_MESH_TOLERANCE) {
+    if(is3D) {
+      WlzCMesh3D *mesh = m_mesh->getObj()->domain.cm3;
+      (void )WlzCMeshElmClosestPosIn3D(mesh, &p3, p3, maxDist);
+    } else {
+      WlzDVertex2 p2;
+      WlzCMesh2D *mesh = m_mesh->getObj()->domain.cm2;
+      p2.vtX = p3.vtX;
+      p2.vtY = p3.vtY;
+      if(WlzCMeshElmClosestPosIn2D(mesh, &p2, p2, maxDist) >= 0) {
+	p3.vtX = p2.vtX;
+	p3.vtY = p2.vtY;
+      }
+    }
+  }
+  (*pp)[indexType] = p3;
+
+  #ifdef DEBUG_LANDMARK_DUMP
+  writeLandmarkDebug(DEBUG_LANDMARK_DUMP);
+  #endif
+
+  const int element = is3D ? 3 : 2;
+  changePersistentIndex(createIndex(index,
+                                    (index == sourceV)? 1 : (1 + element), 0),
+                        createIndex(index,
+			            (index == sourceV)? element : (2 * element),
+				    0));  //force update
+  emit layoutChanged();
+  if (indexType == sourceV)
+     emit movedSourceLandmark(index, pp->V[sourceV]);
+  else
+     emit movedTargetLandmark(index, pp->V[targetV]);
+
+  bool b = isDraggerValid(indexType, pp);
+  if (indexType == sourceV)
+     emit setSourceLandmarkValid(index, b);
+  else
+     emit setTargetLandmarkValid(index, b);
+}
+#else
+void LandmarkModel::move(int index, PointPair newPP,
+                         LandmarkModel::IndexType indexType) {
  PointPair *pp=listPointPair.at(index);
  Q_ASSERT(pp);
  (*pp)[indexType].vtX=newPP[indexType].vtX;
@@ -380,8 +444,11 @@ void LandmarkModel::move(int index, PointPair newPP, LandmarkModel::IndexType in
   #endif
 
   const int element = is3D ? 3 : 2;
-  changePersistentIndex(createIndex(index, (index == sourceV) ? 1 : (1 + element), 0),
-                         createIndex(index, (index == sourceV) ? element : (2 * element), 0));  //force update
+  changePersistentIndex(createIndex(index,
+                                    (index == sourceV)? 1 : (1 + element), 0),
+                        createIndex(index,
+				    (index == sourceV)? element : (2 * element),
+				    0));  //force update
   emit layoutChanged();
   if (indexType == sourceV)
      emit movedSourceLandmark(index, pp->V[sourceV]);
@@ -395,7 +462,8 @@ void LandmarkModel::move(int index, PointPair newPP, LandmarkModel::IndexType in
      emit setTargetLandmarkValid(index, b);
 }
 
-void LandmarkModel::move(int index, const SbVec3f newPosition, LandmarkModel::IndexType indexType) {
+void LandmarkModel::move(int index, const SbVec3f newPosition,
+                         LandmarkModel::IndexType indexType) {
  PointPair *pp=listPointPair.at(index);
  Q_ASSERT(pp);
  (*pp)[indexType].vtX=newPosition[0];
@@ -407,10 +475,12 @@ void LandmarkModel::move(int index, const SbVec3f newPosition, LandmarkModel::In
   #endif
 
   const int element = is3D ? 3 : 2;
-  changePersistentIndex(createIndex(index, (index == sourceV) ? 1 : (1 + element), 0),
-                         createIndex(index, (index == sourceV) ? element : (2 * element), 0));  //force update
+  changePersistentIndex(createIndex(index,
+                                    (index == sourceV)? 1 : (1 + element), 0),
+                        createIndex(index,
+			            (index == sourceV)? element : (2 * element),
+				    0));  //force update
   emit layoutChanged();
-
   if (indexType == sourceV)
      emit movedSourceLandmark(index, pp->V[sourceV]);
   else
@@ -422,6 +492,7 @@ void LandmarkModel::move(int index, const SbVec3f newPosition, LandmarkModel::In
   else
      emit setTargetLandmarkValid(index, b);
 }
+#endif
 
 bool LandmarkModel::saveAsXml(QXmlStreamWriter *xmlWriter) {
   int i;
@@ -632,12 +703,13 @@ WlzBasisFnTransform *LandmarkModel::getBasisTransform(WoolzObject *cMesh, WlzErr
       errNum = WLZ_ERR_UNSPECIFIED;
    }
    if (errNum == WLZ_ERR_NONE) {
-     if (!basisTr)
+     if (!basisTr) {
        if((basisTr = WlzMakeBasisFnTransform(NULL)) == NULL) {
              errNum = WLZ_ERR_MEM_ALLOC;
        } else {
           basisTr->basisFn = NULL;
        }
+     }
    }
    if (errNum == WLZ_ERR_NONE) {
        WlzBasisFn  *basisFn;
@@ -669,14 +741,15 @@ WlzBasisFnTransform *LandmarkModel::getBasisTransform(WoolzObject *cMesh, WlzErr
          WlzBasisFnFree(basisTr->basisFn);
        basisTr->basisFn = basisFn;
    }
-   if (source.v)
-       if (is3D) {
-         delete [] source.d3;
-         delete [] target.d3;
-       } else {
-         delete [] source.d2;
-         delete [] target.d2;
-       }
+   if (source.v) {
+     if (is3D) {
+       delete [] source.d3;
+       delete [] target.d3;
+     } else {
+       delete [] source.d2;
+       delete [] target.d2;
+     }
+   }
    return basisTr;
 }
 
@@ -701,23 +774,34 @@ void LandmarkModel::meshChanged() {
   emit warpingChanged();
 }
 
-bool LandmarkModel::isDraggerValid(IndexType indexType, const PointPair *pp) const {
-  if ( !m_mesh  || (m_mesh->isSource() != (indexType == sourceV)) )    //if mesh type is different then indexType
-     return true;
+bool LandmarkModel::isDraggerValid(IndexType indexType, const PointPair *pp)
+	const {
+  if ( !m_mesh  || (m_mesh->isSource() != (indexType == sourceV)) ) {
+    //if mesh type is different then indexType
+    return true;
+  }
 
-  if ( !m_mesh->getObj() )    //if no mesh loaded/computed yet
+  if ( !m_mesh->getObj() ) {   //if no mesh loaded/computed yet
      return true;
+  }
 
   if (is3D) {
     WlzCMesh3D *mesh=m_mesh->getObj()->domain.cm3;
-    if (mesh) //if mesh loaded or computed
-      return WlzCMeshElmEnclosingPos3D (mesh, -1, pp->V[indexType].vtX, pp->V[indexType].vtY, pp->V[indexType].vtZ, 0, NULL)>=0;
+    if (mesh) { //if mesh loaded or computed
+      return WlzCMeshElmEnclosingPos3D (mesh, -1,
+                                        pp->V[indexType].vtX,
+					pp->V[indexType].vtY,
+					pp->V[indexType].vtZ, 0, NULL)>=0;
+    }
   } else {
-      WlzCMesh2D *mesh=m_mesh->getObj()->domain.cm2;
-      if (mesh) //if mesh loaded or computed
-        return WlzCMeshElmEnclosingPos2D (mesh, -1, pp->V[indexType].vtX, pp->V[indexType].vtY, 0, NULL)>=0;
-   }
-   return true;
+    WlzCMesh2D *mesh=m_mesh->getObj()->domain.cm2;
+    if (mesh) { //if mesh loaded or computed
+      return WlzCMeshElmEnclosingPos2D (mesh, -1,
+                                        pp->V[indexType].vtX,
+					pp->V[indexType].vtY, 0, NULL)>=0;
+    }
+  }
+  return true;
 }
 
 void LandmarkModel::invalidateBasisTr() {
