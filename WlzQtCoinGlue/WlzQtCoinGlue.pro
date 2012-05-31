@@ -1,4 +1,4 @@
-# CONFIG += debug_and_release build_all
+CONFIG += debug_and_release build_all
 CONFIG += QtOpenGL
 HEADERS = WoolzObject.h \
     TransferFunction.h \
