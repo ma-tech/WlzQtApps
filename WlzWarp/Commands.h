@@ -587,6 +587,25 @@ class WarpingSetDelta: public QUndoCommand
 };
 
 /*!
+ * \brief 	 Undoable command to set WoolzDynWarpedObject snap to fit
+ * 		 distance
+ * \ingroup      UI
+ */
+class WarpingSetSnapToFitDist: public QUndoCommand
+{
+ public:
+     WarpingSetSnapToFitDist(LandmarkModel *landmarkModel, double stfd, QUndoCommand * parent = 0);
+     virtual void undo();
+     virtual void redo();
+     int id () const;
+     bool mergeWith ( const QUndoCommand * command );
+ private:
+     LandmarkModel *m_landmarkModel;                /*!< LandmarkModel managing delta*/
+     double m_snapToFitDist;			    /*!< new value */
+     double m_oldSnapToFitDist;			    /*!< old value */
+};
+
+/*!
  * \brief 	 Undoable command to set WoolzDynWarpedObject delta value
  * \ingroup      UI
  */

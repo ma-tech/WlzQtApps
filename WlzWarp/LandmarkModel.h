@@ -448,7 +448,7 @@ public:
 
  /*!
   * \ingroup      Control
-  * \brief        Sets mesh generation distances
+  * \brief        Sets radial basis function delta value
   * \param        delta new delta value
   * \return       void
   * \par      Source:
@@ -464,12 +464,35 @@ public:
 
  /*!
   * \ingroup      Control
+  * \brief        Sets landmark snap to fit distance
+  * \param        stfd new snap to fit distance
+  * \return       void
+  * \par      Source:
+  *                LandmarkModel.cpp
+  */
+  void setSnapToFitDist (double stfd) {
+      if (m_snapToFitDist != stfd) {
+        m_snapToFitDist = stfd;
+      }
+  }
+
+ /*!
+  * \ingroup      Control
   * \brief        Return the current delta value
   * \return       delta value
   * \par      Source:
   *                LandmarkModel.cpp
   */
   double delta() { return  m_delta;}
+
+ /*!
+  * \ingroup      Control
+  * \brief        Return the current snap to fit distance
+  * \return       snap to fit distance
+  * \par      Source:
+  *                LandmarkModel.cpp
+  */
+  double snapToFitDist() { return  m_snapToFitDist;}
 
  /*!
   * \ingroup      Control
@@ -682,6 +705,7 @@ protected:
 
   BasisFnType m_basisFnType;               /*!< basis function type*/
   double m_delta;                          /*!< basis function delta value*/
+  double m_snapToFitDist;		   /*!< snap to mesh distance*/
 };
 
 

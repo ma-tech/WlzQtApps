@@ -52,6 +52,7 @@ static char _LandmarkController_cpp[] = "MRC HGU $Id$";
 #include "LandmarkController.h"
 #include "LandmarkView.h"
 #include "WarperConfig.h"
+#include "PreferencesDialog.h"
 
 #include "Commands.h"
 
@@ -234,10 +235,16 @@ void LandmarkController::loadLandmarks(QString filename) {
 }
 
 void LandmarkController::configurationChanged() {
-  if (m_landmarkView[0])
+  if (m_landmarkView[0]) {
       m_landmarkView[0]->updateLandmarks();
-  if (m_landmarkView[1])
+  }
+  if (m_landmarkView[1]) {
       m_landmarkView[1]->updateLandmarks();
+  }
+  if(m_model) {
+    PreferencesDialog *pref = qobject_cast<PreferencesDialog*>(sender());
+    m_model->setSnapToFitDist(pref->snapToFitDist());
+  }
 }
 
 void LandmarkController::addCommand(QUndoCommand *command) {

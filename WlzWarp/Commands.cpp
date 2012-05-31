@@ -76,7 +76,8 @@ int TransferFunctionSetLowCutOff::id () const {return 1016;}
 int TransferFunctionSetHighCutOff::id () const {return 1017;}
 int WarpingSetDelta::id () const {return 1018;}
 int WarpingtSetBasisFnType::id () const {return 1019;}
-//int TransferFunctionLoad::id () const {return 1020;}
+int WarpingSetSnapToFitDist::id () const {return 1020;}
+//int TransferFunctionLoad::id () const {return 1021;}
 
 CreateWoolzObject::CreateWoolzObject(ObjectListModel *objectListModel, WoolzObject *object, QUndoCommand * parent) :
         QUndoCommand(parent), m_objectListModel(objectListModel),m_object(object), m_allive(false) { setText("Add object " + object->name());}
@@ -880,6 +881,34 @@ bool WarpingSetDelta::mergeWith ( const QUndoCommand * command ) {
   if (setCommand->m_landmarkModel!= m_landmarkModel) // make sure other is also referes the same object
     return false;
   m_delta = setCommand->m_delta;
+  return true;
+}
+
+WarpingSetSnapToFitDist::WarpingSetSnapToFitDist(LandmarkModel *landmarkModel, double stfd, QUndoCommand * parent):
+    QUndoCommand(parent),  m_landmarkModel(landmarkModel), m_snapToFitDist(stfd) {
+         setText("Set landmark snap to fit distance");
+}
+
+void WarpingSetSnapToFitDist::undo() {
+   QApplication::setOverrideCursor(Qt::WaitCursor);
+   m_landmarkModel->setSnapToFitDist(m_oldSnapToFitDist);
+   QApplication::restoreOverrideCursor();
+}
+
+void WarpingSetSnapToFitDist::redo() {
+   QApplication::setOverrideCursor(Qt::WaitCursor);
+   m_oldSnapToFitDist=m_landmarkModel->snapToFitDist();
+   m_landmarkModel->setSnapToFitDist(m_snapToFitDist);
+   QApplication::restoreOverrideCursor();
+}
+
+bool WarpingSetSnapToFitDist::mergeWith ( const QUndoCommand * command ) {
+  if (command->id() != id()) // make sure other is also an WarpingSetSnapToFitDist command
+    return false;
+  const WarpingSetSnapToFitDist *setCommand = static_cast<const WarpingSetSnapToFitDist*>(command);
+  if (setCommand->m_landmarkModel!= m_landmarkModel) // make sure other is also referes the same object
+    return false;
+  m_snapToFitDist = setCommand->m_snapToFitDist;
   return true;
 }
 

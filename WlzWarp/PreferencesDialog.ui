@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>305</width>
+    <width>315</width>
     <height>193</height>
    </rect>
   </property>
@@ -26,7 +26,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabViewerColour">
       <attribute name="title">
@@ -125,6 +125,29 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="_label_7">
+         <property name="text">
+          <string>Snap To Fit Distance</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QDoubleSpinBox" name="doubleSpinBoxSnapToFitDist">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="decimals">
+          <number>0</number>
+         </property>
+         <property name="value">
+          <double>16.000000000000000</double>
          </property>
         </widget>
        </item>

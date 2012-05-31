@@ -69,6 +69,15 @@ public:
   */
   PreferencesDialog(QWidget *parent);
 
+ /*!
+  * \ingroup      UI
+  * \brief        Return the current snap to fit distance
+  * \return       snap to fit distance
+  * \par      Source:
+  *                PreferencesDialog.cpp
+  */
+  double snapToFitDist() { return  m_snapToFitDist;}
+
 private slots:
  /*!
   * \ingroup      UI
@@ -122,12 +131,14 @@ protected:
   QColor m_origResultViewerColour;          /*!< result viewer background colour */
   float  m_orig2DMarkerSize;                /*!< 2D marker size */
   float  m_orig3DMarkerSize;                /*!< 3D marker size */
+  float  m_origSnapToFitDist;               /*!< Snap to fit distance */
   bool   m_origIsIMQ;                       /*!< if is IMQ warping*/
   float  m_origDeltaIMQ;                    /*!< delta value for IMQ*/
   float  m_origDeltaMQ;                     /*!< delta value for MQ*/
   bool   m_useIMQ;                          /*!< current warping type*/
   float  m_deltaIMQ;                        /*!< current delta value for IMQ*/
   float  m_deltaMQ;                         /*!< current delta value for MQ*/
+  float  m_snapToFitDist;                   /*!< current snap to fit distance*/
 
 };
 

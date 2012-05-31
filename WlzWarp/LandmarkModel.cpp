@@ -72,6 +72,7 @@ LandmarkModel::LandmarkModel (QObject * parent):  QAbstractItemModel (parent)  {
   basisTr = NULL;
   m_mesh = NULL;
   m_delta = 0.02;
+  m_snapToFitDist = 16.0;
   m_basisFnType = basis_IMQ;
 }
 
@@ -369,8 +370,6 @@ WlzDVertex3* LandmarkModel::extractVertex3D(IndexType indexType, int& n){
   return vertex;
 }
 
-#define HACK_NEW_CODE
-#ifdef HACK_NEW_CODE
 void LandmarkModel::move(int index, PointPair newPP,
                          LandmarkModel::IndexType indexType) {
  move(index, newPP[indexType], indexType);
@@ -387,20 +386,19 @@ void LandmarkModel::move(int index, const SbVec3f newPosition,
 
 void LandmarkModel::move(int index, const WlzDVertex3 newPosition,
                          LandmarkModel::IndexType indexType) {
-  double maxDist = 25.0; // TODO this need to be set via GUI
   WlzDVertex3 p3 = newPosition;
   PointPair *pp=listPointPair.at(index);
   Q_ASSERT(pp);
-  if(maxDist > WLZ_MESH_TOLERANCE) {
+  if(m_snapToFitDist > WLZ_MESH_TOLERANCE) {
     if(is3D) {
       WlzCMesh3D *mesh = m_mesh->getObj()->domain.cm3;
-      (void )WlzCMeshElmClosestPosIn3D(mesh, &p3, p3, maxDist);
+      (void )WlzCMeshElmClosestPosIn3D(mesh, &p3, p3, m_snapToFitDist);
     } else {
       WlzDVertex2 p2;
       WlzCMesh2D *mesh = m_mesh->getObj()->domain.cm2;
       p2.vtX = p3.vtX;
       p2.vtY = p3.vtY;
-      if(WlzCMeshElmClosestPosIn2D(mesh, &p2, p2, maxDist) >= 0) {
+      if(WlzCMeshElmClosestPosIn2D(mesh, &p2, p2, m_snapToFitDist) >= 0) {
 	p3.vtX = p2.vtX;
 	p3.vtY = p2.vtY;
       }
@@ -430,69 +428,6 @@ void LandmarkModel::move(int index, const WlzDVertex3 newPosition,
   else
      emit setTargetLandmarkValid(index, b);
 }
-#else
-void LandmarkModel::move(int index, PointPair newPP,
-                         LandmarkModel::IndexType indexType) {
- PointPair *pp=listPointPair.at(index);
- Q_ASSERT(pp);
- (*pp)[indexType].vtX=newPP[indexType].vtX;
- (*pp)[indexType].vtY=newPP[indexType].vtY;
- (*pp)[indexType].vtZ=newPP[indexType].vtZ;
-
-  #ifdef DEBUG_LANDMARK_DUMP
-  writeLandmarkDebug(DEBUG_LANDMARK_DUMP);
-  #endif
-
-  const int element = is3D ? 3 : 2;
-  changePersistentIndex(createIndex(index,
-                                    (index == sourceV)? 1 : (1 + element), 0),
-                        createIndex(index,
-				    (index == sourceV)? element : (2 * element),
-				    0));  //force update
-  emit layoutChanged();
-  if (indexType == sourceV)
-     emit movedSourceLandmark(index, pp->V[sourceV]);
-  else
-     emit movedTargetLandmark(index, pp->V[targetV]);
-
-  bool b = isDraggerValid(indexType, pp);
-  if (indexType == sourceV)
-     emit setSourceLandmarkValid(index, b);
-  else
-     emit setTargetLandmarkValid(index, b);
-}
-
-void LandmarkModel::move(int index, const SbVec3f newPosition,
-                         LandmarkModel::IndexType indexType) {
- PointPair *pp=listPointPair.at(index);
- Q_ASSERT(pp);
- (*pp)[indexType].vtX=newPosition[0];
- (*pp)[indexType].vtY=newPosition[1];
- (*pp)[indexType].vtZ=newPosition[2];
-
-  #ifdef DEBUG_LANDMARK_DUMP
-  writeLandmarkDebug(DEBUG_LANDMARK_DUMP);
-  #endif
-
-  const int element = is3D ? 3 : 2;
-  changePersistentIndex(createIndex(index,
-                                    (index == sourceV)? 1 : (1 + element), 0),
-                        createIndex(index,
-			            (index == sourceV)? element : (2 * element),
-				    0));  //force update
-  emit layoutChanged();
-  if (indexType == sourceV)
-     emit movedSourceLandmark(index, pp->V[sourceV]);
-  else
-     emit movedTargetLandmark(index, pp->V[targetV]);
-
-  bool b = isDraggerValid(indexType, pp);
-  if (indexType == sourceV)
-     emit setSourceLandmarkValid(index, b);
-  else
-     emit setTargetLandmarkValid(index, b);
-}
-#endif
 
 bool LandmarkModel::saveAsXml(QXmlStreamWriter *xmlWriter) {
   int i;
@@ -529,6 +464,7 @@ bool LandmarkModel::saveWarpingAsXml(QXmlStreamWriter *xmlWriter) {
  xmlWriter->writeStartElement(xmlTagWarping);
  xmlWriter->writeTextElement("BasisFunctionType", m_basisFnType == basis_IMQ ? "IMQ":"MQ");
  xmlWriter->writeTextElement("Delta", QString("%1").arg(m_delta));
+ xmlWriter->writeTextElement("SnapToFitDist", QString("%1").arg(m_snapToFitDist));
  xmlWriter->writeEndElement();
  return true;
 }
@@ -602,6 +538,8 @@ bool LandmarkModel::parseWarpingDOM(const QDomElement &element) {
            m_basisFnType = basis_MQ;
       } else if (child.toElement().tagName() == "Delta") {
           m_delta = child.toElement().text().toDouble();
+      } else if (child.toElement().tagName() == "SnapToFitDist") {
+          m_snapToFitDist = child.toElement().text().toDouble();
       } else if (child.toElement().tagName() == "") {
         QString type=child.toElement().text();
       }

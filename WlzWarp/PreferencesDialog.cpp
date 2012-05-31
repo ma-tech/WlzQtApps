@@ -59,12 +59,14 @@ PreferencesDialog::PreferencesDialog(QWidget *parent): QDialog(parent) {
   m_origResultViewerColour = settings.value("viewer/result/color", QColor(77, 0, 0)).value<QColor>();
   m_orig2DMarkerSize       = settings.value("markers/2D/size", 1.00f).value<float>();
   m_orig3DMarkerSize       = settings.value("markers/3D/size", 1.00f).value<float>();
+  m_origSnapToFitDist      = settings.value("markers/snaptofitdist", 16.00f).value<float>();
 
   m_origIsIMQ = settings.value("warping/type", QString("IMQ")).value<QString>() == "IMQ";
   m_origDeltaIMQ = settings.value("warping/IMQ/delta", 0.1f).value<float>();
   m_origDeltaMQ  = settings.value("warping/MQ/delta", 0.1f).value<float>();
   m_deltaIMQ = m_origDeltaIMQ;
   m_deltaMQ = m_origDeltaMQ;
+  m_snapToFitDist = m_origSnapToFitDist;
   if (m_origIsIMQ) {
      doubleSpinBoxDelta->setValue(m_origDeltaIMQ);
      radioButtonIMQ->setChecked(true);
@@ -80,6 +82,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent): QDialog(parent) {
 
   doubleSpinBox2DMarker->setValue(m_orig2DMarkerSize);
   doubleSpinBox3DMarker->setValue(m_orig3DMarkerSize);
+  doubleSpinBoxSnapToFitDist->setValue(m_origSnapToFitDist);
 
   connect( radioButtonIMQ, SIGNAL(clicked(bool)),
            this, SLOT(basisFnChanged()));
@@ -103,9 +106,11 @@ void PreferencesDialog::apply() {
     settings.setValue("viewer/result/color", colorpickerResult->currentColor());
     settings.setValue("markers/2D/size", doubleSpinBox2DMarker->value());
     settings.setValue("markers/3D/size", doubleSpinBox3DMarker->value());
+    settings.setValue("markers/snaptofitdist", doubleSpinBoxSnapToFitDist->value());
     settings.setValue("warping/type", m_useIMQ ? QString("IMQ") : QString("MQ"));
     settings.setValue("warping/IMQ/delta", m_deltaIMQ);
     settings.setValue("warping/MQ/delta", m_deltaMQ);
+    m_snapToFitDist = doubleSpinBoxSnapToFitDist->value();
     emit configurationChanged();
 }
 
@@ -116,6 +121,7 @@ void PreferencesDialog::reject() {
     settings.setValue("viewer/result/color", m_origResultViewerColour);
     settings.setValue("markers/2D/size", m_orig2DMarkerSize);
     settings.setValue("markers/3D/size", m_orig3DMarkerSize);
+    settings.setValue("markers/snaptofitdist", m_origSnapToFitDist);
 
     settings.setValue("warping/type", m_origIsIMQ ? QString("IMQ") : QString("MQ"));
     settings.setValue("warping/IMQ/delta", m_origDeltaIMQ);
