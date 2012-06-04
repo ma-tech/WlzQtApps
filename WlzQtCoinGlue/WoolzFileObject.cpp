@@ -78,7 +78,8 @@ void WoolzFileObject::doUpdate () {
     WlzErrorNum errNum = WLZ_ERR_NONE;
 
     m_obj = WlzEffReadObj(NULL , m_filename.toAscii(),
-        WlzEffStringFormatFromFileName(m_filename.toAscii()), 0, &errNum);
+                          WlzEffStringFormatFromFileName(m_filename.toAscii()),
+			  0, 0, 0, &errNum);
 
     if (! m_obj)
         return;
