@@ -231,15 +231,27 @@ QString RelativePath( QString absolutePath, QString relativeTo) {
     QString relativePath;
 
     //Add on the ..
+#if QT_VERSION < 0x040500
+    for (index = lastCommonRoot + 1; index < relativeDirectories.count(); index++)
+#else
     for (index = lastCommonRoot + 1; index < relativeDirectories.length(); index++)
+#endif
       if (relativeDirectories[index].length() > 0)
         relativePath.append("../");
 
     //Add on the folders
+#if QT_VERSION < 0x040500
+    for (index = lastCommonRoot + 1; index < absoluteDirectories.count() - 1; index++)
+#else
     for (index = lastCommonRoot + 1; index < absoluteDirectories.length() - 1; index++)
+#endif
       relativePath.append(absoluteDirectories[index] + "/");
 
+#if QT_VERSION < 0x040500
+    relativePath.append(absoluteDirectories[absoluteDirectories.count() - 1]);
+#else
     relativePath.append(absoluteDirectories[absoluteDirectories.length() - 1]);
+#endif
 
     return relativePath;
 }
