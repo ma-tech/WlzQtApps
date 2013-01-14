@@ -1,4 +1,5 @@
 CONFIG += debug_and_release build_all
+#CONFIG += debug
 CONFIG += openmp
 QT += xml
 HEADERS = WarperConfig.h \
