@@ -21,7 +21,7 @@ FORMS = MainWindow.ui \
     TransferFunctionWidget.ui
 
 TEMPLATE = app
-VERSION = 0.9.7
+VERSION = 0.9.8
 
 TYPE = 32
 openmp { 

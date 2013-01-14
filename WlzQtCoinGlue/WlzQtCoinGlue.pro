@@ -46,7 +46,7 @@ SOURCES = Mesh3DView.cpp \
     ClipPlaneButtonBiDirection.cpp \
     BinaryTransferFunction.cpp
 TEMPLATE = lib
-VERSION = 0.9.7
+VERSION = 0.9.8
 TYPE = 32
 contains( QMAKE_CFLAGS, -m64):TYPE = 
 contains( QMAKE_LIBDIR_X11, /usr/X11R6/lib64):TYPE =
