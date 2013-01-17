@@ -1,7 +1,7 @@
-CONFIG += debug_and_release
-CONFIG += build_all
-#CONFIG += release
-#CONFIG += debug
+CONFIG += release
+#CONFIG += release build_all
+#CONFIG += debug build_all
+CONFIG += opengl
 CONFIG += openmp
 QT += xml
 
@@ -21,7 +21,7 @@ FORMS = MainWindow.ui \
     TransferFunctionWidget.ui
 
 TEMPLATE = app
-VERSION = 0.9.8
+VERSION = 1.0.0
 
 TYPE = 32
 openmp { 

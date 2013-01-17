@@ -1,5 +1,6 @@
-CONFIG += debug_and_release build_all
+CONFIG += release build_all
 #CONFIG += debug
+CONFIG += opengl
 CONFIG += openmp
 QT += xml
 HEADERS = WarperConfig.h \
@@ -124,7 +125,7 @@ FORMS = MainWindow.ui \
     LandmarkWidget.ui \
     SectioningPlaneWidget.ui
 TEMPLATE = app
-VERSION = 0.9.8
+VERSION = 1.0.0
 TYPE = 32
 openmp { 
     contains( QMAKE_CC, icc):LIBS *= -openmp # for icc
@@ -154,6 +155,7 @@ SOQTINC = $$(SOQTINC)
 isEmpty( SOQTINC ):SOQTINC = $$system(soqt-config --includedir)
 COININC = $$(COININC)
 isEmpty( COININC ):COININC = $$system( coin-config --includedir )
+
 SOQTLIB = $$(SOQTLIB)
 isEmpty( SOQTLIB):SOQTLIB = $$system( soqt-config --libs )
 COINLIB = $$(COINLIB)
@@ -165,10 +167,10 @@ isEmpty( COINLDFLAGS ):COINLDFLAGS = $$system(coin-config --ldflags)
 INCLUDEPATH *= $$SOQTINC \
     $$COININC
 LIBS *= -lSimVoleon \
-    $$COINLIB \
-    $$COINLDFLAGS \
     $$SOQTLIB \
-    $$SOQTLDFLAGS
+    $$SOQTLDFLAGS \
+    $$COINLIB \
+    $$COINLDFLAGS
 
 # static libraries for Woolz
 INCLUDEPATH *= $$(MA_HOME)/include

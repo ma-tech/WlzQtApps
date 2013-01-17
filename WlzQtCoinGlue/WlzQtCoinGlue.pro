@@ -1,4 +1,5 @@
-CONFIG += debug_and_release build_all
+#CONFIG += debug_and_release build_all
+CONFIG += release build_all
 CONFIG += QtOpenGL
 HEADERS = WoolzObject.h \
     TransferFunction.h \
@@ -46,7 +47,7 @@ SOURCES = Mesh3DView.cpp \
     ClipPlaneButtonBiDirection.cpp \
     BinaryTransferFunction.cpp
 TEMPLATE = lib
-VERSION = 0.9.8
+VERSION = 1.0.0
 TYPE = 32
 contains( QMAKE_CFLAGS, -m64):TYPE = 
 contains( QMAKE_LIBDIR_X11, /usr/X11R6/lib64):TYPE =
