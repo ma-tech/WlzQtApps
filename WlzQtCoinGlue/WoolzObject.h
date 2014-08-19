@@ -262,6 +262,15 @@ public:
 
  /*!
   * \ingroup      Control
+  * \brief        Checkes if the object is a contour
+  * \return       true if is a 2D or 3D convex hull
+  * \par      Source:
+  *                WoolzObject.cpp
+  */
+  virtual bool isConvHull ( ) ;
+
+ /*!
+  * \ingroup      Control
   * \brief        Checkes if the object is a value object
   * \return       true if is a value object
   * \par      Source:
@@ -321,7 +330,17 @@ public:
   * \par      Source:
   *                WoolzObject.cpp
   */
-  virtual bool isContourPreRead () { return isColour(); }
+  virtual bool isContourPreRead () { return isContour(); }
+
+ /*!
+  * \ingroup      Control
+  * \brief        Checks without reading the whole file if the object is
+  * 		  a convex hull
+  * \return       true if is a 2D or 3D convex hull
+  * \par      Source:
+  *                WoolzObject.cpp
+  */
+  virtual bool isConvHullPreRead () { return isConvHull(); }
 
  /*!
   * \ingroup      Control

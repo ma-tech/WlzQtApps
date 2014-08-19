@@ -50,10 +50,12 @@ static char _ObjectSimpleViewer_cpp[] = "MRC HGU $Id$";
 //#include "Camera2D.h"
 #include "ClipPlaneButton.h"
 #include "Mesh3DView.h"
+#include "Contour2DView.h"
 #include "Contour3DView.h"
+#include "ConvHull2DView.h"
+#include "ConvHull3DView.h"
 #include "VolumeView.h"
 #include "Mesh2DView.h"
-#include "Contour2DView.h"
 #include "ImageView.h"
 #include "EmptyView.h"
 
@@ -423,6 +425,19 @@ ObjectView* ObjectSimpleViewer::Factory(QObject * parent, WoolzObject *object) {
         view = contour;
       }  else
         view = new Contour2DView(parent, object);
+  } else if (object->isConvHull()) {
+    if (object->is3D()) {
+        ConvHull3DView * convhull = new ConvHull3DView(parent, object);
+        if (m_clipManipulatorButtonBi->state() == ClipPlaneButton::ClipOnly) {
+            Q_ASSERT(m_clipPlane);
+            convhull->addedClipPlane(m_clipPlane);
+        } else if (m_clipManipulatorButtonBi->state() == ClipPlaneButton::ClipOn) {
+            Q_ASSERT(m_clipPlaneManip);
+            convhull->addedClipPlane(m_clipPlaneManip);
+        }
+        view = convhull;
+      }  else
+        view = new ConvHull2DView(parent, object);
   } else if (object->isValue()){
     if (object->is3D()) {
       VolumeView *volume = new VolumeView(parent, object);

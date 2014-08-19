@@ -106,11 +106,42 @@ bool WoolzObject::isValue ( ) {
          (m_obj->type == WLZ_2D_DOMAINOBJ) ));//&& (m_obj->values.core != NULL)));
 }
 
-bool WoolzObject::isContour ( ) {
-  return (m_obj && (m_obj->type == WLZ_CONTOUR) &&
-    ((((WlzContour *)m_obj->domain.ctr)->model->type) ==  WLZ_GMMOD_3I || (((WlzContour *)m_obj->domain.ctr)->model->type) ==  WLZ_GMMOD_3D ||
-     (((WlzContour *)m_obj->domain.ctr)->model->type) ==  WLZ_GMMOD_3N || (((WlzContour *)m_obj->domain.ctr)->model->type) ==  WLZ_GMMOD_2I ||
-     (((WlzContour *)m_obj->domain.ctr)->model->type) ==  WLZ_GMMOD_2D || (((WlzContour *)m_obj->domain.ctr)->model->type) ==  WLZ_GMMOD_2N));
+bool WoolzObject::isContour() {
+  bool is = false;
+
+  if(m_obj && (m_obj->type == WLZ_CONTOUR))
+  {
+    WlzContour *ctr;
+
+    ctr = m_obj->domain.ctr;
+    if(ctr)
+    {
+      is = (ctr->model->type ==  WLZ_GMMOD_2I) ||
+	   (ctr->model->type ==  WLZ_GMMOD_2N) ||
+	   (ctr->model->type ==  WLZ_GMMOD_2D) ||
+	   (ctr->model->type ==  WLZ_GMMOD_3I) ||
+	   (ctr->model->type ==  WLZ_GMMOD_3N) ||
+	   (ctr->model->type ==  WLZ_GMMOD_3D);
+    }
+  }
+  return(is);
+}
+
+bool WoolzObject::isConvHull() {
+  bool is = false;
+
+  if(m_obj && (m_obj->type == WLZ_CONV_HULL))
+  {
+    WlzDomain dom;
+
+    dom = m_obj->domain;
+    if(dom.core)
+    {
+      is = (dom.core->type ==  WLZ_CONVHULL_DOMAIN_2D) ||
+           (dom.core->type ==  WLZ_CONVHULL_DOMAIN_3D);
+    }
+  }
+  return(is);
 }
 
 bool WoolzObject::isValueSet ( ) {
@@ -135,24 +166,62 @@ WlzGreyType WoolzObject::getWoolzGreyType() {
   return gType;
 }
 
-bool WoolzObject::is3D ( ) {
-  return (m_obj && ((m_obj->type == WLZ_3D_DOMAINOBJ)
-                 || (m_obj->type == WLZ_CMESH_3D) ||
-                    ((m_obj->type == WLZ_CONTOUR) && 
-                         ((((WlzContour *)m_obj->domain.ctr)->model->type) ==  WLZ_GMMOD_3I ||
-                          (((WlzContour *)m_obj->domain.ctr)->model->type) ==  WLZ_GMMOD_3D ||
-                          (((WlzContour *)m_obj->domain.ctr)->model->type) ==  WLZ_GMMOD_3N))
-                     ));
+bool WoolzObject::is2D ( ) {
+  bool is = false;
+
+  if(m_obj)
+  {
+    WlzDomain dom;
+
+    dom = m_obj->domain;
+    switch(m_obj->type)
+    {
+      case WLZ_2D_DOMAINOBJ:
+        is = true;
+	break;
+      case WLZ_CONTOUR:
+	is = dom.core && dom.ctr->model &&
+	     ((dom.ctr->model->type == WLZ_GMMOD_2I) ||
+	      (dom.ctr->model->type == WLZ_GMMOD_2D) ||
+	      (dom.ctr->model->type == WLZ_GMMOD_2N));
+        break;
+      case WLZ_CONV_HULL:
+	is = dom.core && (dom.core->type == WLZ_CONVHULL_DOMAIN_2D);
+        break;
+      default:
+        break;
+    }
+  }
+  return(is);
 }
 
-bool WoolzObject::is2D ( ) {
-  return (m_obj && ((m_obj->type == WLZ_2D_DOMAINOBJ)
-                 || (m_obj->type == WLZ_CMESH_2D) ||
-                    ((m_obj->type == WLZ_CONTOUR) &&
-                         ((((WlzContour *)m_obj->domain.ctr)->model->type) ==  WLZ_GMMOD_2I ||
-                          (((WlzContour *)m_obj->domain.ctr)->model->type) ==  WLZ_GMMOD_2D ||
-                          (((WlzContour *)m_obj->domain.ctr)->model->type) ==  WLZ_GMMOD_2N))
-                     ));
+bool WoolzObject::is3D ( ) {
+  bool is = false;
+
+  if(m_obj)
+  {
+    WlzDomain dom;
+
+    dom = m_obj->domain;
+    switch(m_obj->type)
+    {
+      case WLZ_3D_DOMAINOBJ:
+        is = true;
+	break;
+      case WLZ_CONTOUR:
+	is = dom.core && dom.ctr->model &&
+	     ((dom.ctr->model->type == WLZ_GMMOD_3I) ||
+	      (dom.ctr->model->type == WLZ_GMMOD_3D) ||
+	      (dom.ctr->model->type == WLZ_GMMOD_3N));
+        break;
+      case WLZ_CONV_HULL:
+	is = dom.core && (dom.core->type == WLZ_CONVHULL_DOMAIN_3D);
+        break;
+      default:
+        break;
+    }
+  }
+  return(is);
 }
 
 SbColor WoolzObject::sbColour() {

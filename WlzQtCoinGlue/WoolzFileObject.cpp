@@ -133,6 +133,10 @@ bool WoolzFileObject::isContourPreRead ( ) {
   return (m_fileObjType == WLZ_CONTOUR);
 }
 
+bool WoolzFileObject::isConvHullPreRead ( ) {
+  return (m_fileObjType == WLZ_CONV_HULL);
+}
+
 void WoolzFileObject:: update( bool /*force*/ ) {
   if (!m_obj)
     doUpdate();
@@ -190,6 +194,11 @@ bool WoolzFileObject::isValue ( ) {
 
 bool WoolzFileObject::isContour ( ) {
   return (m_obj && WoolzObject::isContour()) || (!m_obj && isContourPreRead());
+}
+
+bool WoolzFileObject::isConvHull ( ) {
+  return((m_obj && WoolzObject::isConvHull()) ||
+         (!m_obj && isConvHullPreRead()));
 }
 
 void WoolzFileObject::setupConnections(QObject *target) {
