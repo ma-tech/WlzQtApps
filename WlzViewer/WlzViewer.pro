@@ -23,7 +23,7 @@ FORMS = MainWindow.ui \
 TEMPLATE = app
 VERSION = 1.0.0
 
-TYPE = 32
+TYPE =
 openmp { 
     contains( QMAKE_CC, icc):LIBS *= -openmp # for icc
     else:LIBS *= -fopenmp # for gcc
