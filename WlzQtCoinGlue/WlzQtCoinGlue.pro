@@ -17,6 +17,8 @@ HEADERS = WoolzObject.h \
     ObjectSimpleViewer.h \
     Contour3DView.h \
     Contour2DView.h \
+    ConvHull2DView.h \
+    ConvHull3DView.h \
     VolumeView.h \
     ImageView.h \
     WoolzFileObject.h \
@@ -37,6 +39,8 @@ SOURCES = Mesh3DView.cpp \
     Mesh2DView.cpp \
     Contour3DView.cpp \
     Contour2DView.cpp \
+    ConvHull2DView.cpp \
+    ConvHull3DView.cpp \
     VolumeView.cpp \
     ImageView.cpp \
     WoolzFileObject.cpp \
@@ -48,7 +52,7 @@ SOURCES = Mesh3DView.cpp \
     BinaryTransferFunction.cpp
 TEMPLATE = lib
 VERSION = 1.0.0
-TYPE = 32
+TYPE =
 contains( QMAKE_CFLAGS, -m64):TYPE = 
 contains( QMAKE_LIBDIR_X11, /usr/X11R6/lib64):TYPE =
 
