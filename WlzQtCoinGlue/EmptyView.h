@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _EmptyView_h[] = "MRC HGU $Id$";
-#endif
+static char _EmptyView_h[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         EmptyView.h
@@ -15,11 +11,15 @@ static char _EmptyView_h[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -35,10 +35,8 @@ static char _EmptyView_h[] = "MRC HGU $Id$";
 * License along with this program; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
-* \brief        Empty visualisation for objects
+* \brief	Empty visualisation for objects
 * \ingroup      Views
-* \todo         editable properties
-*
 */
 
 #ifndef EMPTYVIEW_H
@@ -49,80 +47,68 @@ static char _EmptyView_h[] = "MRC HGU $Id$";
 
 /*!
 * \brief	View providing empty visualisation
-* \ingroup      Views
+* \ingroup	Views
 */
-class EmptyView : public ObjectView
+class EmptyView: public ObjectView
 {
   Q_OBJECT
-public:
- /*!
-  * \ingroup      Views
-  * \brief        Constructor
-  * \param        parent parent viewer
-  * \param        object Woolz object to be visualised
-  * \return       void
-  * \par      Source:
-  *                EmptyView.cpp
-  */
-  EmptyView ( QObject * parent, WoolzObject * object );
+  public:
+   /*!
+    * \ingroup	Views
+    * \brief	Constructor
+    * \param	parent 			parent viewer
+    * \param	object 			Woolz object to be visualised
+    */
+    EmptyView(QObject * parent, WoolzObject * object);
 
-public:
- /*!
-  * \ingroup      Visualisation
-  * \brief        Returns the number of available visualisations that is 1 for EmptyView.
-  *
-  *           Implements View::getVisualisationTypesNo().
-  * \return       Return the number of available visualisations (1)
-  * \par      Source:
-  *                EmptyView.cpp
-  */
-  virtual int getVisualisationTypesNo () {return 1;}
-
- /*!
-  * \ingroup      Visualisation
-  * \brief        Returns the list of available visualisations.
+  public:
+   /*!
+    * \return	Return the number of available visualisations (1)
+    * \ingroup	Visualisation
+    * \brief	Returns the number of available visualisations that is 1
+    * 		for EmptyView.
     *
-  *           Implements View::getVisualisationTypes().
-  * \return       List of visualistion type names.
-  * \par      Source:
-  *                EmptyView.cpp
-  */
-  virtual QStringList getVisualisationTypes ();
+    *	      	Implements View::getVisualisationTypesNo().
+    */
+    virtual int getVisualisationTypesNo() {return 1;}
 
- /*!
-  * \ingroup      Views
-  * \brief        Current visualisation type.
-  *
-  *   Currently only one visualisation is implemented, therefore it returns 0.
-  *
-  *           Implements View::visualisationType().
-  * \return       void
-  * \par      Source:
-  *                EmptyView.cpp
-  */
-  virtual int visualisationType () {return 0;}
+   /*!
+    * \return	List of visualistion type names.
+    * \ingroup	Visualisation
+    * \brief	Returns the list of available visualisations.
+    *
+    *	      	Implements View::getVisualisationTypes().
+    */
+    virtual QStringList getVisualisationTypes();
 
-protected:
- /*!
-  * \ingroup      Visualisation
-  * \brief        Builds the scene graph of the view.
-  *
-  *           Reimplements View::generateSceneGraph().
-  * \param        bForce, if true force update of the scene graph elements
-  * \return       void
-  * \par      Source:
-  *                EmptyView.cpp
-  */
- virtual void generateSceneGraph ( bool) {}
+   /*!
+    * \ingroup	Views
+    * \brief	Current visualisation type.
+    *
+    *   	Currently only one visualisation is implemented, therefore
+    *   	it returns 0.
+    *
+    *	      	Implements View::visualisationType().
+    */
+    virtual int visualisationType() {return 0;}
 
- /*!
-  * \ingroup      Visualisation
-  * \brief        Returns if the current object is compatible with the view
-  * \return       true of object is compatible, false if not.
-  * \par      Source:
-  *                EmptyView.cpp
-  */
-  virtual bool compatible( );
+  protected:
+   /*!
+    * \ingroup	Visualisation
+    * \brief	Builds the scene graph of the view.
+    *
+    *	      	Reimplements View::generateSceneGraph().
+    * \param	bForce			if true force update of the scene
+    * 					graph elements
+    */
+   virtual void generateSceneGraph(bool) {}
+
+   /*!
+    * \ingroup	Visualisation
+    * \brief	Returns if the current object is compatible with the view
+    * \return	true of object is compatible, false if not.
+    */
+    virtual bool compatible();
 };
 
 #endif // EMPTYVIEW_H

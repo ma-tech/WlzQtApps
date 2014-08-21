@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _BinaryTransferFunction_h[] = "MRC HGU $Id$";
-#endif
+static char _BinaryTransferFunction_h[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         BinaryTransferFunction.h
@@ -15,11 +11,15 @@ static char _BinaryTransferFunction_h[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2010 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -35,9 +35,9 @@ static char _BinaryTransferFunction_h[] = "MRC HGU $Id$";
 * License along with this program; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
-* \brief        Extends the TransferFunction to provide binary transfer function.
+* \brief        Extends the TransferFunction to provide binary transfer
+*		function.
 * \ingroup      UI
-*
 */
 
 #ifndef BINARYTRANSFERFUNCTION_H
@@ -45,45 +45,40 @@ static char _BinaryTransferFunction_h[] = "MRC HGU $Id$";
 #include "TransferFunction.h"
 
 /*!
- * \brief	 Extends the TransferFunction to provide binary transfer function.
- *               Only the first and last value of the transfer function array are effectively used.
+ * \brief	 Extends the TransferFunction to provide binary transfer
+ * 		 function.
+ *               Only the first and last value of the transfer function
+ *               array are effectively used.
  * \ingroup      UI
  */
-class BinaryTransferFunction : public TransferFunction
+class BinaryTransferFunction: public TransferFunction
 {
-Q_OBJECT
-public:
-    /*!
-  * \ingroup      UI
-  * \brief        Constructor
-  * \param        parent parent object
-  * \par      Source:
-  *                BinaryTransferFunction.cpp
-  */
-  BinaryTransferFunction(QObject *parent = 0);
+  Q_OBJECT
+  public:
+      /*!
+    * \ingroup 	UI
+    * \brief   	Constructor
+    * \param   	parent 		parent object
+    */
+    BinaryTransferFunction(QObject *parent = 0);
 
-public:
-  static const char * xmlTag;             /*!< xml section tag string */
-  
-public:
- /*!
-  * \ingroup      UI
-  * \brief        Returns the xml tag used by the object
-  * \return       xml tag defined in static member xmlTag
-  * \par      Source:
-  *                BinaryTransferFunction.cpp
-  */
-  virtual const char * getXmlTag() { return xmlTag;}
+  public:
+    static const char * xmlTag;             /*!< xml section tag string */
+    
+  public:
+   /*!
+    * \return   xml tag defined in static member xmlTag
+    * \ingroup	UI
+    * \brief    Returns the xml tag used by the object
+    */
+    virtual const char * getXmlTag() { return xmlTag;}
 
-private:
- /*!
-  * \ingroup      UI
-  * \brief        Sets the actual colour map using the current settings
-  * \return       void
-  * \par      Source:
-  *                BinaryTransferFunction.cpp
-  */
-  virtual void update();
+  private:
+   /*!
+    * \ingroup  UI
+    * \brief    Sets the actual colour map using the current settings
+    */
+    virtual void update();
 };
 
 #endif // BINARYTRANSFERFUNCTION_H

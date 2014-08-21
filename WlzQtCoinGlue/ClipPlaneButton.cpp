@@ -1,25 +1,25 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ClipPlaneButton_h[] = "MRC HGU $Id$";
-#endif
+static char _ClipPlaneButton_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
-* \file         ClipPlaneButton.h
+* \file         ClipPlaneButton.cpp
 * \author       Zsolt Husz
 * \date         July 2009
 * \version      $Id$
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,38 +37,47 @@ static char _ClipPlaneButton_h[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Button for clip plane switch
 * \ingroup      UI
-*
 */
+
 #include "ClipPlaneButton.h"
 
-ClipPlaneButton::ClipPlaneButton(QWidget *parent) : QPushButton(parent)
+ClipPlaneButton::
+ClipPlaneButton(
+  QWidget *parent):
+QPushButton(
+  parent)
 {
-       m_iconOn.addPixmap(QPixmap(QString::fromUtf8(":/icons/images/cuttingplaneon.png")), QIcon::Normal, QIcon::Off);
-       m_iconOff.addPixmap(QPixmap(QString::fromUtf8(":/icons/images/cuttingplaneoff.png")), QIcon::Normal, QIcon::Off);
-       m_iconVisible.addPixmap(QPixmap(QString::fromUtf8(":/icons/images/cuttingplanevisible.png")), QIcon::Normal, QIcon::Off);
-       setIcon(m_iconOn);
-       setToolTip("Clip plane manipulator on/off");
-    //   setFlat(true);
-
-       setFocusPolicy(Qt::NoFocus);
-       m_state = ClipOff;
-       connect(this, SIGNAL(clicked(bool)), this, SLOT(buttonClicked(bool)));
+  m_iconOn.addPixmap(QPixmap(QString::fromUtf8(
+      ":/icons/images/cuttingplaneon.png")), QIcon::Normal, QIcon::Off);
+  m_iconOff.addPixmap(QPixmap(QString::fromUtf8(
+      ":/icons/images/cuttingplaneoff.png")), QIcon::Normal, QIcon::Off);
+  m_iconVisible.addPixmap(QPixmap(QString::fromUtf8(
+      ":/icons/images/cuttingplanevisible.png")), QIcon::Normal, QIcon::Off);
+  setIcon(m_iconOn);
+  setToolTip("Clip plane manipulator on/off");
+  setFocusPolicy(Qt::NoFocus);
+  m_state = ClipOff;
+  connect(this, SIGNAL(clicked(bool)), this, SLOT(buttonClicked(bool)));
 }
 
-void ClipPlaneButton::buttonClicked(bool) {
-   switch (m_state) {
-       case ClipOn:
-          m_state = ClipOnly;
-          setIcon(m_iconOff);
-          break;
-       case ClipOnly:
-          m_state = ClipOff;
-          setIcon(m_iconOn);
-          break;
-       case ClipOff:
-          m_state = ClipOn;
-          setIcon(m_iconVisible);
-          break;
-   }
-   emit stateChanged(m_state);
+void ClipPlaneButton::
+buttonClicked(
+  bool)
+{
+  switch(m_state)
+  {
+    case ClipOn:
+      m_state = ClipOnly;
+      setIcon(m_iconOff);
+      break;
+    case ClipOnly:
+      m_state = ClipOff;
+      setIcon(m_iconOn);
+      break;
+    case ClipOff:
+      m_state = ClipOn;
+      setIcon(m_iconVisible);
+      break;
+  }
+  emit stateChanged(m_state);
 }

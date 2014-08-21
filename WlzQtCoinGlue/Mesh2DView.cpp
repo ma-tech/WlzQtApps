@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _Mesh2DView_cpp[] = "MRC HGU $Id$";
-#endif
+static char _Mesh2DView_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         Mesh2DView.cpp
@@ -15,11 +11,15 @@ static char _Mesh2DView_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _Mesh2DView_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        View for 2D mesh.
 * \ingroup      Views
-*
 */
 
 #include "Mesh2DView.h"
@@ -57,7 +56,14 @@ static char _Mesh2DView_cpp[] = "MRC HGU $Id$";
 #include <Inventor/nodes/SoShapeHints.h>
 #include <Inventor/nodes/SoDrawStyle.h>
 
-Mesh2DView::Mesh2DView ( QObject * parent, WoolzObject * object ): ObjectView(parent, object) {
+Mesh2DView::
+Mesh2DView(
+  QObject * parent,
+  WoolzObject * object):
+ObjectView(
+  parent,
+  object)
+{
   Q_ASSERT(obj->isMesh() && !obj->is3D());
   m_material = new SoMaterial;
   Q_ASSERT(m_material);
@@ -69,31 +75,46 @@ Mesh2DView::Mesh2DView ( QObject * parent, WoolzObject * object ): ObjectView(pa
   m_drawStyle->style = SoDrawStyle::LINES ;
 
   m_transparency = 0;
-  connect(object, SIGNAL(objectVisualisationChange()), this, SLOT(objectColourChanged()));
+  connect(object, SIGNAL(objectVisualisationChange()),
+          this, SLOT(objectColourChanged()));
 }
 
-Mesh2DView::~Mesh2DView ( ) { 
+Mesh2DView::
+~Mesh2DView()
+{ 
 
-    if (m_material)
-      m_material->unref();
-    if (m_drawStyle)
-      m_drawStyle->unref();
+  if(m_material)
+  {
+    m_material->unref();
+  }
+  if(m_drawStyle)
+  {
+    m_drawStyle->unref();
+  }
 }
 
-bool Mesh2DView::compatible( ) {
- return obj->isMesh() && !obj->is3D();
+bool Mesh2DView::
+compatible()
+{
+ return(obj->isMesh() && !obj->is3D());
 }
 
-void Mesh2DView::generateSceneGraph ( bool /*bForce*/ ) {
+void Mesh2DView::
+generateSceneGraph(
+  bool /*bForce*/)
+{
   m_material->diffuseColor.setValue(obj->sbColour());
   updateMaterial();
   root->addChild(m_material);
   root->addChild(m_drawStyle);
 
   SoGroup *cache;
-  if (obj->isCachedVisualisation())
-     cache = obj->cachedVisualisation();
-  else {
+  if(obj->isCachedVisualisation())
+  {
+    cache = obj->cachedVisualisation();
+  }
+  else
+  {
     cache = new SoGroup;
     WlzErrorNum errNum = WLZ_ERR_NONE;
 
@@ -101,10 +122,14 @@ void Mesh2DView::generateSceneGraph ( bool /*bForce*/ ) {
     SoIndexedFaceSet * faceset;              // lines of the mesh
 
     nodes = Vertices2D(new SoCoordinate3, errNum);
-    faceset = Faces2D(new SoIndexedFaceSet, errNum);
-
-    if (errNum != WLZ_ERR_NONE || nodes == NULL || faceset == NULL)
-        return ;
+    if(errNum == WLZ_ERR_NONE)
+    {
+      faceset = Faces2D(new SoIndexedFaceSet, errNum);
+    }
+    if( (errNum != WLZ_ERR_NONE) || (nodes == NULL) || (faceset == NULL))
+    {
+      return ;
+    }
 
     SoShapeHints *h1= new SoShapeHints;
     Q_ASSERT(h1);
@@ -116,41 +141,50 @@ void Mesh2DView::generateSceneGraph ( bool /*bForce*/ ) {
     obj->setVisualisation(cache);
   }
   root->addChild(cache);
-  return ;
 }
 
 
-SoCoordinate3 * Mesh2DView::Vertices2D(SoCoordinate3 * vertices, WlzErrorNum& errNum )
+SoCoordinate3 * Mesh2DView::
+Vertices2D(
+  SoCoordinate3 * vertices,
+  WlzErrorNum& errNum)
 {
-  int           idN,
-                nNod = 0;
+  int           nNod = 0;
   WlzCMeshNod2D	*nod;
-  WlzCMesh2D *mesh=obj->getObj()->domain.cm2;
+  WlzCMesh2D 	*mesh=obj->getObj()->domain.cm2;
 
   if(!(mesh && (mesh->type == WLZ_CMESH_2D) &&
-    ((nNod = mesh->res.nod.maxEnt) > 0)))
+	((nNod = mesh->res.nod.maxEnt) > 0)))
   {
-      errNum = WLZ_ERR_DOMAIN_TYPE;
+    errNum = WLZ_ERR_DOMAIN_TYPE;
   }
-
-  if (errNum == WLZ_ERR_NONE) {
+  if(errNum == WLZ_ERR_NONE)
+  {
     /* Output all nodes but use (0, 0, 0) for those that are invalid. */
-    for(idN = 0; idN < nNod; ++idN) {
-      nod = (WlzCMeshNod2D *)AlcVectorItemGet(mesh->res.nod.vec, idN);
+    for(int i = 0; i < nNod; ++i)
+    {
+      nod = (WlzCMeshNod2D *)AlcVectorItemGet(mesh->res.nod.vec, i);
       if(nod->idx >= 0)
-        vertices->point.set1Value(idN, nod->pos.vtX, nod->pos.vtY, -0.0001);  //view mesh in front
+      {
+	vertices->point.set1Value(i, nod->pos.vtX, nod->pos.vtY,
+	                          -0.0001);  //view mesh in front
+      }
       else
-        vertices->point.set1Value(idN, 0, 0, 0);
+      {
+	vertices->point.set1Value(i, 0, 0, 0);
+      }
     }
   }
-  return vertices;
+  return(vertices);
 }
 
-SoIndexedFaceSet * Mesh2DView::Faces2D(SoIndexedFaceSet * faces, WlzErrorNum& errNum )
+SoIndexedFaceSet * Mesh2DView::
+Faces2D(
+  SoIndexedFaceSet * faces,
+  WlzErrorNum& errNum)
 {
-  int		idE,
-                nElm = 0;
-  WlzCMeshElm2D  *elm;
+  int		nElm = 0;
+  WlzCMeshElm2D *elm;
 
   int           iFcount = 0; //face index count
 
@@ -158,52 +192,67 @@ SoIndexedFaceSet * Mesh2DView::Faces2D(SoIndexedFaceSet * faces, WlzErrorNum& er
 
   // check if it is 2D mesh and if it has faces
   if(!(mesh && (mesh->type == WLZ_CMESH_2D) &&
-    ((nElm = mesh->res.elm.maxEnt) > 0)))
+	((nElm = mesh->res.elm.maxEnt) > 0)))
   {
-      errNum = WLZ_ERR_DOMAIN_TYPE;
+    errNum = WLZ_ERR_DOMAIN_TYPE;
   }
 
   if (errNum == WLZ_ERR_NONE)
   {
-    for(idE = 0; idE < nElm; ++idE)
+    for(int i = 0; i < nElm; ++i)
     {
-      elm = (WlzCMeshElm2D *)AlcVectorItemGet(mesh->res.elm.vec, idE);
+      elm = (WlzCMeshElm2D *)AlcVectorItemGet(mesh->res.elm.vec, i);
       if(elm->idx >= 0)
       {
-          faces->coordIndex.set1Value(iFcount++, elm->edu[0].nod->idx);
-          faces->coordIndex.set1Value(iFcount++, elm->edu[1].nod->idx);
-          faces->coordIndex.set1Value(iFcount++, elm->edu[2].nod->idx);
-          faces->coordIndex.set1Value(iFcount++, -1);
+	faces->coordIndex.set1Value(iFcount++, elm->edu[0].nod->idx);
+	faces->coordIndex.set1Value(iFcount++, elm->edu[1].nod->idx);
+	faces->coordIndex.set1Value(iFcount++, elm->edu[2].nod->idx);
+	faces->coordIndex.set1Value(iFcount++, -1);
       }
     }
   }
-  return faces;
+  return(faces);
 }
 
-void Mesh2DView::updateMaterial()
+void Mesh2DView::
+updateMaterial()
 {
-  if (m_material) //only if scene graph exists  
+  if(m_material)
+  {
+    //only if scene graph exists  
     m_material->transparency = (double) m_transparency/100.0;
-  if (m_drawStyle)
+  }
+  if(m_drawStyle)
+  {
     m_drawStyle->style = SoDrawStyle::LINES;
+  }
 }
 
-void Mesh2DView::setTransparency ( int transparency )
+void Mesh2DView::
+setTransparency(
+  int transparency)
 {
-  ObjectView::setTransparency (transparency);
+  ObjectView::setTransparency(transparency);
   updateMaterial();
 }
 
-void Mesh2DView::setVisibility ( bool visibility )   {
-  ObjectView::setVisibility (visibility);
+void Mesh2DView::
+setVisibility(
+  bool visibility) 
+{
+  ObjectView::setVisibility(visibility);
   updateMaterial();
 }
 
-void Mesh2DView::objectColourChanged ()   {
-   m_material->transparency = (double) m_transparency / 100.0;
+void Mesh2DView::
+objectColourChanged()
+{
+   m_material->transparency = (double )m_transparency / 100.0;
    m_material->diffuseColor.setValue(obj->sbColour());
 }
 
-QStringList Mesh2DView::getVisualisationTypes () {
+QStringList Mesh2DView::
+getVisualisationTypes()
+{
   return QStringList("2D mesh");
 }

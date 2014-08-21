@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ObjectView_cpp[] = "MRC HGU $Id$";
-#endif
+static char _ObjectView_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         ObjectView.cpp
@@ -15,11 +11,15 @@ static char _ObjectView_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _ObjectView_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        View for generic Woolz object
 * \ingroup      Views
-*
 */
 
 // project includes
@@ -53,76 +52,129 @@ static char _ObjectView_cpp[] = "MRC HGU $Id$";
 
 // Constructors/Destructors
 //  
-ObjectView::ObjectView (QObject * parent, WoolzObject *object) : View (parent), m_parent (parent)  {
+ObjectView::
+ObjectView(
+  QObject * parent,
+  WoolzObject *object):
+View(parent),
+m_parent(parent)
+{
   obj = object;
-  connect(obj, SIGNAL(objectPropertyChanged()), this, SLOT(objectPropertyChanged()));
-  connect(obj, SIGNAL(objectVisualisationChange()), this, SLOT(objectPropertyChanged()));
-  connect(obj, SIGNAL(objectChanged() ), this, SLOT( objectChanged()) );
-  connect(obj, SIGNAL(objectVisibilityChanged() ), this, SLOT( objectVisibilityChanged()) );
+  connect(obj, SIGNAL(objectPropertyChanged()),
+          this, SLOT(objectPropertyChanged()));
+  connect(obj, SIGNAL(objectVisualisationChange()),
+          this, SLOT(objectPropertyChanged()));
+  connect(obj, SIGNAL(objectChanged()),
+          this, SLOT( objectChanged()));
+  connect(obj, SIGNAL(objectVisibilityChanged()),
+          this, SLOT( objectVisibilityChanged()) );
   m_maskVisibility = m_visible;
 }
 
-ObjectView::~ObjectView ( ) {
+ObjectView::
+~ObjectView()
+{
 }
 
 //
 // Methods
-QColor ObjectView::getQColour ( ) {
-  return obj->qColour();
+QColor ObjectView::
+getQColour()
+{
+  return(obj->qColour());
 }
 
-QString ObjectView::getTitle ( ) {
-    return obj->name();
+QString ObjectView::getTitle()
+{
+  return(obj->name());
 }
 
-QString ObjectView::getProperties ( )  {
-  return obj->notes();
+QString ObjectView::
+getProperties()
+{
+  return(obj->notes());
 }
 
-void ObjectView::objectVisibilityChanged ( )  {
-  if (obj->visible()) {
-     View::setVisibility ( m_maskVisibility );  // use the view visibility
-  } else
-     View::setVisibility ( false  );  // disable view
+void ObjectView::
+objectVisibilityChanged()
+{
+  if(obj->visible())
+  {
+    View::setVisibility( m_maskVisibility );  // use the view visibility
+  }
+  else
+  {
+    View::setVisibility(false);               // disable view
+  }
 }
 
-void ObjectView::objectChanged() {
-  if (compatible())
+void ObjectView::
+objectChanged()
+{
+  if(compatible())
+  {
     getSceneGraph(true);
+  }
   else
+  {
     emit regerateView();
+  }
 }
 
-void ObjectView::objectPropertyChanged( ) {
-    emit viewPropertyChanged();
+void ObjectView::
+objectPropertyChanged()
+{
+  emit viewPropertyChanged();
 }
 
-void ObjectView::updateTransparency(int transparency) {
-  if (obj->isWarped())
-        setTransparency(transparency);
+void ObjectView::
+updateTransparency(
+  int transparency)
+{
+  if(obj->isWarped())
+  {
+    setTransparency(transparency);
+  }
   else
-        setTransparency(100-transparency);
+  {
+    setTransparency(100-transparency);
+  }
 }
 
-void ObjectView::selectView() {
+void ObjectView::
+selectView()
+{
   obj->selectObject();
 }
 
-void ObjectView::setVisibility ( bool visibility ) {
+void ObjectView::
+setVisibility(
+  bool visibility)
+{
   m_maskVisibility = visibility;
-  if (obj->visible()) {
-     View::setVisibility ( visibility );// use the view visibility
-  } else
-     View::setVisibility ( false ); //disable view
+  if(obj->visible())
+  {
+    View::setVisibility(visibility);	// use the view visibility
+  }
+  else
+  {
+    View::setVisibility(false); 	//disable view
+  }
 }
 
 
-bool ObjectView::saveAsXmlProperties(QXmlStreamWriter *xmlWriter) {
+bool ObjectView::
+saveAsXmlProperties(
+  QXmlStreamWriter *xmlWriter)
+{
   xmlWriter->writeTextElement("ObjectID", QString("%1").arg(obj->ID()));
   View::saveAsXmlProperties(xmlWriter);
-  return true;
+  return(true);
 }
 
-bool ObjectView::isUsing ( int testobjID ) {
-    return obj && obj->ID()==testobjID;
+bool ObjectView::
+isUsing(
+  int testobjID)
+{
+  return(obj && (obj->ID() == testobjID));
 }

@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _Camera2D_cpp[] = "MRC HGU $Id$";
-#endif
+static char _Camera2D_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         Camera2D.cpp
@@ -15,11 +11,15 @@ static char _Camera2D_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -35,24 +35,31 @@ static char _Camera2D_cpp[] = "MRC HGU $Id$";
 * License along with this program; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
-* \brief        Reduced and unequal bounding border camera to maximise image with full zoom.
+* \brief        Reduced and unequal bounding border camera to maximise image
+* 		with full zoom.
 * \ingroup      Visualisation
-*
 */
+
 #include "Camera2D.h"
 
-Camera2D::Camera2D()
- : SoOrthographicCamera()
+Camera2D::
+Camera2D():
+SoOrthographicCamera()
 {
 }
 
-Camera2D::~Camera2D()
+Camera2D::
+~Camera2D()
 {
 }
 
-// mainly copied from SoOrthographicCamera, however without bounding sphere computation
-void Camera2D::viewBoundingBox(const SbBox3f & box,
-                                      float aspect, float slack)
+// mainly copied from SoOrthographicCamera, however without bounding
+// sphere computation
+void Camera2D::
+viewBoundingBox(
+  const SbBox3f & box,
+  float aspect,
+  float slack)
 {
   // First, we want to move the camera in such a way that it is
   // pointing straight at the center of the scene bounding box -- but
@@ -63,24 +70,26 @@ void Camera2D::viewBoundingBox(const SbBox3f & box,
   this->position.setValue(box.getCenter() + -cameradirection);
 
   float sizeX, sizeY, sizeZ;
-  box.getSize (sizeX, sizeY, sizeZ);
+  box.getSize(sizeX, sizeY, sizeZ);
 
   // Make sure that everything will still be inside the viewing volume
   // even if the aspect ratio "favorizes" width over height.
   float dim= sizeX > sizeY ? sizeX : sizeY;
 
-  if (aspect < 1.0f)
+  if(aspect < 1.0f)
+  {
     this->height = dim/ aspect;
+  }
   else
+  {
     this->height = dim;
-
+  }
 
   // Move the camera to the edge of the bounding sphere, while still
   // pointing at the scene.
   SbVec3f direction = this->position.getValue() - box.getCenter();
   (void) direction.normalize(); // we know this is not a null vector
   this->position.setValue(box.getCenter() + direction  /* * radius*/);
-
 
   // Set up the clipping planes according to the slack value (a value
   // of 1.0 will yield clipping planes that are tangent to the

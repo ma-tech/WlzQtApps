@@ -1,25 +1,25 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ClipPlaneButtonBiDirection_h[] = "MRC HGU $Id$";
-#endif
+static char _ClipPlaneButtonBiDirection_h[] = "University of Edinburgh $Id$";
 #endif
 /*!
-* \file         ClipPlaneButton.h
+* \file         ClipPlaneButtonBiDirection.h
 * \author       Zsolt Husz
 * \date         December 2009
 * \version      $Id$
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _ClipPlaneButtonBiDirection_h[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Button for clip plane switch with bidirectional support
 * \ingroup      UI
-*
 */
 
 #ifndef CLIPPLANEBUTTONBIDIRECTION_H
@@ -46,52 +45,56 @@ static char _ClipPlaneButtonBiDirection_h[] = "MRC HGU $Id$";
 #include <QPushButton>
 #include "ClipPlaneButton.h"
 
-class ClipPlaneButtonBiDirection : public ClipPlaneButton
+class ClipPlaneButtonBiDirection: public ClipPlaneButton
 {
-    Q_OBJECT
-public:
-  typedef enum {ClipOn,ClipOff, ClipOnly} statetype;  /*!< states of the button */
-
- /*!
-  * \ingroup      UI
-  * \brief        Constructor
-  * \param        parent parent widget
-  * \par      Source:
-  *               ClipPlaneButtonBiDirection.cpp
-  */
-  ClipPlaneButtonBiDirection(QWidget *parent);
-
-  /*!
-   * \ingroup      UI
-   * \brief        Returns if the plane is right of mirrored orientation
-   * \param        plane orientation
-   * \par      Source:
-   *               ClipPlaneButtonBiDirection.cpp
-   */
-   bool isRight() {return m_isRight;}
+      Q_OBJECT
+  public:
+    typedef enum
+    {
+      ClipOn,
+      ClipOff,
+      ClipOnly
+    } statetype; 			/*!< states of the button */
 
    /*!
-    * \ingroup      UI
-    * \brief        Sets the isRight value, the orientation of the plane
-    * \param        void
-    * \par      Source:
-    *               ClipPlaneButtonBiDirection.cpp
+    * \ingroup    UI
+    * \brief      Constructor
+    * \param      parent 		parent widget
     */
-    void setIsRight(bool isRight) { if (isRight != m_isRight) m_isRight = isRight;}
+    ClipPlaneButtonBiDirection(QWidget *parent);
 
-protected slots:
- /*!
-  * \ingroup      UI
-  * \brief        Processes button click
-  * \par      Source:
-  *               ClipPlaneButtonBiDirection.cpp
-  */
-  virtual void buttonClicked(bool);
+    /*!
+     * \ingroup	UI
+     * \brief     Returns if the plane is right of mirrored orientation
+     * \param     plane 		orientation
+     */
+     bool isRight() {return m_isRight;}
 
-private:
-    bool m_isRight;                      /*!< is flipped */
-    QIcon m_iconOnFliped;                /*!< icon to use the plane and manipulator if plane is flipped*/
-    QIcon m_iconVisibleFliped;           /*!< icon to use the plane but without manipulator if plane is flipped*/
+     /*!
+      * \ingroup  UI
+      * \brief    Sets the isRight value, the orientation of the plane
+      */
+      void setIsRight(bool isRight)
+      {
+	if(isRight != m_isRight)
+	{
+	  m_isRight = isRight;
+	}
+      }
+
+  protected slots:
+   /*!
+    * \ingroup	UI
+    * \brief    Processes button click
+    */
+    virtual void buttonClicked(bool);
+
+  private:
+      bool m_isRight;                   /*!< is flipped */
+      QIcon m_iconOnFliped;     	/*!< icon to use the plane and
+					     manipulator if plane is flipped */
+      QIcon m_iconVisibleFliped;        /*!< icon to use the plane but without
+					     manipulator if plane is flipped */
 
 };
 

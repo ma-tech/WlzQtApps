@@ -1,25 +1,25 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ConvHull3DView_cpp[] = "MRC HGU $Id$";
-#endif
+static char _ConvHull3DView_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         ConvHull3DView.cpp
-* \author       Zsolt Husz
-* \date         October 2008
+* \author       Bill Hill
+* \date         August 2014
 * \version      $Id$
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _ConvHull3DView_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        View for 3D convex hull.
 * \ingroup      Views
-*
 */
 
 #include "ConvHull3DView.h"
@@ -91,15 +90,13 @@ ConvHull3DView::
   }
 }
 
-bool
-ConvHull3DView::
+bool ConvHull3DView::
 compatible()
 {
  return(obj->isConvHull() && obj->is3D());
 }
 
-void
-ConvHull3DView::
+void ConvHull3DView::
 generateSceneGraph(
   bool /*bForce*/)
 {
@@ -164,8 +161,7 @@ generateSceneGraph(
   }
 }
 
-SoCoordinate3 *
-ConvHull3DView::
+SoCoordinate3 * ConvHull3DView::
 Vertices3D(
   WlzConvHullDomain3 *cv,
   SoCoordinate3 * vertices, 
@@ -208,8 +204,7 @@ Vertices3D(
   return(vertices);
 }
 
-SoIndexedFaceSet *
-ConvHull3DView::
+SoIndexedFaceSet * ConvHull3DView::
 Faces3D(
   WlzConvHullDomain3 *cv,
   SoIndexedFaceSet * faces)
@@ -230,8 +225,7 @@ Faces3D(
   return(faces);
 }
 
-void
-ConvHull3DView::
+void ConvHull3DView::
 updateMaterial()
 {
   if(m_material) //only if scene graph exists  
@@ -249,23 +243,20 @@ setTransparency(
   updateMaterial();
 }
 
-void 
-ConvHull3DView::
+void ConvHull3DView::
 objectColourChanged()
 {
   m_material->transparency = (double) m_transparency/100.0;
   m_material->diffuseColor.setValue(obj->sbColour());
 }
 
-QStringList
-ConvHull3DView::
+QStringList ConvHull3DView::
 getVisualisationTypes()
 {
   return QStringList("3D convex hull");
 }
 
-void
-ConvHull3DView::
+void ConvHull3DView::
 addedClipPlane(SoClipPlane * plane)
 {
   if(m_clipOn)
@@ -273,19 +264,16 @@ addedClipPlane(SoClipPlane * plane)
     root->removeChild(1);
     m_clipOn = false;
   }
-
   if(m_clipPlane)
   {
     m_clipPlane ->unref();
     m_clipPlane = NULL;
   }
-  if(!plane)
+  if(plane)
   {
-    return;
+    m_clipPlane = plane;
+    m_clipPlane ->ref();
+    root->insertChild(plane, 1);
+    m_clipOn = true;
   }
-  m_clipPlane = plane;
-  m_clipPlane ->ref();
-
-  root->insertChild(plane, 1);
-  m_clipOn = true;
 }

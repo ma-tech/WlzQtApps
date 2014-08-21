@@ -1,3 +1,4 @@
+#CONFIG += debug
 #CONFIG += debug_and_release build_all
 CONFIG += release build_all
 CONFIG += QtOpenGL

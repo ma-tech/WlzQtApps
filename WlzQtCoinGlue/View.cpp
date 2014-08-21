@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _View_cpp[] = "MRC HGU $Id$";
-#endif
+static char _View_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         View.cpp
@@ -15,11 +11,15 @@ static char _View_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _View_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        General interface for view based on Open Inventor.
 * \ingroup      Views
-*
 */
 
 #include "View.h"
@@ -50,7 +49,12 @@ static char _View_cpp[] = "MRC HGU $Id$";
 const char* View::xmlTag = "View";
 
 // Constructors/Destructors
-View::View (QObject *parent) : QObject(parent) {
+View::
+View(
+  QObject *parent):
+QObject(
+  parent)
+{
   switchroot = new SoSwitch;
   Q_ASSERT(switchroot);
   switchroot->ref();
@@ -61,65 +65,96 @@ View::View (QObject *parent) : QObject(parent) {
 
   Q_ASSERT(root);
   m_visible = true;
-  switchroot->whichChild = m_visible ? 1 : 0;
+  switchroot->whichChild = (m_visible)? 1 : 0;
 }
 
-View::~View ( ) { 
-  if (switchroot) 
+View::
+~View()
+{ 
+  if(switchroot) 
+  {
     switchroot->unref();
-}
-
-// Methods
-SoNode* View::getSceneGraph ( bool bForce) {
-  if (bForce) {
-    root->removeAllChildren();
-
-    /*  Add children. 
-        Do not force, individual objects don't have to regenerated */
-    generateSceneGraph(bForce);//false->bForce changed 24-03, since if mesh changes, needs to be updated
-   }
-  return switchroot;
-}
-
-void View::setVisibility ( bool visibility ) {
-  if (m_visible != visibility) {
-     m_visible = visibility;
-     switchroot->whichChild = m_visible ? 1 : 0;
   }
 }
 
-bool View::saveAsXml(QXmlStreamWriter *xmlWriter) {
+// Methods
+SoNode* View::
+getSceneGraph(bool bForce)
+{
+  if(bForce)
+  {
+    root->removeAllChildren();
+
+    /*  Add children. 
+     *  Do not force, individual objects don't have to regenerated */
+    generateSceneGraph(bForce);
+  }
+  return(switchroot);
+}
+
+void View::
+setVisibility(
+  bool visibility)
+{
+  if(m_visible != visibility)
+  {
+    m_visible = visibility;
+    switchroot->whichChild = (m_visible)? 1 : 0;
+  }
+}
+
+bool View::
+saveAsXml(
+  QXmlStreamWriter *xmlWriter)
+{
   Q_ASSERT(xmlWriter);
   xmlWriter->writeStartElement(xmlTag);
   saveAsXmlProperties(xmlWriter);
   xmlWriter->writeEndElement();
-  return true;
+  return(true);
 }
 
-bool View::saveAsXmlProperties(QXmlStreamWriter *xmlWriter) {
+bool View::
+saveAsXmlProperties(
+  QXmlStreamWriter *xmlWriter)
+{
   xmlWriter->writeTextElement("Visible", getVisibility() ? "Yes":"No");
-  xmlWriter->writeTextElement("Transparency", QString("%1").arg(m_transparency));
-  return true;
+  xmlWriter->writeTextElement("Transparency",
+  			      QString("%1").arg(m_transparency));
+  return(true);
 }
 
-bool View::parseDOMLine(const QDomElement &element) {
-    if (element.tagName() == "Transparency") {
-       setTransparency(element.text().toInt());
-       return true;
-    } else if (element.tagName() == "Visible") {
-       setVisibility(element.text().toUpper() == "YES");
-       return true;
-   }
-  return false;
-}
-
-bool View::parseDOM(const QDomElement &element) {
-  QDomNode child = element.firstChild();
-  while (!child.isNull()) {
-        parseDOMLine(child.toElement());
-        child = child.nextSibling();
+bool View::
+parseDOMLine(
+  const QDomElement &element)
+{
+  bool st = true;
+  if(element.tagName() == "Transparency")
+  {
+    setTransparency(element.text().toInt());
   }
-  return true;
+  else if(element.tagName() == "Visible")
+  {
+    setVisibility(element.text().toUpper() == "YES");
+  }
+  else
+  {
+    st = false;
+  }
+  return(st);
+}
+
+bool View::
+parseDOM(
+  const QDomElement &element)
+{
+  QDomNode child = element.firstChild();
+  while(!child.isNull())
+  {
+    parseDOMLine(child.toElement());
+    child = child.nextSibling();
+  }
+  return(true);
 }
 
 

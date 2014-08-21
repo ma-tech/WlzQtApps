@@ -5,8 +5,10 @@
 set -x
 
 export MA_HOME=/opt/MouseAtlas
+#setenv MA_HOME /opt/MouseAtlas
 #export MA_HOME=$HOME/MouseAtlas/Build
 
+#set path=("$MA_HOME"/bin $path)
 export PATH="$MA_HOME"/bin:$PATH
 
 cd WlzQtCoinGlue

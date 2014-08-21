@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ClipPlaneButton_h[] = "MRC HGU $Id$";
-#endif
+static char _ClipPlaneButton_h[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         ClipPlaneButton.h
@@ -15,11 +11,15 @@ static char _ClipPlaneButton_h[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _ClipPlaneButton_h[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Button for clip plane switch
 * \ingroup      UI
-*
 */
 
 #ifndef CLIPPLANEBUTTON_H
@@ -45,54 +44,53 @@ static char _ClipPlaneButton_h[] = "MRC HGU $Id$";
 
 #include <QPushButton>
 
-class ClipPlaneButton : public QPushButton
+class ClipPlaneButton: public QPushButton
 {
-    Q_OBJECT
-public:
-  typedef enum {ClipOn,ClipOff, ClipOnly} statetype;  /*!< states of the button */
+  Q_OBJECT
+  public:
+    typedef enum
+    {
+      ClipOn,
+      ClipOff,
+      ClipOnly
+    } statetype; 				/*!< states of the button */
 
- /*!
-  * \ingroup      UI
-  * \brief        Constructor
-  * \param        parent parent widget
-  * \par      Source:
-  *               ClipPlaneButton.cpp
-  */
-  ClipPlaneButton(QWidget *parent);
+   /*!
+    * \ingroup    UI
+    * \brief      Constructor
+    * \param      parent 			parent widget
+    */
+    ClipPlaneButton(QWidget *parent);
 
- /*!
-  * \ingroup      UI
-  * \brief        Returns the state of the button
-  * \param        button state
-  * \par      Source:
-  *               ClipPlaneButton.cpp
-  */
-  statetype state() {return m_state;}
+   /*!
+    * \ingroup    UI
+    * \brief      Returns the state of the button
+    * \param  	button 			state
+    */
+    statetype state() {return m_state;}
 
-protected slots:
- /*!
-  * \ingroup      UI
-  * \brief        Processes button click
-  * \par      Source:
-  *               ClipPlaneButton.cpp
-  */
-  virtual void buttonClicked(bool);
+  protected slots:
+   /*!
+    * \ingroup	UI
+    * \brief      Processes button click
+    */
+    virtual void buttonClicked(bool);
 
-signals:
- /*!
-  * \ingroup      UI
-  * \brief        Signals button state change
-  * \param        state new state
-  * \par      Source:
-  *               ClipPlaneButton.cpp
-  */
-  void stateChanged(ClipPlaneButton::statetype state);
+  signals:
+   /*!
+    * \ingroup    UI
+    * \brief      Signals button state change
+    * \param      state 			new state
+    */
+    void stateChanged(ClipPlaneButton::statetype state);
 
-protected:
-    QIcon m_iconOff;               /*!< icon to remove the plane */
-    QIcon m_iconOn;                /*!< icon to use the plane and manipulator */
-    QIcon m_iconVisible;           /*!< icon to use the plane but without manipulator */
-    statetype m_state;             /*!< current stat of the button */
+  protected:
+      QIcon m_iconOff;			/*!< icon to remove the plane */
+      QIcon m_iconOn;     		/*!< icon to use the plane and
+					       manipulator */
+      QIcon m_iconVisible;           	/*!< icon to use the plane but without
+					       manipulator */
+      statetype m_state;             	/*!< current stat of the button */
 };
 
 #endif // CLIPPLANEBUTTON_H

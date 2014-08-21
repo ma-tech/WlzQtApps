@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ConvHull2DView_cpp[] = "MRC HGU $Id$";
-#endif
+static char _ConvHull2DView_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         ConvHull2DView.cpp
@@ -15,11 +11,15 @@ static char _ConvHull2DView_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2014 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -38,6 +38,7 @@ static char _ConvHull2DView_cpp[] = "MRC HGU $Id$";
 * \brief        View for 2D convex hull.
 * \ingroup      Views
 */
+
 #include "ConvHull2DView.h"
 #include "WoolzObject.h"
 
@@ -80,15 +81,13 @@ ConvHull2DView::
   }
 }
 
-bool
-ConvHull2DView::
+bool ConvHull2DView::
 compatible()
 {
  return(obj->isConvHull() && obj->is2D());
 }
 
-void
-ConvHull2DView::
+void ConvHull2DView::
 generateSceneGraph(
   bool /*bForce*/)
 {
@@ -153,9 +152,8 @@ generateSceneGraph(
   root->addChild(cache);
 }
 
-
-SoCoordinate3 *
-ConvHull2DView:: Vertices2D(
+SoCoordinate3 * ConvHull2DView::
+Vertices2D(
   WlzConvHullDomain2 *cv,
   SoCoordinate3 * vertices,
   WlzErrorNum& errNum )
@@ -197,10 +195,7 @@ ConvHull2DView:: Vertices2D(
   return(vertices);
 }
 
-
-
-SoIndexedLineSet *
-ConvHull2DView::
+SoIndexedLineSet * ConvHull2DView::
 Lines2D(
   WlzConvHullDomain2 *cv,
   SoIndexedLineSet * lineset )
@@ -220,25 +215,21 @@ Lines2D(
   return(lineset);
 }
 
-
-void
-ConvHull2DView::
+void ConvHull2DView::
 setTransparency(
   int transparency)
 {
   ObjectView::setTransparency (transparency);
 }
 
-void
-ConvHull2DView::
+void ConvHull2DView::
 objectColourChanged()
 {
    m_material->transparency = 0;
    m_material->diffuseColor.setValue(obj->sbColour());
 }
 
-QStringList
-ConvHull2DView::
+QStringList ConvHull2DView::
 getVisualisationTypes()
 {
   return(QStringList("2D convex hull"));

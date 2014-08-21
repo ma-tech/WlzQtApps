@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _Viewer2D3D_cpp[] = "MRC HGU $Id$";
-#endif
+static char _Viewer2D3D_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         Viewer2D3D.cpp
@@ -15,11 +11,15 @@ static char _Viewer2D3D_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,11 +37,14 @@ static char _Viewer2D3D_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Interface for wrapping both View2D and View3D classes
 * \ingroup      UI
-*
 */
+
 #include "Viewer2D3D.h"
 
-void Viewer2D3D::changeCameraValues(SoCamera * camera) {
+void Viewer2D3D::
+changeCameraValues(
+  SoCamera * camera)
+{
   //forward call to superclass
   SoQtFullViewer::changeCameraValues(camera);
 }

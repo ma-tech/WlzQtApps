@@ -1,6 +1,6 @@
-CONFIG += release
 #CONFIG += release build_all
-#CONFIG += debug build_all
+#CONFIG += release
+CONFIG += debug
 CONFIG += opengl
 CONFIG += openmp
 QT += xml

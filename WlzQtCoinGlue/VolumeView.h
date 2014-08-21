@@ -1,25 +1,25 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _VolumeView_h[] = "MRC HGU $Id$";
-#endif
+static char _VolumeView_h[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         VolumeView.h
-* \author       Zsolt Husz
-* \date         October 2008
+* \author	Zsolt Husz
+* \date		October 2008
 * \version      $Id$
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -35,10 +35,8 @@ static char _VolumeView_h[] = "MRC HGU $Id$";
 * License along with this program; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
-* \brief        Volume rendering for 3D oobjects
-* \ingroup      Views
-* \todo         editable properties
-*
+* \brief	Volume rendering for 3D oobjects
+* \ingroup	Views
 */
 
 #ifndef VOLUMEVIEW_H
@@ -56,184 +54,152 @@ class SoClipPlane;
 class SoTransferFunction;
 /*!
 * \brief	View providing 2D object visualisation
-* \ingroup      Views
+* \ingroup	Views
 */
 class VolumeView : public ObjectView
 {
   Q_OBJECT
-public:
+  public:
 
- /*!
-  * \ingroup      Views
-  * \brief        Constructor
-  * \param        parent parent viewer
-  * \param        object Woolz object to be visualised
-  * \return       void
-  * \par      Source:
-  *                VolumeView.cpp
-  */
-  VolumeView ( QObject * parent, WoolzObject * object );
+   /*!
+    * \ingroup	Views
+    * \brief	Constructor
+    * \param	parent			parent viewer
+    * \param	object			Woolz object to be visualised
+    */
+    VolumeView(QObject * parent, WoolzObject * object);
 
-  /*!
-   * Empty Destructor
-   */
-  virtual ~VolumeView ( );
+    /*!
+     * Empty Destructor
+     */
+    virtual ~VolumeView();
 
-  /*!
-  * \ingroup      Views
-  * \brief        Destructor
-  * \return       void
-  * \par      Source:
-  *                VolumeView.cpp
-  */
+    /*!
+    * \ingroup	Views
+    * \brief	Destructor
+    * \return	void
+    */
 
-public:
+  public:
 
- /*!
-  * \ingroup      Visualisation
-  * \brief        Sets the transparency value of the object.
-  *
-  *           Implements View::setTransparency().
-  * \param        transparency new transparency value between 0 (non transparent) and 100 (transparent)
-  * \return       void
-  * \par      Source:
-  *                VolumeView.cpp
-  */
-  virtual void setTransparency ( int transparency );
-
- /*!
-  * \ingroup      Visualisation
-  * \brief        Returns the number of available visualisations that is 1 for VolumeView.
-  *
-  *           Implements View::getVisualisationTypesNo().
-  * \return       Return the number of available visualisations (1)
-  * \par      Source:
-  *                VolumeView.cpp
-  */
-  virtual int getVisualisationTypesNo () {return 1;}
-
- /*!
-  * \ingroup      Visualisation
-  * \brief        Returns the list of available visualisations.
+   /*!
+    * \ingroup	Visualisation
+    * \brief	Sets the transparency value of the object.
     *
-  *           Implements View::getVisualisationTypes().
-  * \return       List of visualistion type names.
-  * \par      Source:
-  *                VolumeView.cpp
-  */
-  virtual QStringList getVisualisationTypes ();
+    *	      	Implements View::setTransparency().
+    * \param	transparency		new transparency value between
+    * 					0 (non transparent) and 100
+    * 					(transparent)
+    */
+    virtual void setTransparency(int transparency);
 
- /*!
-  * \ingroup      Views
-  * \brief        Current visualisation type.
-  *
-  *   Currently only one visualisation is implemented, therefore it returns 0.
-  *
-  *           Implements View::visualisationType().
-  * \return       void
-  * \par      Source:
-  *                VolumeView.cpp
-  */
-  virtual int visualisationType () {return 0;}
+   /*!
+    * \return	the number of available visualisations (1)
+    * \ingroup	Visualisation
+    * \brief	Returns the number of available visualisations that is 1 for
+    * 		VolumeView.
+    *
+    *	      	Implements View::getVisualisationTypesNo().
+    */
+    virtual int getVisualisationTypesNo() {return 1;}
 
-  /*!
-   * \ingroup      Visualisation
-   * \brief        Returns the properties of the view.
-   *
-   * \return       scale factor
-   * \par      Source:
-   *                VolumeView.cpp
-   */
-   virtual QString getProperties ( );
+   /*!
+    * \return	list of visualistion type names.
+    * \ingroup	Visualisation
+    * \brief	Returns the list of available visualisations.
+    *
+    *	      	Implements View::getVisualisationTypes().
+    */
+    virtual QStringList getVisualisationTypes();
 
-protected:
- /*!
-  * \ingroup      Visualisation
-  * \brief        Builds the scene graph of the view.
-  *
-  *           Reimplements View::generateSceneGraph().
-  * \param        bForce, if true force update of the scene graph elements
-  * \return       void
-  * \par      Source:
-  *                VolumeView.cpp
-  */
-  virtual void generateSceneGraph ( bool bForce = false);
+   /*!
+    * \ingroup	Views
+    * \brief	Current visualisation type.
+    *
+    *   	Currently only one visualisation is implemented, therefore
+    *   	it returns 0.
+    *
+    *	      	Implements View::visualisationType().
+    */
+    virtual int visualisationType() {return 0;}
 
- /*!
-  * \ingroup      Visualisation
-  * \brief        Updates view material.
-  *
-  * \return       void
-  * \par      Source:
-  *                VolumeView.cpp
-  */
-  void updateMaterial();
+    /*!
+     * \return	scale factor
+     * \ingroup	Visualisation
+     * \brief	Returns the properties of the view.
+     */
+     virtual QString getProperties();
 
- /*!
-  * \ingroup      Visualisation
-  * \brief        Returns if the current object is compatible with the view
-  * \return       true of object is compatible, false if not.
-  * \par      Source:
-  *                VolumeView.cpp
-  */
-  virtual bool compatible();
+  protected:
+   /*!
+    * \ingroup	Visualisation
+    * \brief	Builds the scene graph of the view.
+    *
+    *	      	Reimplements View::generateSceneGraph().
+    * \param 	bForce			if true force update of the scene
+    * 					graph elements
+    */
+    virtual void generateSceneGraph (bool bForce = false);
 
-private:
- /*!
-  * \ingroup      Visualisation
-  * \brief        Frees voxel data, if any allocated
-  * \return       void
-  * \par      Source:
-  *                VolumeView.cpp
-  */
-  void freeVolumeData();
+   /*!
+    * \ingroup	Visualisation
+    * \brief	Updates view material.
+    */
+    void updateMaterial();
 
-public slots:
- /*!
-  * \ingroup      Visualisation
-  * \brief        Processes object colour change.
-  *
-  * \return       void.
-  * \par      Source:
-  *                VolumeView.cpp
-  */
-  void objectColourChanged ();
+   /*!
+    * \return	true of object is compatible, false if not.
+    * \ingroup	Visualisation
+    * \brief	Returns if the current object is compatible with the view
+    */
+    virtual bool compatible();
 
- /*!
-  * \ingroup      Visualisation
-  * \brief        Sets up or deletes clip plane
-  * \param        plane new plane to use
-  * \return       void.
-  * \par      Source:
-  *                VolumeView.cpp
-  */
-  void addedClipPlane(SoClipPlane * plane);
+  private:
+   /*!
+    * \ingroup	Visualisation
+    * \brief	Frees voxel data, if any allocated
+    */
+    void freeVolumeData();
 
- /*!
-  * \ingroup      Visualisation
-  * \brief        Sets up or deletes clip plane
-  * \param        plane new plane to use
-  * \param        on true if oblique slice is on
-  * \return       void.
-  * \par      Source:
-  *                VolumeView.cpp
-  */
-  void setObliqueSlice(bool on);
+  public slots:
+   /*!
+    * \ingroup	Visualisation
+    * \brief	Processes object colour change.
+    */
+    void objectColourChanged ();
 
-protected:
-  // protected attributes
-  SoMaterial *m_material;                    /*!< material of the object */
-  SoSeparator *m_section;                    /*!< section view */
-  SoSeparator *m_volumerenderSep;            /*!< volume renderer separator
-                                               volume renderer and sectioning plane must be place in a
-                                               separator, otherwise ortho plane will be sectioned  */
-  void ***m_data;                            /*!< voxel data*/
-  SoClipPlane *m_clipPlane;                  /*!< reference clip plane from viewer*/
-  bool m_orthoOn;                            /*!< if clip plane is on*/
-  static SoTransferFunction *m_tfSection;    /*!< static transfer function, used for all oblique views */
-  int m_scaleFactor;                         /*!< volume scale factor */
+   /*!
+    * \ingroup	Visualisation
+    * \brief	Sets up or deletes clip plane
+    * \param	plane			new plane to use
+    */
+    void addedClipPlane(SoClipPlane * plane);
 
-  static const long maxVoxels;
+   /*!
+    * \ingroup	Visualisation
+    * \brief	Sets up or deletes clip plane
+    * \param	plane			new plane to use
+    * \param	on			true if oblique slice is on
+    */
+    void setObliqueSlice(bool on);
+
+  protected:
+    // protected attributes
+    SoMaterial *m_material;		/*!< material of the object */
+    SoSeparator *m_section;		/*!< section view */
+    SoSeparator *m_volumerenderSep;	/*!< volume renderer separator
+					     volume renderer and sectioning
+					     plane must be place in a
+					     separator, otherwise ortho plane
+					     will be sectioned  */
+    void ***m_data;			/*!< voxel data*/
+    SoClipPlane *m_clipPlane;		/*!< reference clip plane from viewer*/
+    bool m_orthoOn;			/*!< if clip plane is on*/
+    static SoTransferFunction *m_tfSection; /*!< static transfer function,
+    					     used for all oblique views */
+    int m_scaleFactor;			/*!< volume scale factor */
+
+    static const long maxVoxels;
 };
 
 #endif // VOLUMEVIEW_H
