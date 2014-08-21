@@ -1,25 +1,25 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ObjectDelegates_cpp[] = "MRC HGU $Id$";
-#endif
+static char _ObjectDelegate_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
-* \file         ObjectDelegates.cpp
+* \file         ObjectDelegate.cpp
 * \author       Zsolt Husz
 * \date         October 2008
 * \version      $Id$
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _ObjectDelegates_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Delegate for object tool tree view
 * \ingroup      UI
-*
 */
 //project includes
 #include "ObjectDelegate.h"
@@ -48,50 +47,106 @@ static char _ObjectDelegates_cpp[] = "MRC HGU $Id$";
 #include "qtcolorpicker.h"
 
 
-ObjectDelegate::ObjectDelegate(QAbstractItemView *view, QObject *parent) : QStyledItemDelegate(parent), m_view (view) {
+ObjectDelegate::
+ObjectDelegate(
+QAbstractItemView *view,
+QObject *parent):
+QStyledItemDelegate(
+  parent),
+m_view(
+  view)
+{
 }
 
-void ObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
-                          const QModelIndex &index) const {
-    if (index.column() == 2 && qVariantCanConvert<QColor>(index.data())) {
-     m_view->openPersistentEditor(index);
-  } else
-      QStyledItemDelegate::paint(painter, option, index);
- }
-
-QWidget * ObjectDelegate::createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
-    if (index.column() == 2 && qVariantCanConvert<QColor>(index.data())) {
-         QtColorPicker * colorpicker = new QtColorPicker(parent);
-      colorpicker->setStandardColors();
-      colorpicker->setFlat(true);
-      connect(colorpicker, SIGNAL(colorChanged(QColor)), this, SLOT(emitCommitData()));
-      return colorpicker ;
-   } else
-      return QStyledItemDelegate::createEditor(parent, option, index);
- }
-
-void ObjectDelegate::setEditorData ( QWidget * editor, const QModelIndex & index ) const {
-    if (index.column() == 2 && qVariantCanConvert<QColor>(index.data())) {
-         QtColorPicker * colorpicker = qobject_cast <QtColorPicker*>(editor);
-         if (colorpicker) {
-            colorpicker->setCurrentColor(qVariantValue<QColor>(index.data()));
-         }
-         else Q_ASSERT(false);
-    } else
-        QStyledItemDelegate::setEditorData(editor, index);
+void ObjectDelegate::
+paint(
+  QPainter *painter,
+  const QStyleOptionViewItem &option,
+  const QModelIndex &index) const
+{
+  if((index.column() == 2) && qVariantCanConvert<QColor>(index.data()))
+  {
+    m_view->openPersistentEditor(index);
+  }
+  else
+  {
+    QStyledItemDelegate::paint(painter, option, index);
+  }
 }
 
-void ObjectDelegate::setModelData ( QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const {
-  if (index.column() == 2 && qVariantCanConvert<QColor>(index.data())) {
+QWidget * ObjectDelegate::
+createEditor(
+  QWidget * parent,
+  const QStyleOptionViewItem & option,
+  const QModelIndex & index) const
+{
+  QWidget * w;
+
+  if((index.column() == 2) && qVariantCanConvert<QColor>(index.data()))
+  {
+    QtColorPicker * colorpicker = new QtColorPicker(parent);
+    colorpicker->setStandardColors();
+    colorpicker->setFlat(true);
+    connect(colorpicker, SIGNAL(colorChanged(QColor)),
+            this, SLOT(emitCommitData()));
+    w = colorpicker;
+  }
+  else
+  {
+    w = QStyledItemDelegate::createEditor(parent, option, index);
+  }
+  return(w);
+}
+
+void ObjectDelegate::
+setEditorData(
+  QWidget * editor,
+  const QModelIndex & index) const
+{
+  if((index.column() == 2) && qVariantCanConvert<QColor>(index.data()))
+  {
     QtColorPicker * colorpicker = qobject_cast <QtColorPicker*>(editor);
-    if (colorpicker) {
-      model->setData(index, colorpicker->currentColor());
-    } else
-        Q_ASSERT(false);
-  } else
-      QStyledItemDelegate::setModelData(editor, model, index);
+    if(colorpicker)
+    {
+      colorpicker->setCurrentColor(qVariantValue<QColor>(index.data()));
+    }
+    else
+    {
+      Q_ASSERT(false);
+    }
+  }
+  else
+  {
+    QStyledItemDelegate::setEditorData(editor, index);
+  }
 }
 
-void ObjectDelegate::emitCommitData() {
-    emit commitData(qobject_cast<QWidget *>(sender()));
+void ObjectDelegate::
+setModelData(
+  QWidget * editor,
+  QAbstractItemModel * model,
+  const QModelIndex & index) const
+{
+  if((index.column() == 2) && qVariantCanConvert<QColor>(index.data()))
+  {
+    QtColorPicker * colorpicker = qobject_cast <QtColorPicker*>(editor);
+    if(colorpicker)
+    {
+      model->setData(index, colorpicker->currentColor());
+    }
+    else
+    {
+      Q_ASSERT(false);
+    }
+  }
+  else
+  {
+    QStyledItemDelegate::setModelData(editor, model, index);
+  }
+}
+
+void ObjectDelegate::
+emitCommitData()
+{
+  emit commitData(qobject_cast<QWidget *>(sender()));
 }
