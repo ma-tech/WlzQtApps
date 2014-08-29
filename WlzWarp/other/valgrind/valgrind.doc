@@ -1,1 +1,0 @@
---suppressions=/net/mahost/export/techcompwg1/zsolth/Projects/MouseAtlas/src/Applications/WlzWarp/other/valgrind/valgrind.in --num-callers=25
