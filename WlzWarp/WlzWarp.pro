@@ -134,19 +134,19 @@ contains( QMAKE_CFLAGS, -m64):TYPE =
 contains( QMAKE_LIBDIR_X11, /usr/lib64):TYPE = 
 isEmpty( TYPE):DEFINES += _64BITWARP
 else:DEFINES += _32BITWARP
-CONFIG(debug, debug|release):TARGET = Warping_d
-else:TARGET = Warping
+CONFIG(debug, debug|release):TARGET = WlzWarp_d
+else:TARGET = WlzWarp
 
 # Coin-Qt-Wlz glue libraries
 CONFIG(debug, debug|release):LIBS += -lWlzQtCoinGlue_d
 else {
     LIBS += -lWlzQtCoinGlue
-    INCLUDEPATH *= $$(MA_HOME)/include/WlzQtCoinGlue
+    INCLUDEPATH *= $$(MA)/include/WlzQtCoinGlue
 }
 
 # ###########
-# INCLUDEPATH *= $$(MA_HOME)/include/WlzQtCoinGlue
-LIBS *= -L$$(MA_HOME)/lib
+# INCLUDEPATH *= $$(MA)/include/WlzQtCoinGlue
+LIBS *= -L$$(MA)/lib
 
 # Coin/Qt:
 SOQTINC = $$(SOQTINC)
@@ -171,8 +171,8 @@ LIBS *= -lSimVoleon \
     $$COINLDFLAGS
 
 # static libraries for Woolz
-INCLUDEPATH *= $$(MA_HOME)/include
-LIBS *= -L$$(MA_HOME)/lib
+INCLUDEPATH *= $$(MA)/include
+LIBS *= -L$$(MA)/lib
 LIBS *= -lWlzExtFF \
     -lWlz \
     -lAlc \
@@ -183,17 +183,17 @@ LIBS *= -lWlzExtFF \
     -lznz \
     -lz
 draggers.files = draggers/*.iv
-draggers.path = $$(MA_HOME)/bin/draggers
+draggers.path = $$(MA)/bin/draggers
 
 # must precede win32 otherwise cross-compiling causes problems (both win32 and unix are defined)
 unix { 
     OUTDIR = linux$$TYPE
-    include($$(MA_HOME)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
+    include($$(MA)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
     INSTALLS += draggers
 }
 macx { 
     ICON = icon_mac.png
-    include($$(MA_HOME)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
+    include($$(MA)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
     QMAKE_INFO_PLIST = Info.plist
     OUTDIR = MacOSX
     QMAKE_POST_LINK = ./mac_deploy
@@ -224,6 +224,6 @@ RCC_DIR = $$OUTDIR/rcc
 
 # install
 RESOURCES += resource.qrc
-target.path = $$(MA_HOME)/bin
+target.path = $$(MA)/bin
 INSTALLS += target
 OTHER_FILES += openmp.prf

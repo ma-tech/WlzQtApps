@@ -106,13 +106,13 @@ LIBS *= -lSimVoleon \
     $$SOQTLDFLAGS
 
 # static libraries for Woolz
-INCLUDEPATH *= $$(MA_HOME)/include
+INCLUDEPATH *= $$(MA)/include
 
 message($$INCLUDEPATH)
-a=$$(MA_HOME)
+a=$$(MA)
 message($$a)
 
-LIBS *= -L$$(MA_HOME)/lib
+LIBS *= -L$$(MA)/lib
 LIBS *= -lWlzExtFF \
     -lWlz \
     -lAlc \
@@ -148,7 +148,7 @@ UI_DIR = $$OUTDIR/ui
 RCC_DIR = $$OUTDIR/rcc
 
 # install
-target.path = $$(MA_HOME)/lib
+target.path = $$(MA)/lib
 sources.files = $$SOURCES \
     $$HEADERS \
     $$RESOURCES \
@@ -156,9 +156,9 @@ sources.files = $$SOURCES \
     *.pro
 sources.path = .
 headers.files = ./$$HEADERS
-headers.path = $$(MA_HOME)/include/WlzQtCoinGlue
+headers.path = $$(MA)/include/WlzQtCoinGlue
 win32 { 
-  target.path = $$(MA_HOME)\lib
+  target.path = $$(MA)\lib
 }
 
 INSTALLS += target \

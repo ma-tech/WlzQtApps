@@ -32,10 +32,10 @@ contains( QMAKE_CFLAGS, -m64): TYPE =
 contains( QMAKE_LIBDIR_X11, /usr/lib64):TYPE =
 
 CONFIG(debug, debug|release) { 
-    TARGET = Viewer_d
+    TARGET = WlzViewer_d
 }
 else { 
-    TARGET = Viewer
+    TARGET = WlzViewer
 }
 
 
@@ -43,13 +43,13 @@ else {
 CONFIG(debug, debug|release):LIBS += -lWlzQtCoinGlue_d
 else {
     LIBS += -lWlzQtCoinGlue
-    INCLUDEPATH *= $$(MA_HOME)/include/WlzQtCoinGlue
+    INCLUDEPATH *= $$(MA)/include/WlzQtCoinGlue
 }
-LIBS *= -L/$(MA_HOME)/lib
+LIBS *= -L/$(MA)/lib
 
 # static libraries for Woolz
-INCLUDEPATH *= $$(MA_HOME)/include
-LIBS *= -L/$(MA_HOME)/lib
+INCLUDEPATH *= $$(MA)/include
+LIBS *= -L/$(MA)/lib
 LIBS *= -lWlzExtFF \
         -lWlz \
         -lAlc \
@@ -98,7 +98,7 @@ LIBS += -lSimVoleon $$COINLIB $$COINLDFLAGS $$SOQTLIB $$SOQTLDFLAGS
 # must precede win32 otherwise cross-compiling causes problems (both win32 and unix are defined)
 unix {
    OUTDIR  = linux$$TYPE
-   include($$(MA_HOME)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
+   include($$(MA)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
 }
 
 macx {
@@ -106,7 +106,7 @@ macx {
     QMAKE_INFO_PLIST = Info.plist
     OUTDIR = MacOSX
     QMAKE_POST_LINK = ./mac_deploy
-    include($$(MA_HOME)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
+    include($$(MA)/src/External/QtColorPicker/qtcolorpicker/src/qtcolorpicker.pri)
 }
 win32 {
     CONFIG += staticlib
@@ -136,7 +136,7 @@ MOC_DIR = $$OUTDIR/moc
 UI_DIR = $$OUTDIR/ui
 RCC_DIR = $$OUTDIR/rcc
 
-target.path = $$(MA_HOME)/bin
+target.path = $$(MA)/bin
 INSTALLS += target
 
 RESOURCES += resource.qrc

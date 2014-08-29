@@ -4,12 +4,12 @@
 
 set -x
 
-export MA_HOME=/opt/MouseAtlas
-#setenv MA_HOME /opt/MouseAtlas
-#export MA_HOME=$HOME/MouseAtlas/Build
+export MA=/opt/MouseAtlas
+#setenv MA /opt/MouseAtlas
+#export MA=$HOME/MouseAtlas/Build
 
-#set path=("$MA_HOME"/bin $path)
-export PATH="$MA_HOME"/bin:$PATH
+#set path=("$MA"/bin $path)
+export PATH="$MA"/bin:$PATH
 
 cd WlzQtCoinGlue
 qmake
@@ -20,11 +20,11 @@ cd ..
 cd WlzViewer
 qmake
 make
-cp linux/bin/Viewer "$MA_HOME"/bin/WlzViewer
+cp linux/bin/Viewer "$MA"/bin/WlzViewer
 cd ..
 
 cd WlzWarp
 qmake
 make
-cp linux/bin/Warping "$MA_HOME"/bin/WlzWarp
+cp linux/bin/Warping "$MA"/bin/WlzWarp
 cd ..
