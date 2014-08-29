@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _WarperResultViewer_h[] = "MRC HGU $Id$";
-#endif
+static char _WarperResultViewer_h[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         WarperResultViewer.h
@@ -15,11 +11,15 @@ static char _WarperResultViewer_h[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -35,9 +35,8 @@ static char _WarperResultViewer_h[] = "MRC HGU $Id$";
 * License along with this program; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
-* \brief        Viewer displaying result (warped) objects
-* \ingroup      UI
-*
+* \brief	Viewer displaying result (warped) objects
+* \ingroup	UI
 */
 
 #ifndef WARPERRESULTVIEWER_H
@@ -48,96 +47,74 @@ static char _WarperResultViewer_h[] = "MRC HGU $Id$";
 class QXmlStreamWriter;
 
 /*!
-* \brief        Warping result object viewer class.
-*
-*               Viewer class displaying result (warped) objects.
-*
-* \ingroup      UI
-*/
+ * \brief	Warping result object viewer class.
+ *
+ *               Viewer class displaying result (warped) objects.
+ *
+ * \ingroup	UI
+ */
 class WarperResultViewer : public ObjectViewer
 {
   Q_OBJECT
 
-public:
- /*!
-  * \ingroup      UI
-  * \brief        Constructor
-  * \param        objectViewerModel model managing the viewer
-  * \param        is3D if viewer is for 3D objects
-  *
-  * \return       void
-  * \par      Source:
-  *                WarperViewer.cpp
-  */
-  WarperResultViewer (ObjectViewerModel *objectViewerModel, bool is3D);
+  public:
+    /*!
+     * \ingroup	UI
+     * \brief	Constructor
+     * \param	objectViewerModel	model managing the viewer
+     * \param	is3D			if viewer is for 3D objects
+     *
+     */
+    WarperResultViewer(ObjectViewerModel *objectViewerModel, bool is3D);
 
- /*!
-  * \ingroup      UI
-  * \brief        Checks if viewer accepts object.
-  *
-  * \return       true if viewer object is a warped object
-  * \par      Source:
-  *                WarperSourceViewer.cpp
-  */
-  virtual bool accepting(WoolzObject * object );
+    /*!
+     * \ingroup	UI
+     * \brief	Checks if viewer accepts object.
+     * \return	true if viewer object is a warped object
+     */
+    virtual bool accepting(WoolzObject * object );
 
- /*!
-  * \ingroup      UI
-  * \brief        Returns the default object transparency.
-  * \param        object the new object
-  * \return       object transparency
-  * \par      Source:
-  *                ObjectViewer.cpp
-  */
-  virtual int initialTransparency(WoolzObject *object);
+    /*!
+     * \ingroup	UI
+     * \brief	Returns the default object transparency.
+     * \param	object			the new object
+     * \return	object transparency
+     */
+    virtual int initialTransparency(WoolzObject *object);
 
- /*!
-  * \ingroup      UI
-  * \brief        Configures the view
-  *
-  * \return       void
-  * \par      Source:
-  *                WarperSourceViewer.cpp
-  */
-  virtual void init();
+    /*!
+     * \ingroup	UI
+     * \brief	Configures the view
+     */
+    virtual void init();
 
- /*!
-  * \ingroup      Control
-  * \brief        Saves model in xml format.
-  * \param        xmlWriter output xml stream
-  * \return       true if succeded, false if not
-  * \par      Source:
-  *                WarperSourceViewer.cpp
-  */
-  virtual bool saveAsXml(QXmlStreamWriter *xmlWriter);
+    /*!
+     * \ingroup	Control
+     * \brief	Saves model in xml format.
+     * \param	xmlWriter			output xml stream
+     * \return	true if succeded, false if not
+     */
+    virtual bool saveAsXml(QXmlStreamWriter *xmlWriter);
 
-public slots:
- /*!
-  * \ingroup      UI
-  * \brief        Processes transparency slider change if slider is present
-  * \param        transparency new transparency
-  *
-  *               Reimplemented form ObjectViewer
-  * \return       void
-  * \par      Source:
-  *                ObjectViewer.cpp
-  */
-  virtual void transparencyChanged(int transparency);
+    public slots:
+      /*!
+       * \ingroup	UI
+       * \brief	Processes transparency slider change if slider is present.
+       *        Reimplemented form ObjectViewer.
+       * \param	transparency			new transparency
+       */
+      virtual void transparencyChanged(int transparency);
 
-protected:
- /*!
-  * \ingroup      UI
-  * \brief        Returns the background colour of the viewer
-  *
-  *               Reimplemented form ObjectViewer
-  * \return       colour
-  * \return       void
-  * \par      Source:
-  *                ObjectViewer.cpp
-  */
-  virtual QColor getBackgroundColour();
+  protected:
+    /*!
+     * \ingroup	UI
+     * \brief	Returns the background colour of the viewer.
+     *          Reimplemented form ObjectViewer.
+     * \return	colour
+     */
+    virtual QColor getBackgroundColour();
 
-public:
+  public:
     static const char * xmlTag;        /*!< xml section tag string */
 };
 

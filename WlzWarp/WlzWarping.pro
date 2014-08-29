@@ -26,7 +26,6 @@ HEADERS = WarperConfig.h \
     ViewerDelegate.h \
     ObjectDelegate.h \
     ViewerListEditor.h \
-#    LoadViewThread.h \
     ObjectPropertyWidget.h \
     LandmarkView.h \
     LandmarkDragger.h \
@@ -80,7 +79,6 @@ SOURCES = WarperConfig.cpp \
     ViewerDelegate.cpp \
     ObjectDelegate.cpp \
     ViewerListEditor.cpp \
-#    LoadViewThread.cpp \
     ObjectPropertyWidget.cpp \
     LandmarkView.cpp \
     LandmarkManip.cpp \
@@ -126,14 +124,14 @@ FORMS = MainWindow.ui \
     SectioningPlaneWidget.ui
 TEMPLATE = app
 VERSION = 1.0.0
-TYPE = 32
+TYPE = 
 openmp { 
     contains( QMAKE_CC, icc):LIBS *= -openmp # for icc
     else:LIBS *= -fopenmp # for gcc
     message( Using openmp )
 }
 contains( QMAKE_CFLAGS, -m64):TYPE = 
-contains( QMAKE_LIBDIR_X11, /usr/X11R6/lib64):TYPE = 
+contains( QMAKE_LIBDIR_X11, /usr/lib64):TYPE = 
 isEmpty( TYPE):DEFINES += _64BITWARP
 else:DEFINES += _32BITWARP
 CONFIG(debug, debug|release):TARGET = Warping_d

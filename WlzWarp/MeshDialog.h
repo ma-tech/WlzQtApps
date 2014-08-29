@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _MeshDialog_h[] = "MRC HGU $Id$";
-#endif
+static char _MeshDialog_h[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         MeshDialog.h
@@ -15,11 +11,15 @@ static char _MeshDialog_h[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -35,9 +35,8 @@ static char _MeshDialog_h[] = "MRC HGU $Id$";
 * License along with this program; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
-* \brief        Mesh object generation dialog
-* \ingroup      UI
-*
+* \brief	Mesh object generation dialog
+* \ingroup	UI
 */
 
 #ifndef MESHDDIALOG_H
@@ -54,43 +53,39 @@ class WoolzObject;
 
 /*!
  * \brief	Controler class for setting mesh properties
- * \ingroup      UI
+ * \ingroup	UI
  */
 class MeshDialog : public QDialog, public Ui::MeshDialog
 {
-Q_OBJECT
-public:
- /*!
-  * \ingroup      UI
-  * \brief        Constructor
-  * \param        parent parent widget
-  * \param        objectListModel
-  * \par      Source:
-  *                MeshDialog.cpp
-  */
-  MeshDialog(QWidget *parent, ObjectListModel *objectListModel, bool useSource, bool is3D);
+  Q_OBJECT
+  public:
+    /*!
+     * \ingroup	UI
+     * \brief	Constructor
+     * \param	parent			parent widget
+     * \param   objectListModel
+     * \param   useSource
+     * \param   is3D
+     */
+    MeshDialog(QWidget *parent, ObjectListModel *objectListModel,
+	bool useSource, bool is3D);
 
- /*!
-  * \ingroup      UI
-  * \brief        Returns the selected WoolzObject
-  * \return       pointer to the selected WoolzObject
-  * \par      Source:
-  *                MeshDialog.cpp
-  */
-  WoolzObject* getSelected();
+    /*!
+     * \ingroup	UI
+     * \brief	Returns the selected WoolzObject
+     * \return	pointer to the selected WoolzObject
+     */
+    WoolzObject* getSelected();
 
-private slots:
- /*!
-  * \ingroup      UI
-  * \brief        Processes dialog close with accept
-  * \return       void
-  * \par      Source:
-  *                MeshDialog.cpp
-  */
-  virtual void accept();
+  private slots:
+    /*!
+     * \ingroup	UI
+     * \brief	Processes dialog close with accept
+     */
+    virtual void accept();
 
-protected:
-  QList <WoolzObject*> m_objects;  /*!< list of objects */
+  protected:
+    QList <WoolzObject*> m_objects;  /*!< list of objects */
 };
 
 #endif

@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _SnapSurfaceManip_cpp[] = "MRC HGU $Id$";
-#endif
+static char _SnapSurfaceManip_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         SnapSurfaceManip.cpp
@@ -15,11 +11,15 @@ static char _SnapSurfaceManip_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -36,11 +36,12 @@ static char _SnapSurfaceManip_cpp[] = "MRC HGU $Id$";
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
 * \brief        3D manipulator
-* \ingroup      Controls
 *
-* Code is based on an example from the
-* Inventor Toolmaker, chapter 8.
+* 		This code is based on an example from the Inventor
+* 		Toolmaker, chapter 8.
+* \ingroup      Controls
 */
+
 
 //project inlcudes
 #include "SnapSurfaceDragger.h"
@@ -54,28 +55,38 @@ SO_NODE_SOURCE(SnapSurfaceManip);
 //  Initializes the type ID for this manipulator node. This
 //  should be called once after SoInteraction::init().
 //  and after TranslateRadialDragger::initClass()
-void SnapSurfaceManip::initClass() {
-    if (SnapSurfaceDragger::getClassTypeId().isBad())
-        SnapSurfaceDragger::initClass();
+void SnapSurfaceManip::
+initClass()
+{
+  if(SnapSurfaceDragger::getClassTypeId().isBad())
+  {
+    SnapSurfaceDragger::initClass();
+  }
 
-   SO_NODE_INIT_CLASS(
-      SnapSurfaceManip, SoTransformManip, "SnapSurfaceManip");
+  SO_NODE_INIT_CLASS(SnapSurfaceManip, SoTransformManip, "SnapSurfaceManip");
 }
 
 //  Constructor
-SnapSurfaceManip::SnapSurfaceManip(PointPair *pp) :
-  LandmarkManip (pp) {
-   SO_NODE_CONSTRUCTOR(SnapSurfaceManip);
-   SnapSurfaceDragger *myDrag = new SnapSurfaceDragger;
-   initialiseCallback(myDrag);
-   setDragger(myDrag);
-   update();
+SnapSurfaceManip::
+SnapSurfaceManip(
+  PointPair *pp):
+LandmarkManip(pp)
+{
+  SO_NODE_CONSTRUCTOR(SnapSurfaceManip);
+  SnapSurfaceDragger *myDrag = new SnapSurfaceDragger;
+  initialiseCallback(myDrag);
+  setDragger(myDrag);
+  update();
 }
 
-SnapSurfaceManip::~SnapSurfaceManip() {
+SnapSurfaceManip::
+~SnapSurfaceManip()
+{
 }
 
-void SnapSurfaceManip::update() {
+void SnapSurfaceManip::
+update()
+{
   QSettings settings;
   LandmarkDragger *myDrag = (LandmarkDragger *)getDragger();
   myDrag->setScale(settings.value("markers/3D/size", 1.00).value<float>());

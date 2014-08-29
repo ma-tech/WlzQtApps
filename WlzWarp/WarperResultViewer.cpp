@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _WarperResultViewer_cpp[] = "MRC HGU $Id$";
-#endif
+static char _WarperResultViewer_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         WarperResultViewer.cpp
@@ -15,11 +11,15 @@ static char _WarperResultViewer_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _WarperResultViewer_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Viewer displaying result (warped) objects
 * \ingroup      UI
-*
 */
 
 #include "WarperResultViewer.h"
@@ -50,44 +49,73 @@ static char _WarperResultViewer_cpp[] = "MRC HGU $Id$";
 
 const char* WarperResultViewer::xmlTag = "ResultViewer";
 
-WarperResultViewer::WarperResultViewer (ObjectViewerModel *objectViewerModel, bool is3D) : ObjectViewer (objectViewerModel, is3D, true) {
+WarperResultViewer::
+WarperResultViewer(
+  ObjectViewerModel *objectViewerModel,
+  bool is3D):
+ObjectViewer(objectViewerModel, is3D, true)
+{
 }
 
-QColor WarperResultViewer::getBackgroundColour() {
+QColor WarperResultViewer::
+getBackgroundColour()
+{
   QSettings settings;
-  return settings.value("viewer/result/color", QColor(77, 0, 0)).value<QColor>();
+  return(settings.value("viewer/result/color",
+	                QColor(77, 0, 0)).value<QColor>());
 }
 
 
-void WarperResultViewer::init() {
+void WarperResultViewer::
+init()
+{
   setBackgroundColour();
 }
 
 
-bool WarperResultViewer::accepting(WoolzObject * object ) {
-   return (object && (object->type()& WoolzObject::target)); //accept source objects only
+bool WarperResultViewer::
+accepting(
+  WoolzObject * object)
+{
+  // accept source objects only
+  return((object && (object->type()& WoolzObject::target)));
 }
 
-int WarperResultViewer::initialTransparency(WoolzObject * object) {
-  if (!object->isValue())
-     return 100 ;         // meshes are not shown in result view by default
-
-  if (object->isWarped()) 
-     return 0;
+int WarperResultViewer::
+initialTransparency(
+  WoolzObject * object)
+{
+  if(!object->isValue())
+  {
+    return(100);	// meshes are not shown in result view by default
+  }
+  if(object->isWarped())
+  {
+    return(0);
+  }
   else
-     return 20;           // other loaded objects are shown transparent
+  {
+    return(20);		// other loaded objects are shown transparent
+  }
 }
 
-void WarperResultViewer::transparencyChanged(int transparency) {
-  for (int i = 0; i < views.size(); ++i) {
+void WarperResultViewer::
+transparencyChanged(
+  int transparency)
+{
+  for(int i = 0; i < views.size(); ++i)
+  {
     views[i]->updateTransparency(transparency);
   }
 }
 
-bool WarperResultViewer::saveAsXml(QXmlStreamWriter *xmlWriter) {
+bool WarperResultViewer::
+saveAsXml(
+  QXmlStreamWriter *xmlWriter)
+{
   Q_ASSERT(xmlWriter);
   xmlWriter->writeStartElement(xmlTag);
   ObjectViewer::saveAsXml(xmlWriter);
   xmlWriter->writeEndElement();
-  return true;
+  return(true);
 }

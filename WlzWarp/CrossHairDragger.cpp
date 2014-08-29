@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _CrossHairDragger_cpp[] = "MRC HGU $Id$";
-#endif
+static char _CrossHairDragger_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         CrossHairDragger.cpp
@@ -15,11 +11,15 @@ static char _CrossHairDragger_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -40,7 +40,6 @@ static char _CrossHairDragger_cpp[] = "MRC HGU $Id$";
 *               The implementation of the dragger is based on Inventor Toolkit 
 *               manual's dragger example.
 * \ingroup      Controls
-*
 */
 
 // Inventor includes
@@ -63,11 +62,15 @@ static char _CrossHairDragger_cpp[] = "MRC HGU $Id$";
 
 SO_KIT_SOURCE(CrossHairDragger);
 
-void CrossHairDragger::initClass() {
-   SO_KIT_INIT_CLASS(CrossHairDragger, SoDragger, "Dragger");		
+void CrossHairDragger::
+initClass()
+{
+  SO_KIT_INIT_CLASS(CrossHairDragger, SoDragger, "Dragger");		
 }
 
-CrossHairDragger::CrossHairDragger() {
+CrossHairDragger::
+CrossHairDragger()
+{
    SO_KIT_CONSTRUCTOR(CrossHairDragger);
 
    // Put this under geomSeparator so it draws efficiently.
@@ -98,9 +101,11 @@ CrossHairDragger::CrossHairDragger() {
    // defaults. The user can override these by specifying new 
    // scene graphs in the file:
    // $(SO_DRAGGER_DIR)/crossHairDragger.iv
-   if (SO_KIT_IS_FIRST_INSTANCE())
-      readDefaultParts("crossHairDragger.iv", geomBuffer,
-      sizeof(geomBuffer)-1);
+   if(SO_KIT_IS_FIRST_INSTANCE())
+   {
+     readDefaultParts("crossHairDragger.iv", geomBuffer,
+     		      sizeof(geomBuffer) - 1);
+   }
 	
    // Field that always shows current position of the dragger.
    SO_KIT_ADD_FIELD(translation, (0.0, 0.0, 0.0));
@@ -121,19 +126,12 @@ CrossHairDragger::CrossHairDragger() {
    // 'setPartAsDefault' instead of 'setPart', we insure that 
    // these parts will not write to file unless they are 
    // changed later. 
-   setPartAsDefault("translator",
-                    "translateHairTranslator");
-
-   setPartAsDefault("materialNormal",
-                    "translateNormalMaterialCross");
-   setPartAsDefault("materialActive",
-                    "translateActiveMaterialCross");
-   setPartAsDefault("materialPlaced",
-                    "translatePlacedMaterialCross");
-   setPartAsDefault("materialInvalid",
-                    "translateInvalidMaterialCross");
-   setPartAsDefault("scale",
-                    "scaleCross");
+   setPartAsDefault("translator", "translateHairTranslator");
+   setPartAsDefault("materialNormal", "translateNormalMaterialCross");
+   setPartAsDefault("materialActive", "translateActiveMaterialCross");
+   setPartAsDefault("materialPlaced", "translatePlacedMaterialCross");
+   setPartAsDefault("materialInvalid", "translateInvalidMaterialCross");
+   setPartAsDefault("scale", "scaleCross");
 
    // Set the switch parts to 0 to display the inactive parts.
    // The parts "translatorSwitch" and "feedbackSwitch"
@@ -160,79 +158,102 @@ CrossHairDragger::CrossHairDragger() {
    addFinishCallback(&CrossHairDragger::finishCB);
 
    // Updates the translation field when the dragger moves.
-   addValueChangedCallback(
-      &CrossHairDragger::valueChangedCB);
+   addValueChangedCallback(&CrossHairDragger::valueChangedCB);
 
    // Updates the motionMatrix (and thus moves the dragger 
    // through space) to a new location whenever the translation
    // field is changed from the outside.
-   fieldSensor = new SoFieldSensor(
-      &CrossHairDragger::fieldSensorCB, this);
+   fieldSensor = new SoFieldSensor(&CrossHairDragger::fieldSensorCB, this);
    fieldSensor->setPriority(0);
 
    setUpConnections( TRUE, TRUE );
 }
 
-CrossHairDragger::~CrossHairDragger() {
+CrossHairDragger::
+~CrossHairDragger()
+{
    // Delete what we created in the constructor.
    delete planeProj;
-   if (fieldSensor)
-      delete fieldSensor;
+   if(fieldSensor)
+   {
+     delete fieldSensor;
+   }
 }
 
-SbBool CrossHairDragger::setUpConnections( SbBool onOff, SbBool doItAlways) {
-   if ( !doItAlways && connectionsSetUp == onOff)
-      return onOff;
+SbBool CrossHairDragger::
+setUpConnections(
+  SbBool onOff,
+  SbBool doItAlways)
+{
+  if( !doItAlways && connectionsSetUp == onOff)
+  {
+    return(onOff);
+  }
 
-   if (onOff) {
-      // We connect AFTER base class.
-      SoDragger::setUpConnections(onOff, doItAlways);
+  if(onOff)
+  {
+    // We connect AFTER base class.
+    SoDragger::setUpConnections(onOff, doItAlways);
 
-      // Call the sensor CB to make things up-to-date.
-      fieldSensorCB(this, NULL);
+    // Call the sensor CB to make things up-to-date.
+    fieldSensorCB(this, NULL);
 
-      // Connect the field sensor
-      if (fieldSensor->getAttachedField() != &translation)
-	 fieldSensor->attach( &translation );
-   }
-   else {
-      // We disconnect BEFORE base class.
+    // Connect the field sensor
+    if(fieldSensor->getAttachedField() != &translation)
+    {
+      fieldSensor->attach( &translation );
+    }
+  }
+  else
+  {
+    // We disconnect BEFORE base class.
 
-      // Disconnect the field sensor.
-      if (fieldSensor->getAttachedField())
-	fieldSensor->detach();
+    // Disconnect the field sensor.
+    if(fieldSensor->getAttachedField())
+    {
+      fieldSensor->detach();
+    }
 
-      SoDragger::setUpConnections(onOff, doItAlways);
-   }
+    SoDragger::setUpConnections(onOff, doItAlways);
+  }
 
-   return !(connectionsSetUp = onOff);
+  return(!(connectionsSetUp = onOff));
 }
 
 //  Static callback functions called by SoDragger when when the 
 //  mouse goes down (over this dragger), drags, and releases.
 void
-CrossHairDragger::startCB(void *, SoDragger *dragger) {
-   CrossHairDragger *myself 
-      = (CrossHairDragger *) dragger;
-   myself->dragStart();
+CrossHairDragger::
+startCB(
+  void *,
+  SoDragger *dragger)
+{
+  CrossHairDragger *myself = (CrossHairDragger *)dragger;
+  myself->dragStart();
+}
+
+void CrossHairDragger::
+motionCB(
+  void *,
+  SoDragger *dragger)
+{
+  CrossHairDragger *myself = (CrossHairDragger *)dragger;
+  myself->drag();
 }
 void
-CrossHairDragger::motionCB(void *, SoDragger *dragger) {
-   CrossHairDragger *myself 
-      = (CrossHairDragger *) dragger;
-   myself->drag();
-}
-void
-CrossHairDragger::finishCB(void *, SoDragger *dragger) {
-   CrossHairDragger *myself 
-      = (CrossHairDragger *) dragger;
-   myself->dragFinish();
+CrossHairDragger::
+finishCB(
+  void *,
+  SoDragger *dragger)
+{
+  CrossHairDragger *myself = (CrossHairDragger *) dragger;
+  myself->dragFinish();
 }
 
 //  Called when user clicks down on this dragger. Sets up the 
 //  projector and switches parts to their "active" versions.
-void
-CrossHairDragger::dragStart()
+void CrossHairDragger::
+dragStart()
 {
    // Display the 'active' parts...
 
@@ -247,67 +268,77 @@ CrossHairDragger::dragStart()
 
 //  Called when the mouse translates during dragging. Moves
 //  the dragger based on the mouse motion.
-void CrossHairDragger::drag() {
-   // Things can change between renderings. To be safe, update 
-   // the projector with the current values.
-   planeProj->setViewVolume(getViewVolume());    
-   planeProj->setWorkingSpace(getLocalToWorldMatrix());
+void CrossHairDragger::
+drag()
+{
+  // Things can change between renderings. To be safe, update 
+  // the projector with the current values.
+  planeProj->setViewVolume(getViewVolume());    
+  planeProj->setWorkingSpace(getLocalToWorldMatrix());
 
-   // Find the new intersection on the projector.
-   SbVec3f newHitPt 
-      = planeProj->project(getNormalizedLocaterPosition()); 
+  // Find the new intersection on the projector.
+  SbVec3f newHitPt = planeProj->project(getNormalizedLocaterPosition()); 
 
-   // Get initial point expressed in our current local space.
-   SbVec3f startHitPt = getLocalStartingPoint();
+  // Get initial point expressed in our current local space.
+  SbVec3f startHitPt = getLocalStartingPoint();
 
-   // Motion in local space is difference between old and
-   // new positions.
-   SbVec3f motion = newHitPt - startHitPt;
+  // Motion in local space is difference between old and
+  // new positions.
+  SbVec3f motion = newHitPt - startHitPt;
 
-   // Append this to the startMotionMatrix, which was saved
-   // automatically at the beginning of the drag, to find 
-   // the current motion matrix.
-   setMotionMatrix(
-      appendTranslation(getStartMotionMatrix(), motion));
+  // Append this to the startMotionMatrix, which was saved
+  // automatically at the beginning of the drag, to find 
+  // the current motion matrix.
+  setMotionMatrix(appendTranslation(getStartMotionMatrix(), motion));
 }
 
 //  Called when mouse button is released and drag is completed.
-void CrossHairDragger::dragFinish() {
+void CrossHairDragger::
+dragFinish()
+{
 }
 
 // Called when the motionMatrix changes. Sets the 'translation'
 // field based on the new motionMatrix.
-void CrossHairDragger::valueChangedCB(void *, SoDragger *inDragger)
+void CrossHairDragger::
+valueChangedCB(
+  void *,
+  SoDragger *inDragger)
 {
-   CrossHairDragger *myself 
-      = (CrossHairDragger *) inDragger;
+  CrossHairDragger *myself = (CrossHairDragger *) inDragger;
 
-   // Get translation by decomposing motionMatrix.
-   SbMatrix motMat = myself->getMotionMatrix();
-   SbVec3f trans, scale;
-   SbRotation rot, scaleOrient;
-   motMat.getTransform(trans, rot, scale, scaleOrient);
+  // Get translation by decomposing motionMatrix.
+  SbMatrix motMat = myself->getMotionMatrix();
+  SbVec3f trans, scale;
+  SbRotation rot, scaleOrient;
+  motMat.getTransform(trans, rot, scale, scaleOrient);
 
-   // Set "translation", disconnecting sensor while doing so.
-   myself->fieldSensor->detach();
-   if (myself->translation.getValue() != trans)
-      myself->translation = trans;
-   myself->fieldSensor->attach(&(myself->translation));
+  // Set "translation", disconnecting sensor while doing so.
+  myself->fieldSensor->detach();
+  if(myself->translation.getValue() != trans)
+  {
+    myself->translation = trans;
+  }
+  myself->fieldSensor->attach(&(myself->translation));
 }
 
 // If the "translation" field is set from outside, update
 // motionMatrix accordingly.
-void CrossHairDragger::fieldSensorCB(void *inDragger, SoSensor *) {
-   CrossHairDragger *myself 
-      = (CrossHairDragger *) inDragger;
-
-   SbMatrix motMat = myself->getMotionMatrix();
-   myself->workFieldsIntoTransform(motMat);
-
-   myself->setMotionMatrix(motMat);
+void CrossHairDragger::
+fieldSensorCB(
+  void *inDragger,
+  SoSensor *)
+{
+  CrossHairDragger *myself = (CrossHairDragger *) inDragger;
+  SbMatrix motMat = myself->getMotionMatrix();
+  myself->workFieldsIntoTransform(motMat);
+  myself->setMotionMatrix(motMat);
 }
 
-void CrossHairDragger::setScale(float size) {
+void CrossHairDragger::
+setScale(
+  float size)
+{
    SoScale *scale;
    scale = SO_GET_ANY_PART(this, "scale", SoScale);
    scale->scaleFactor.setValue(size,size,size);

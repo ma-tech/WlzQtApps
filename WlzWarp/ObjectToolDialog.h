@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ObjectToolDialog_h[] = "MRC HGU $Id$";
-#endif
+static char _ObjectToolDialog_h[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         ObjectToolDialog.h
@@ -15,11 +11,15 @@ static char _ObjectToolDialog_h[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -35,10 +35,10 @@ static char _ObjectToolDialog_h[] = "MRC HGU $Id$";
 * License along with this program; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
-* \brief        Object tool dialog
-* \ingroup      UI
-*
+* \brief	Object tool dialog
+* \ingroup	UI
 */
+
 #ifndef OBJECTTOOLDIALOG_H
 #define OBJECTTOOLDIALOG_H
 
@@ -48,67 +48,56 @@ static char _ObjectToolDialog_h[] = "MRC HGU $Id$";
 class ObjectListModel;
 class WoolzObject;
 /*!
-* \brief	Controler class for object tool dialog
-* \ingroup      UI
-*/
-class ObjectToolDialog : public QDialog, public Ui::ObjectToolDialog
+ * \brief	Controler class for object tool dialog
+ * \ingroup	UI
+ */
+class ObjectToolDialog: public QDialog, public Ui::ObjectToolDialog
 {
-Q_OBJECT
-public:
- /*!
-  * \ingroup      UI
-  * \brief        Constructor
-  * \param        model object model
-  * \param        parent parent widget
-  * \par      Source:
-  *                ObjectToolDialog.cpp
-  */
-  ObjectToolDialog(ObjectListModel * model, QWidget *parent = 0);
+  Q_OBJECT
+  public:
+    /*!
+     * \ingroup	UI
+     * \brief	Constructor
+     * \param	model			object model
+     * \param	parent			parent widget
+     */
+    ObjectToolDialog(ObjectListModel * model, QWidget *parent = 0);
 
- /*!
-  * \ingroup      UI
-  * \brief        Destructor
-  * \par      Source:
-  *                ObjectToolDialog.cpp
-  */
-  ~ObjectToolDialog();
+    /*!
+     * \ingroup	UI
+     * \brief	Destructor
+     */
+    ~ObjectToolDialog();
 
-private slots:
- /*!
-  * \ingroup      UI
-  * \brief        Processes the signal of delete button press
-  * \par      Source:
-  *                ObjectToolDialog.cpp
-  */
-  void removeObject();
+  private slots:
+    /*!
+     * \ingroup	UI
+     * \brief	Processes the signal of delete button press
+     */
+    void removeObject();
 
-/*!
-  * \ingroup      UI
-  * \brief        Processes the signal of export button press
-  * \par      Source:
-  *                ObjectToolDialog.cpp
-  */
-  void exportObject();
+    /*!
+     * \ingroup	UI
+     * \brief	Processes the signal of export button press
+     */
+    void exportObject();
 
- /*!
-  * \ingroup      UI
-  * \brief        Processes the internal signal of object selection change from the internal widgets
-  * \param        current new selection
-  * \param        previous previous selection
-  * \par      Source:
-  *                ObjectToolDialog.cpp
-  */
-  void currentRowChanged ( const QModelIndex & current, 
-       const QModelIndex & /*previous */);
+    /*!
+     * \ingroup	UI
+     * \brief	Processes the internal signal of object selection change
+     * 		from the internal widgets
+     * \param	current			new selection
+     * \param	previous		previous selection
+     */
+    void currentRowChanged ( const QModelIndex & current, 
+	const QModelIndex & /*previous */);
 
- /*!
-  * \ingroup      UI
-  * \brief        Processes the external signal of object selection change
-  * \param        current new selection
-  * \param        previous previous selection
-  * \par      Source:
-  *                ObjectToolDialog.cpp
-  */
-  void objectSelected(WoolzObject *obj);
+    /*!
+     * \ingroup	UI
+     * \brief	Processes the external signal of object selection change
+     * \param	current			new selection
+     * \param	previous		previous selection
+     */
+    void objectSelected(WoolzObject *obj);
 };
 #endif

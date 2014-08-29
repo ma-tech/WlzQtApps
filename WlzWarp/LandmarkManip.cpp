@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _LandmarkManip_cpp[] = "MRC HGU $Id$";
-#endif
+static char _LandmarkManip_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         LandmarkManip.cpp
@@ -15,11 +11,15 @@ static char _LandmarkManip_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _LandmarkManip_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Manipulator superclass
 * \ingroup      Controls
-*
 */
 
 // Inventor includes
@@ -53,58 +52,90 @@ static char _LandmarkManip_cpp[] = "MRC HGU $Id$";
 #include "LandmarkView.h"
 
 //  Constructor
-LandmarkManip::LandmarkManip(PointPair *pp) :
-       pointPair(pp) {
+LandmarkManip::
+LandmarkManip(
+  PointPair *pp):
+pointPair(pp)
+{
 }
 
-void LandmarkManip::handleEvent (SoHandleEventAction *action) {
-  // if move is not enabled, then disable all button down actions over the draggers
+void LandmarkManip::
+handleEvent(
+  SoHandleEventAction *action)
+{
+  // if move is not enabled, then disable all button down actions over
+  // the draggers
   const SoEvent * event = action->getEvent();
-  if (!(view->isMoveEnabed())) {
-    if (event->isOfType(SoMouseButtonEvent ::getClassTypeId())) {
+  if(!(view->isMoveEnabed()))
+  {
+    if(event->isOfType(SoMouseButtonEvent ::getClassTypeId()))
+    {
       const SoMouseButtonEvent * mbe = (SoMouseButtonEvent *)action->getEvent();
-      if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 &&
-        mbe->getState() == SoButtonEvent::DOWN) {
-        return ;
+      if((mbe->getButton() == SoMouseButtonEvent::BUTTON1) &&
+	 (mbe->getState() == SoButtonEvent::DOWN))
+      {
+	return ;
       }
     }
   }
 
-  if (pointPair && event->isOfType(SoLocation2Event::getClassTypeId())) {
-      const SoPickedPoint * pp = action->getPickedPoint();
-      if (pp && pp->getPath()->containsPath(action->getCurPath())) {
-        view->highlighLandmark(this, true);
-      }
-      else {
-        view->highlighLandmark(this, false);  // reset highlighting
-      }
+  if(pointPair && event->isOfType(SoLocation2Event::getClassTypeId()))
+  {
+    const SoPickedPoint * pp = action->getPickedPoint();
+    if(pp && pp->getPath()->containsPath(action->getCurPath()))
+    {
+      view->highlighLandmark(this, true);
+    }
+    else
+    {
+      view->highlighLandmark(this, false);  // reset highlighting
+    }
   }
   // do the default event processing
   SoTransformManip::handleEvent(action);
 }
 
 
-void LandmarkManip::moveAndFinishCB(void *data, SoDragger *) {
- if (data)
+void LandmarkManip::
+moveAndFinishCB(
+  void *data,
+  SoDragger *)
+{
+  if(data)
+  {
     ((LandmarkManip*)data)->view->movedManipulator((LandmarkManip*)data);
+  }
 }
 
-void LandmarkManip::setOn(bool On) {
-    LandmarkDragger *myDrag = (LandmarkDragger *)getDragger();
-    Q_ASSERT(myDrag);
-    if (On)
-      myDrag->setType(LandmarkDragger::on);
-    else
-      myDrag->setType(LandmarkDragger::off);
+void LandmarkManip::
+setOn(
+  bool On)
+{
+  LandmarkDragger *myDrag = (LandmarkDragger *)getDragger();
+  Q_ASSERT(myDrag);
+  if(On)
+  {
+    myDrag->setType(LandmarkDragger::on);
+  }
+  else
+  {
+    myDrag->setType(LandmarkDragger::off);
+  }
 }
 
-void LandmarkManip::setValid(bool Valid) {
-    LandmarkDragger *myDrag = (LandmarkDragger *)getDragger();
-    Q_ASSERT(myDrag);
-    myDrag->setValid(Valid);
+void LandmarkManip::
+setValid(
+  bool Valid)
+{
+  LandmarkDragger *myDrag = (LandmarkDragger *)getDragger();
+  Q_ASSERT(myDrag);
+  myDrag->setValid(Valid);
 }
 
-void LandmarkManip::initialiseCallback(SoDragger * dragger) {
-   dragger->addFinishCallback(LandmarkManip::moveAndFinishCB, this);
-   dragger->addMotionCallback(LandmarkManip::moveAndFinishCB, this);
+void LandmarkManip::
+initialiseCallback(
+  SoDragger * dragger)
+{
+  dragger->addFinishCallback(LandmarkManip::moveAndFinishCB, this);
+  dragger->addMotionCallback(LandmarkManip::moveAndFinishCB, this);
 }

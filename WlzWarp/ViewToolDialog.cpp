@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ViewToolDialog_cpp[] = "MRC HGU $Id$";
-#endif
+static char _ViewToolDialog_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         ViewToolDialog.cpp
@@ -15,11 +11,15 @@ static char _ViewToolDialog_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _ViewToolDialog_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Viewer and view tool dialog
 * \ingroup      UI
-*
 */
 
 //project includes
@@ -57,16 +56,21 @@ static char _ViewToolDialog_cpp[] = "MRC HGU $Id$";
 #include <QMdiSubWindow>
 
 
-ViewToolDialog::ViewToolDialog(ObjectViewerModel *objectViewerModel, MainWindow *parent):
- QDialog(parent) {
-  setupUi( this ); // this sets up GUI
+ViewToolDialog::
+ViewToolDialog(
+  ObjectViewerModel *objectViewerModel,
+  MainWindow *parent):
+QDialog(parent)
+{
+  setupUi(this);   // this sets up GUI
   connect(pushButtonEditView, SIGNAL(clicked()), this, SLOT(EditView()));
 
-  QItemSelectionModel *selectionModel = new QItemSelectionModel(objectViewerModel);
-  connect(selectionModel, 
-       SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)), 
-       this,
-       SLOT(currentChanged(const QModelIndex &, const QModelIndex &)));
+  QItemSelectionModel *selectionModel =
+      new QItemSelectionModel(objectViewerModel);
+  connect(selectionModel,
+          SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
+          this,
+          SLOT(currentChanged(const QModelIndex &, const QModelIndex &)));
 
   viewTree->setModel(objectViewerModel);
   viewTree->setSelectionModel(selectionModel);
@@ -74,33 +78,41 @@ ViewToolDialog::ViewToolDialog(ObjectViewerModel *objectViewerModel, MainWindow 
 }
 
 
-ViewToolDialog::~ViewToolDialog() {
+ViewToolDialog::
+~ViewToolDialog()
+{
 }
 
-void ViewToolDialog::EditView() {
-    /*MeshViewPropertiesDialog * meshViewPropertiesDialog = 
-          new MeshViewPropertiesDialog(this);
-    Q_ASSERT(meshViewPropertiesDialog);
-    meshViewPropertiesDialog->exec();*/
+void ViewToolDialog::
+EditView()
+{
 }
 
-void ViewToolDialog::currentChanged ( const QModelIndex & current,
- const QModelIndex & previous ) {
-  if (viewTree && current != previous ) {  //chek if view has been changed
+void ViewToolDialog::
+currentChanged(
+  const QModelIndex & current,
+  const QModelIndex & previous)
+{
+  if(viewTree && current != previous)      //chek if view has been changed
+  {
     ObjectViewerModel *objectViewerModel =
-       qobject_cast<ObjectViewerModel *>(viewTree->model());
-    if (objectViewerModel) {
+        qobject_cast<ObjectViewerModel *>(viewTree->model());
+    if(objectViewerModel)
+    {
       ObjectViewer * viewer = objectViewerModel ->getViewerOf(current);
-      ObjectViewer * viewer_previous = objectViewerModel ->getViewerOf(previous);
-      if (viewer && viewer != viewer_previous) { // final check if view changed 
-                                                 // and different then initial
+      ObjectViewer * viewer_previous =
+	  objectViewerModel ->getViewerOf(previous);
+      if(viewer && viewer != viewer_previous)	// final check if view changed
+      {
+        // and different then initial
         viewer->activate();
-        QWidget *parentWidget=qobject_cast<QWidget *>(viewer->parent());
-        if (parentWidget) {
+        QWidget *parentWidget = qobject_cast<QWidget *>(viewer->parent());
+        if(parentWidget)
+        {
           //change focus of MDI
-          parentWidget->raise(); 
-          parentWidget->activateWindow(); 
-          parentWidget->setFocus(); 
+          parentWidget->raise();
+          parentWidget->activateWindow();
+          parentWidget->setFocus();
         }
         // keep focus of the dialog
         raise();
@@ -108,8 +120,10 @@ void ViewToolDialog::currentChanged ( const QModelIndex & current,
         setFocus();
       }
       ObjectView * view = objectViewerModel->getView(current);
-      if (view)
-         view->selectView();
+      if(view)
+      {
+        view->selectView();
+      }
     }
   }
 }

@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ObjectToolDialog_h[] = "MRC HGU $Id$";
-#endif
+static char _ObjectToolDialog_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         ObjectToolDialog.cpp
@@ -15,11 +11,15 @@ static char _ObjectToolDialog_h[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _ObjectToolDialog_h[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Object tool dialog
 * \ingroup      UI
-*
 */
 
 //Qt includes
@@ -50,11 +49,17 @@ static char _ObjectToolDialog_h[] = "MRC HGU $Id$";
 
 #include "Commands.h"
 
-ObjectToolDialog::ObjectToolDialog(ObjectListModel * model, QWidget *parent)
- : QDialog(parent), Ui::ObjectToolDialog() {
-  setupUi( this ); // this sets up GUI
+ObjectToolDialog::
+ObjectToolDialog(
+  ObjectListModel * model,
+  QWidget *parent):
+QDialog(parent),
+  Ui::ObjectToolDialog()
+{
+  setupUi(this);   // this sets up GUI
 
-  if (model) {
+  if(model)
+  {
     objectTree->setModel(model);
     objectTree->setUniformRowHeights(true);
   }
@@ -64,57 +69,84 @@ ObjectToolDialog::ObjectToolDialog(ObjectListModel * model, QWidget *parent)
   connect(pushButtonExport, SIGNAL(clicked()), this, SLOT(exportObject()));
 
   connect(objectTree->selectionModel(),
-      SIGNAL(currentChanged( const QModelIndex &, const QModelIndex & )),
-      this,
-      SLOT(currentRowChanged( const QModelIndex &, const QModelIndex & )));
+          SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
+          this,
+          SLOT(currentRowChanged(const QModelIndex &, const QModelIndex &)));
 
- connect(model, SIGNAL(objectSelected(WoolzObject *)), this, SLOT(objectSelected(WoolzObject *)));
+  connect(model, SIGNAL(objectSelected(WoolzObject *)), this,
+          SLOT(objectSelected(WoolzObject *)));
 }
 
-ObjectToolDialog::~ObjectToolDialog() {
+ObjectToolDialog::
+~ObjectToolDialog()
+{
 }
 
-void ObjectToolDialog::removeObject() {
-  ObjectListModel* model = qobject_cast<ObjectListModel*>(objectTree->model());
-  if (model)
-       model->addCommand(new DeleteWoolzObject(model, model->getObject(objectTree->currentIndex())));
+void ObjectToolDialog::
+removeObject()
+{
+  ObjectListModel* model = qobject_cast<ObjectListModel*>(
+      objectTree->model());
+  if(model)
+  {
+    model->addCommand(new DeleteWoolzObject(
+	  model, model->getObject(objectTree->currentIndex())));
+  }
 }
 
-void ObjectToolDialog::exportObject() {
-  ObjectListModel* model = qobject_cast<ObjectListModel*>(objectTree->model());
-  if (!model)
+void ObjectToolDialog::
+exportObject()
+{
+  ObjectListModel* model = qobject_cast<ObjectListModel*>(
+      objectTree->model());
+  if(!model)
+  {
     return;
+  }
   WoolzObject * object = model->getObject(objectTree->currentIndex());
-  if (!object) 
+  if(!object)
+  {
     return;
-  QString filename = QFileDialog::getSaveFileName(this, tr("Export Woolz object"),
-                                                ".",
-                                                tr("Woolz object (*.wlz)"));
-  if (filename.isEmpty())
-     return;
+  }
+  QString filename = QFileDialog::getSaveFileName(this,
+      tr("Export Woolz object"), ".",
+      tr("Woolz object (*.wlz)"));
+  if(filename.isEmpty())
+  {
+    return;
+  }
 
   object->saveAs(filename);
 }
 
-void ObjectToolDialog::currentRowChanged ( const QModelIndex & current,
-       const QModelIndex & /*previous*/ ) {
-   bool removeEnabled = false;
-   bool exportEnabled = false;
-   ObjectListModel* model = qobject_cast<ObjectListModel*>(objectTree->model());
-   if (model) {
-       WoolzObject *object = model->getObject(current);
-     if (object) {
-       removeEnabled = object->removable();
-       exportEnabled = true;
-       model->setSelectObject(object);
-     }
-   }
-   pushButtonRemove->setEnabled(removeEnabled);
-   pushButtonExport->setEnabled(exportEnabled);
+void ObjectToolDialog::
+currentRowChanged(const QModelIndex & current,
+    const QModelIndex & /*previous*/)
+{
+  bool removeEnabled = false;
+  bool exportEnabled = false;
+  ObjectListModel* model = qobject_cast<ObjectListModel*>(objectTree->model());
+  if(model)
+  {
+    WoolzObject *object = model->getObject(current);
+    if(object)
+    {
+      removeEnabled = object->removable();
+      exportEnabled = true;
+      model->setSelectObject(object);
+    }
+  }
+  pushButtonRemove->setEnabled(removeEnabled);
+  pushButtonExport->setEnabled(exportEnabled);
 }
 
-void ObjectToolDialog::objectSelected(WoolzObject *obj) {
-  ObjectListModel* model = qobject_cast<ObjectListModel*>(objectTree->model());
-  if (model->getObject(objectTree->currentIndex()) !=obj )
+void ObjectToolDialog::
+objectSelected(WoolzObject *obj)
+{
+  ObjectListModel* model = qobject_cast<ObjectListModel*>(
+      objectTree->model());
+  if(model->getObject(objectTree->currentIndex()) != obj)
+  {
     objectTree->setCurrentIndex(model->getObjIndex(obj));
+  }
 }

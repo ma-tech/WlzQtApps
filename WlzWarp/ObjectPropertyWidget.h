@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ObjectPropertyWidget_h[] = "MRC HGU $Id$";
-#endif
+static char _ObjectPropertyWidget_h[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         ObjectPropertyWidget.h
@@ -15,11 +11,15 @@ static char _ObjectPropertyWidget_h[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -35,10 +35,11 @@ static char _ObjectPropertyWidget_h[] = "MRC HGU $Id$";
 * License along with this program; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
-* \brief        Widget for selecting and manipulating Woolz Object common properties
-* \ingroup      UI
-*
+* \brief	Widget for selecting and manipulating Woolz Object
+* 		common properties
+* \ingroup	UI
 */
+
 #ifndef OBJECTPROPERTYWIDGET_H
 #define OBJECTPROPERTYWIDGET_H
 
@@ -49,130 +50,99 @@ class ObjectListModel;
 class WoolzObject;
 
 /*!
- * \brief	Widget class for secting and manipulating Woolz Object common properties
- * \ingroup      UI
+ * \brief	Widget class for secting and manipulating Woolz Object
+ * 		common properties
+ * \ingroup	UI
  */
-class ObjectPropertyWidget : public QDockWidget, public Ui::ObjectPropertyWidget
+class ObjectPropertyWidget:
+public QDockWidget, public Ui::
+ObjectPropertyWidget
 {
-Q_OBJECT
-public:
- /*!
-  * \ingroup      UI
-  * \brief        Constructor
-  * \param        parent parent widget
-  * \param        objectListModel to manage objects
-  * \par      Source:
-  *                ObjectPropertyWidget.cpp
-  */
-  ObjectPropertyWidget(QWidget *parent, ObjectListModel *objectListModel);
+  Q_OBJECT
+  public:
+    /*!
+     * \ingroup	UI
+     * \brief	Constructor
+     * \param	parent			parent widget
+     * \param	objectListModel			to manage objects
+     */
+    ObjectPropertyWidget(QWidget *parent, ObjectListModel *objectListModel);
 
- /*!
-  * \ingroup      UI
-  * \brief        Destructor
-  * \par      Source:
-  *                ObjectPropertyWidget.cpp
-  */
-  ~ObjectPropertyWidget();
+    /*!
+     * \ingroup	UI
+     * \brief	Destructor
+     */
+    ~ObjectPropertyWidget();
 
-private slots:
- /*!
-  * \ingroup      UI
-  * \brief        Processes object colour update.
-  *
-  * \return       void
-  * \par      Source:
-  *                ObjectPropertyWidget.cpp
-  */
-  void colourChanged();
+  private slots:
+    /*!
+     * \ingroup	UI
+     * \brief	Processes object colour update.
+     *
+     */
+    void colourChanged();
 
- /*!
-  * \ingroup      UI
-  * \brief        Processes object addition.
-  * \return       void
-  * \par      Source:
-  *                ObjectPropertyWidget.cpp
-  */
-  void addObjectSignal(WoolzObject* obj);
+    /*!
+     * \ingroup	UI
+     * \brief	Processes object addition.
+     */
+    void addObjectSignal(WoolzObject* obj);
 
- /*!
-  * \ingroup      UI
-  * \brief        Processes object removal.
-  * \return       void
-  * \par      Source:
-  *                ObjectPropertyWidget.cpp
-  */
-  void removedObjectSignal(WoolzObject* obj);
+    /*!
+     * \ingroup	UI
+     * \brief	Processes object removal.
+     */
+    void removedObjectSignal(WoolzObject* obj);
 
- /*!
-  * \ingroup      UI
-  * \brief        Processes object selection in the combobox.
-  * \return       void
-  * \par      Source:
-  *                ObjectPropertyWidget.cpp
-  */
-  void objectChanged(int index);
+    /*!
+     * \ingroup	UI
+     * \brief	Processes object selection in the combobox.
+     */
+    void objectChanged(int index);
 
- /*!
-  * \ingroup      UI
-  * \brief        Processes object name change in the combobox.
-  * \return       void
-  * \par      Source:
-  *                ObjectPropertyWidget.cpp
-  */
-  void nameChanged(const QString &str);
+    /*!
+     * \ingroup	UI
+     * \brief	Processes object name change in the combobox.
+     */
+    void nameChanged(const QString &str);
 
- /*!
-  * \ingroup      UI
-  * \brief        Processes external object property change.
-  * \return       void
-  * \par      Source:
-  *                ObjectPropertyWidget.cpp
-  */
-  void objectPropertyChanged();
+    /*!
+     * \ingroup	UI
+     * \brief	Processes external object property change.
+     */
+    void objectPropertyChanged();
 
- /*!
-  * \ingroup      UI
-  * \brief        Processes removal button event.
-  * \return       void
-  * \par      Source:
-  *                ObjectPropertyWidget.cpp
-  */
-  void removeObject();
+    /*!
+     * \ingroup	UI
+     * \brief	Processes removal button event.
+     */
+    void removeObject();
 
- /*!
-  * \ingroup      UI
-  * \brief        Processes visibility checkbox change.
-  * \return       void
-  * \par      Source:
-  *                ObjectPropertyWidget.cpp
-  */
-  void visibleChanged(bool checked);
+    /*!
+     * \ingroup	UI
+     * \brief	Processes visibility checkbox change.
+     */
+    void visibleChanged(bool checked);
 
-public slots:
- /*!
-  * \ingroup      UI
-  * \brief        Processes external object selection.
-  * \param        object new selected object
-  * \return       void
-  * \par      Source:
-  *                ObjectPropertyWidget.cpp
-  */
-  void objectSelected(WoolzObject* object);
+    public slots:
+      /*!
+       * \ingroup	UI
+       * \brief	Processes external object selection.
+       * \param	object			new selected object
+       */
+      void objectSelected(WoolzObject* object);
 
-private:
- /*!
-  * \ingroup      UI
-  * \brief        Fills widget with the values of the object.
-  * \param        object object to be loaded
-  * \return       void
-  * \par      Source:
-  *                ObjectPropertyWidget.cpp
-  */
-  void loadProperties(WoolzObject* object);
+  private:
+    /*!
+     * \ingroup	UI
+     * \brief	Fills widget with the values of the object.
+     * \param	object			object to be loaded
+     */
+    void loadProperties(WoolzObject* object);
 
-protected:
-  ObjectListModel* m_objectListModel;    /*!< the object list model*/
-  WoolzObject * m_object;                /*!< current object*/
+  protected:
+    ObjectListModel* m_objectListModel;    /*!< the object list model */
+    WoolzObject * m_object;                /*!< current object */
 };
 
 #endif  //OBJECTPROPERTYWIDGET

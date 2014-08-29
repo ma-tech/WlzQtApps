@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _PreferencesDialog_h[] = "MRC HGU $Id$";
-#endif
+static char _PreferencesDialog_h[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         PreferencesDialog.h
@@ -15,11 +11,15 @@ static char _PreferencesDialog_h[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -35,10 +35,10 @@ static char _PreferencesDialog_h[] = "MRC HGU $Id$";
 * License along with this program; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
-* \brief        Dialog to set UI preferences
-* \ingroup      UI
-*
+* \brief	Dialog to set UI preferences
+* \ingroup	UI
 */
+
 #ifndef PREFERENCESDIALOG_H
 #define PREFERENCESDIALOG_H
 
@@ -53,92 +53,74 @@ class QObject;
 
 /*!
  * \brief	Dialog for UI properties
- * \ingroup      UI
+ * \ingroup	UI
  */
 class PreferencesDialog : public QDialog, public Ui::PreferencesDialog
 {
-Q_OBJECT
-public:
- /*!
-  * \ingroup      UI
-  * \brief        Constructor
-  * \param        parent parent widget
-  * \param        objectListModel
-  * \par      Source:
-  *               PreferencesDialog.cpp
-  */
-  PreferencesDialog(QWidget *parent);
+  Q_OBJECT
+  public:
+    /*!
+     * \ingroup	UI
+     * \brief	Constructor
+     * \param	parent			parent widget
+     * \param   objectListModel
+     */
+    PreferencesDialog(QWidget *parent);
 
- /*!
-  * \ingroup      UI
-  * \brief        Return the current snap to fit distance
-  * \return       snap to fit distance
-  * \par      Source:
-  *                PreferencesDialog.cpp
-  */
-  double snapToFitDist() { return  m_snapToFitDist;}
+    /*!
+     * \ingroup	UI
+     * \brief	Return the current snap to fit distance
+     * \return	snap to fit distance
+     */
+    double snapToFitDist() {return(m_snapToFitDist);}
 
-private slots:
- /*!
-  * \ingroup      UI
-  * \brief        Processes dialog close with accept
-  * \return       void
-  * \par      Source:
-  *               PreferencesDialog.cpp
-  */
-  virtual void accept();
+  private slots:
+    /*!
+     * \ingroup	UI
+     * \brief	Processes dialog close with accept
+     */
+    virtual void accept();
 
- /*!
-  * \ingroup      UI
-  * \brief        Processes dialog close with cancel
-  * \return       void
-  * \par      Source:
-  *               PreferencesDialog.cpp
-  */
-  virtual void reject();
+    /*!
+     * \ingroup	UI
+     * \brief	Processes dialog close with cancel
+     */
+    virtual void reject();
 
- /*!
-  * \ingroup      UI
-  * \brief        Processes apply button press
-  * \return       void
-  * \par      Source:
-  *               PreferencesDialog.cpp
-  */
-  virtual void apply();
+    /*!
+     * \ingroup	UI
+     * \brief	Processes apply button press
+     */
+    virtual void apply();
 
-private slots:
-  /*!
-  * \ingroup      UI
-  * \brief        Processes basis function change
-  * \return       void
-  * \par      Source:
-  *                TransformWidget.cpp
-  */
-  void basisFnChanged();
+  private slots:
+    /*!
+     * \ingroup	UI
+     * \brief	Processes basis function change
+     */
+    void basisFnChanged();
 
-signals:
- /*!
-  * \ingroup      UI
-  * \brief        Signals configuration change that has be processed by those functionalities using this configuration
-  * \return       void
-  * \par      Source:
-  *               PreferencesDialog.cpp
-  */
-  void configurationChanged();
-protected:
-  QColor m_origSourceViewerColour;          /*!< source viewer background colour */
-  QColor m_origTargetViewerColour;          /*!< target viewer background colour */
-  QColor m_origResultViewerColour;          /*!< result viewer background colour */
-  float  m_orig2DMarkerSize;                /*!< 2D marker size */
-  float  m_orig3DMarkerSize;                /*!< 3D marker size */
-  float  m_origSnapToFitDist;               /*!< Snap to fit distance */
-  bool   m_origIsIMQ;                       /*!< if is IMQ warping*/
-  float  m_origDeltaIMQ;                    /*!< delta value for IMQ*/
-  float  m_origDeltaMQ;                     /*!< delta value for MQ*/
-  bool   m_useIMQ;                          /*!< current warping type*/
-  float  m_deltaIMQ;                        /*!< current delta value for IMQ*/
-  float  m_deltaMQ;                         /*!< current delta value for MQ*/
-  float  m_snapToFitDist;                   /*!< current snap to fit distance*/
+  signals:
+    /*!
+     * \ingroup	UI
+     * \brief	Signals configuration change that has be processed by those
+     * 		functionalities using this configuration
+     */
+    void configurationChanged();
+  protected:
+    QColor m_origSourceViewerColour;	/*!< source viewer background colour */
+    QColor m_origTargetViewerColour;    /*!< target viewer background colour */
+    QColor m_origResultViewerColour;    /*!< result viewer background colour */
+    float  m_orig2DMarkerSize;          /*!< 2D marker size */
+    float  m_orig3DMarkerSize;          /*!< 3D marker size */
+    float  m_origSnapToFitDist;         /*!< Snap to fit distance */
+    bool   m_origIsIMQ;                 /*!< if is IMQ warping */
+    float  m_origDeltaIMQ;              /*!< delta value for IMQ */
+    float  m_origDeltaMQ;               /*!< delta value for MQ */
+    bool   m_useIMQ;                    /*!< current warping type */
+    float  m_deltaIMQ;                  /*!< current delta value for IMQ */
+    float  m_deltaMQ;                   /*!< current delta value for MQ */
+    float  m_snapToFitDist;             /*!< current snap to fit distance */
 
 };
 

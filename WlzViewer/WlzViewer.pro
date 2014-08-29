@@ -1,6 +1,5 @@
-#CONFIG += release build_all
-#CONFIG += release
-CONFIG += debug
+CONFIG += release build_all
+#CONFIG += debug
 CONFIG += opengl
 CONFIG += openmp
 QT += xml
@@ -30,7 +29,7 @@ openmp {
     message( Using openmp )
 }
 contains( QMAKE_CFLAGS, -m64): TYPE =
-contains( QMAKE_LIBDIR_X11, /usr/X11R6/lib64):TYPE =
+contains( QMAKE_LIBDIR_X11, /usr/lib64):TYPE =
 
 CONFIG(debug, debug|release) { 
     TARGET = Viewer_d

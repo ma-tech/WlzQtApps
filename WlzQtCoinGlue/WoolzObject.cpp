@@ -211,6 +211,9 @@ is2D()
       case WLZ_2D_DOMAINOBJ:
 	is = true;
 	break;
+      case WLZ_CMESH_2D:
+        is = true;
+	break;
       case WLZ_CONTOUR:
 	is = dom.core && dom.ctr->model &&
 	     ((dom.ctr->model->type == WLZ_GMMOD_2I) ||
@@ -240,6 +243,9 @@ is3D()
     switch(m_obj->type)
     {
       case WLZ_3D_DOMAINOBJ:
+        is = true;
+	break;
+      case WLZ_CMESH_3D:
         is = true;
 	break;
       case WLZ_CONTOUR:

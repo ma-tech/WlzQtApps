@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _LandmarkWidget_cpp[] = "MRC HGU $Id$";
-#endif
+static char _LandmarkWidget_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         LandmarkWidget.cpp
@@ -15,11 +11,15 @@ static char _LandmarkWidget_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2010 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,50 +37,72 @@ static char _LandmarkWidget_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Landmark dialog
 * \ingroup      UI
-*
 */
+
 #include "LandmarkWidget.h"
 #include "LandmarkController.h"
 
-LandmarkWidget::LandmarkWidget(LandmarkController* controller, QWidget *parent) :
-  QDockWidget(parent), Ui::LandmarkWidget(), m_controller(controller) {
-  setupUi( this ); // this sets up GUI
-
-  if (controller)
+LandmarkWidget::
+LandmarkWidget(
+  LandmarkController* controller,
+  QWidget *parent):
+QDockWidget(parent),
+Ui::LandmarkWidget(),
+m_controller(controller)
+{
+  setupUi(this); // this sets up GUI
+  if(controller)
+  {
     viewLandmark->setModel(controller->getModel());
-
-  connect(pushButtonRemove, SIGNAL(clicked()), this, SLOT(removeLandmark()));
-  connect(pushButtonRemoveAll, SIGNAL(clicked()), controller, SLOT(removeAllLandmarks()));
-
+  }
+  connect(pushButtonRemove, SIGNAL(clicked()),
+          this, SLOT(removeLandmark()));
+  connect(pushButtonRemoveAll, SIGNAL(clicked()),
+          controller, SLOT(removeAllLandmarks()));
   connect(viewLandmark->selectionModel(), 
-     SIGNAL(currentChanged( const QModelIndex &, const QModelIndex & )),
-     this,
-     SLOT(currentRowChanged( const QModelIndex &, const QModelIndex & )));
-
+      SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
+      this,
+      SLOT(currentRowChanged(const QModelIndex &, const QModelIndex &)));
   connect(controller,
-     SIGNAL(setHighlight(const int, const bool)), 
-     this,
-     SLOT(setHighlight(const int, const bool)));
+      SIGNAL(setHighlight(const int, const bool)), 
+      this,
+      SLOT(setHighlight(const int, const bool)));
 }
 
-LandmarkWidget::~LandmarkWidget() {
+LandmarkWidget::
+~LandmarkWidget()
+{
 }
 
-void LandmarkWidget::removeLandmark() {
+void LandmarkWidget::
+removeLandmark()
+{
   Q_ASSERT(m_controller);
   m_controller->removeLandmark(viewLandmark->currentIndex());
 }
 
-void LandmarkWidget::currentRowChanged ( const QModelIndex & current,
-   const QModelIndex & /*previous*/ ) {
+void LandmarkWidget::
+currentRowChanged(
+  const QModelIndex & current,
+  const QModelIndex & /*previous*/)
+{
   m_controller->highlight(current, true);
 }
 
-void LandmarkWidget::setHighlight(const int row, const bool on) {
-  if (on) {
-   LandmarkModel* model = qobject_cast<LandmarkModel*>(viewLandmark->model());
-   //keep active column
-   if (model)
-     viewLandmark->setCurrentIndex(model->index(row, viewLandmark->currentIndex().column(), QModelIndex()));
+void LandmarkWidget::
+setHighlight(
+  const int row,
+  const bool on)
+{
+  if(on)
+  {
+    LandmarkModel* model = qobject_cast<LandmarkModel*>(viewLandmark->model());
+    //keep active column
+    if(model)
+    {
+      viewLandmark->setCurrentIndex(
+          model->index(row, viewLandmark->currentIndex().column(),
+	               QModelIndex()));
+    }
   }
 }

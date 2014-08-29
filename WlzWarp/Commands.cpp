@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _Commands_cpp[] = "MRC HGU $Id$";
-#endif
+static char _Commands_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         Commands.cpp
@@ -15,11 +11,15 @@ static char _Commands_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -38,6 +38,7 @@ static char _Commands_cpp[] = "MRC HGU $Id$";
 * \brief        Undoable commands
 * \ingroup      Control
 */
+
 
 //project includes
 #include "Commands.h"
@@ -79,22 +80,40 @@ int WarpingtSetBasisFnType::id () const {return 1019;}
 int WarpingSetSnapToFitDist::id () const {return 1020;}
 //int TransferFunctionLoad::id () const {return 1021;}
 
-CreateWoolzObject::CreateWoolzObject(ObjectListModel *objectListModel, WoolzObject *object, QUndoCommand * parent) :
-        QUndoCommand(parent), m_objectListModel(objectListModel),m_object(object), m_allive(false) { setText("Add object " + object->name());}
-
-CreateWoolzObject::~CreateWoolzObject() {
-   if (!m_allive)
-     delete m_object;
+CreateWoolzObject::
+CreateWoolzObject(
+  ObjectListModel *objectListModel,
+  WoolzObject *object,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_objectListModel(objectListModel),
+m_object(object),
+m_allive(false)
+{
+  setText("Add object " + object->name());
 }
 
-void CreateWoolzObject::undo() {
+CreateWoolzObject::
+~CreateWoolzObject()
+{
+   if(!m_allive)
+   {
+     delete m_object;
+   }
+}
+
+void CreateWoolzObject::
+undo()
+{
    QApplication::setOverrideCursor(Qt::WaitCursor);
    m_objectListModel->removeObjectNoDelete(m_object);
    m_allive = false;
    QApplication::restoreOverrideCursor();
 }
 
-void CreateWoolzObject::redo() {
+void CreateWoolzObject::
+redo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
   m_object->update(true);
   m_objectListModel->addObject(m_object);
@@ -102,16 +121,31 @@ void CreateWoolzObject::redo() {
   m_allive = true;
 }
 
-DeleteWoolzObject::DeleteWoolzObject(ObjectListModel *objectListModel, WoolzObject *object, QUndoCommand * parent) :
-        QUndoCommand(parent), m_objectListModel(objectListModel),m_object(object), m_allive(true) { setText("Delete object " + object->name());}
+DeleteWoolzObject::
+DeleteWoolzObject(
+  ObjectListModel *objectListModel,
+  WoolzObject *object,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_objectListModel(objectListModel),
+m_object(object),
+m_allive(true)
+{
+  setText("Delete object " + object->name());
+}
 
-DeleteWoolzObject::~DeleteWoolzObject() {
-   if (!m_allive) {
+DeleteWoolzObject::
+~DeleteWoolzObject()
+{
+   if(!m_allive)
+   {
      delete m_object;
-    };
+   };
 }
 
-void DeleteWoolzObject::undo() {
+void DeleteWoolzObject::
+undo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
   m_object->update(true);
   m_objectListModel->addObject(m_object);
@@ -119,96 +153,186 @@ void DeleteWoolzObject::undo() {
   QApplication::restoreOverrideCursor();
 }
 
-void DeleteWoolzObject::redo() {
+void DeleteWoolzObject::
+redo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
   m_objectListModel->removeObjectNoDelete(m_object);
   m_allive = false;
   QApplication::restoreOverrideCursor();
 }
 
-RenameObject::RenameObject (WoolzObject *object, QString name, QUndoCommand * parent) :
-        QUndoCommand(parent), m_object(object), m_name(name) { setText("Rename object");}
-
-void RenameObject::undo() {
-   m_object->setName(m_oldName);
+RenameObject::
+RenameObject(
+  WoolzObject *object,
+  QString name,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_object(object),
+m_name(name)
+{
+  setText("Rename object");
 }
-void RenameObject::redo() {
-   m_oldName=m_object->name();
-   m_object->setName(m_name);
+
+void RenameObject::
+undo()
+{
+  m_object->setName(m_oldName);
+}
+void RenameObject::
+redo()
+{
+  m_oldName=m_object->name();
+  m_object->setName(m_name);
 }
 
-bool RenameObject::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an RenameObject command
-    return false;
-  const RenameObject *renameCommand = static_cast<const RenameObject*>(command);
+bool RenameObject::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) // make sure other is also an RenameObject command
+  {
+    return(false);
+  }
+  const RenameObject *renameCommand = 
+      static_cast<const RenameObject*>(command);
 
-  if (renameCommand ->m_object != m_object) // make sure other is also referes the same object
-    return false;
-
+  if(renameCommand ->m_object != m_object) // make sure other also referes the
+  					   // same object
+  {
+    return(false);
+  }
   m_name  = renameCommand->m_name;
-  return true;
+  return(true);
 }
 
-ColourObject::ColourObject (WoolzObject *object, const QColor colour, QUndoCommand * parent) :
-        QUndoCommand(parent), m_object(object), m_colour(colour) { setText("Object colour change");}
-
-void ColourObject::undo() {
-   m_object->setQColour(m_oldColour);
+ColourObject::
+ColourObject(
+  WoolzObject *object,
+  const QColor colour,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_object(object),
+m_colour(colour)
+{
+  setText("Object colour change");
 }
 
-void ColourObject::redo() {
-   m_oldColour=m_object->qColour();
-   m_object->setQColour(m_colour);
+void ColourObject::
+undo()
+{
+  m_object->setQColour(m_oldColour);
 }
 
-bool ColourObject::mergeWith ( const QUndoCommand * command ) {
+void ColourObject::
+redo()
+{
+  m_oldColour=m_object->qColour();
+  m_object->setQColour(m_colour);
+}
+
+bool ColourObject::
+mergeWith(
+const QUndoCommand * command)
+{
   if (command->id() != id()) // make sure other is also an ColourObject command
-    return false;
+  {
+    return(false);
+  }
   const ColourObject *colourCommand = static_cast<const ColourObject*>(command);
-  if (colourCommand ->m_object != m_object) // make sure other is also referes the same object
-    return false;
+  if(colourCommand ->m_object != m_object) // make sure other also referes the
+  					   // same object
+  {
+    return(false);
+  }
   m_colour  = colourCommand->m_colour;
-  return true;
+  return(true);
 }
 
-WoolzObjectChangeVisibility::WoolzObjectChangeVisibility(WoolzObject *object, const bool visible, QUndoCommand * parent) :
-        QUndoCommand(parent), m_object(object), m_visible(visible) { setText("Object visibility change");}
-
-void WoolzObjectChangeVisibility::undo() {
-   m_object->setVisible(m_oldVisible);
+WoolzObjectChangeVisibility::
+WoolzObjectChangeVisibility(
+  WoolzObject *object,
+  const bool visible,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_object(object),
+m_visible(visible)
+{
+  setText("Object visibility change");
 }
 
-void WoolzObjectChangeVisibility::redo() {
-   m_oldVisible=m_object->visible();
-   m_object->setVisible(m_visible);
+void WoolzObjectChangeVisibility::
+undo()
+{
+  m_object->setVisible(m_oldVisible);
 }
 
-bool WoolzObjectChangeVisibility::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an WoolzObjectChangeVisibility command
-    return false;
-  const WoolzObjectChangeVisibility *visiblityCommand = static_cast<const WoolzObjectChangeVisibility*>(command);
-  if (visiblityCommand ->m_object != m_object) // make sure other is also referes the same object
-    return false;
+void WoolzObjectChangeVisibility::
+redo()
+{
+  m_oldVisible=m_object->visible();
+  m_object->setVisible(m_visible);
+}
+
+bool WoolzObjectChangeVisibility::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other is also an
+  				// WoolzObjectChangeVisibility command
+  {
+    return(false);
+  }
+  const WoolzObjectChangeVisibility *visiblityCommand =
+      static_cast<const WoolzObjectChangeVisibility*>(command);
+  if(visiblityCommand ->m_object != m_object)   // make sure other also referes
+  						// the same object
+  {
+    return(false);
+  }
   m_visible  = visiblityCommand->m_visible;
-  return true;
+  return(true);
 }
 
 
 
-CreateMeshObject::CreateMeshObject(ObjectListModel *objectListModel, LandmarkModel *landmarkModel, WoolzObject *object, QUndoCommand * parent) :
-        QUndoCommand(parent), m_objectListModel(objectListModel), m_landmarkModel(landmarkModel), m_object(object), m_oldObject(NULL), m_allive(false) { setText("Add object mesh");}
-
-CreateMeshObject::~CreateMeshObject() {
-   if (!m_allive)
-     delete m_object;
-   else if (m_oldObject)
-     delete m_oldObject;
+CreateMeshObject::
+CreateMeshObject(
+  ObjectListModel *objectListModel,
+  LandmarkModel *landmarkModel,
+  WoolzObject *object,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_objectListModel(objectListModel),
+m_landmarkModel(landmarkModel),
+m_object(object),
+m_oldObject(NULL),
+m_allive(false)
+{
+  setText("Add object mesh");
 }
 
-void CreateMeshObject::undo() {
+CreateMeshObject::
+~CreateMeshObject()
+{
+  if(!m_allive)
+  {
+    delete m_object;
+  }
+  else if(m_oldObject)
+  {
+    delete m_oldObject;
+  }
+}
+
+void CreateMeshObject::
+undo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
-  if (m_oldObject)
-      m_oldObject->update(true);
+  if(m_oldObject)
+  {
+    m_oldObject->update(true);
+  }
   m_landmarkModel->setMeshData(m_oldObject);
   m_objectListModel->addMeshObjectNoDelete(m_oldObject);
   m_landmarkModel->updateAllValidity();
@@ -216,10 +340,14 @@ void CreateMeshObject::undo() {
   QApplication::restoreOverrideCursor();
 }
 
-void CreateMeshObject::redo() {
+void CreateMeshObject::
+redo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
-  if (m_object)
+  if(m_object)
+  {
     m_object->update(true);
+  }
   m_oldObject=m_objectListModel->getMeshObject();
   m_landmarkModel->setMeshData(m_object);
   m_objectListModel->addMeshObjectNoDelete(m_object);
@@ -228,31 +356,60 @@ void CreateMeshObject::redo() {
   m_allive = true;
 }
 
-AddHalfLandmark::AddHalfLandmark (LandmarkController *controller, const WlzDVertex3 newPosition, LandmarkModel::IndexType indexType, QUndoCommand * parent)
-         : QUndoCommand(parent), m_controller(controller), m_position(newPosition), m_indexType(indexType) {
-           m_previouslySet = false;
-    setText(QString("add ") + (indexType==LandmarkModel::sourceV?"source":"target")+" landmark");
-  }
+AddHalfLandmark::
+AddHalfLandmark(
+  LandmarkController *controller,
+  const WlzDVertex3 newPosition,
+  LandmarkModel::IndexType indexType,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_controller(controller),
+m_position(newPosition),
+m_indexType(indexType)
+{
+  m_previouslySet = false;
+  setText(QString("add ") +
+          ((indexType == LandmarkModel::sourceV)?  "source": "target") +
+	  " landmark");
+}
 
-AddHalfLandmark::AddHalfLandmark (LandmarkController *controller, const SbVec3f newPosition, LandmarkModel::IndexType indexType, QUndoCommand * parent)
-         : QUndoCommand(parent), m_controller(controller), m_indexType(indexType) {
-           m_previouslySet = false;
-    setText(QString("add ") + (indexType==LandmarkModel::sourceV?"source":"target")+" landmark");
-    m_position.vtX = newPosition[0];
-    m_position.vtY = newPosition[1];
-    m_position.vtZ = newPosition[2];
-  }
+AddHalfLandmark::
+AddHalfLandmark(
+  LandmarkController *controller,
+  const SbVec3f newPosition,
+  LandmarkModel::IndexType indexType,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_controller(controller),
+m_indexType(indexType)
+{
+  m_previouslySet = false;
+  setText(QString("add ") +
+          ((indexType == LandmarkModel::sourceV)? "source": "target") +
+	  " landmark");
+  m_position.vtX = newPosition[0];
+  m_position.vtY = newPosition[1];
+  m_position.vtZ = newPosition[2];
+}
 
-void AddHalfLandmark::undo() {
+void AddHalfLandmark::
+undo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
-  if (m_previouslySet)
+  if(m_previouslySet)
+  {
     m_controller->addHalfLandmark(m_positionOld, m_indexType);
+  }
   else
+  {
     m_controller->cancelIncompleteLandmarks();
+  }
   QApplication::restoreOverrideCursor();
 }
 
-void AddHalfLandmark::redo() {
+void AddHalfLandmark::
+redo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
   m_previouslySet = m_controller->getHalfLandmark(m_positionOld, m_indexType);
   m_controller->addHalfLandmark(m_position, m_indexType);
@@ -260,68 +417,126 @@ void AddHalfLandmark::redo() {
 }
 
 
-AddSecondHalfLandmark::AddSecondHalfLandmark (LandmarkController *controller, const WlzDVertex3 newPosition, LandmarkModel::IndexType indexType, QUndoCommand * parent)
-         : QUndoCommand(parent), m_controller(controller), m_position(newPosition), m_indexType(indexType) {
+AddSecondHalfLandmark::
+AddSecondHalfLandmark(
+  LandmarkController *controller,
+  const WlzDVertex3 newPosition,
+  LandmarkModel::IndexType indexType,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_controller(controller),
+m_position(newPosition),
+m_indexType(indexType)
+{
   setText("add landmark");
 }
 
-void AddSecondHalfLandmark::undo() {
+void AddSecondHalfLandmark::
+undo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
   m_controller->getModel()->removeLast();
-  m_controller->addHalfLandmark(m_positionOld, m_indexType == LandmarkModel::sourceV ? LandmarkModel::targetV : LandmarkModel::sourceV);
+  m_controller->addHalfLandmark(m_positionOld,
+      (m_indexType == LandmarkModel::sourceV)?
+          LandmarkModel::targetV: LandmarkModel::sourceV);
   QApplication::restoreOverrideCursor();
 }
 
-void AddSecondHalfLandmark::redo() {
+void AddSecondHalfLandmark::
+redo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
-  m_controller->getHalfLandmark(m_positionOld, m_indexType == LandmarkModel::sourceV ? LandmarkModel::targetV : LandmarkModel::sourceV);
+  m_controller->getHalfLandmark(m_positionOld,
+      (m_indexType == LandmarkModel::sourceV)?
+          LandmarkModel::targetV: LandmarkModel::sourceV);
   m_controller->addSecondHalfLandmark(m_position, m_indexType);
   QApplication::restoreOverrideCursor();
 }
 
-EnableDisableUpdateCommand::EnableDisableUpdateCommand (bool isFirst, EnableDisableUpdateCommand * pair, QUndoCommand * parent) :
-         QUndoCommand(parent), m_isFirst(isFirst), m_pair(pair), m_state(false) {
-    Q_ASSERT(pair);
-    m_pair->setPair(!m_isFirst, this);
+EnableDisableUpdateCommand::
+EnableDisableUpdateCommand(
+  bool isFirst,
+  EnableDisableUpdateCommand * pair,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_isFirst(isFirst),
+m_pair(pair),
+m_state(false)
+{
+  Q_ASSERT(pair);
+  m_pair->setPair(!m_isFirst, this);
 }
 
-EnableDisableUpdateCommand ::EnableDisableUpdateCommand (QUndoCommand * parent) :
-         QUndoCommand(parent) { }
+EnableDisableUpdateCommand::
+EnableDisableUpdateCommand(
+  QUndoCommand * parent):
+QUndoCommand(parent)
+{
+}
 
-void EnableDisableUpdateCommand::setPair(bool isFirst, EnableDisableUpdateCommand * pair) {
+void EnableDisableUpdateCommand::
+setPair(
+  bool isFirst,
+  EnableDisableUpdateCommand * pair)
+{
   m_isFirst = isFirst;
   m_pair = pair;
 }
 
-void EnableDisableUpdateCommand::undo() {
-   if (!m_isFirst) {
-     m_state = config.globalWarpUpdate();
-     config.setGlobalWarpUpdate(false);
-  } else
-     config.setGlobalWarpUpdate(m_pair->state());
+void EnableDisableUpdateCommand::
+undo()
+{
+  if(!m_isFirst)
+  {
+    m_state = config.globalWarpUpdate();
+    config.setGlobalWarpUpdate(false);
+  }
+  else
+  {
+    config.setGlobalWarpUpdate(m_pair->state());
+  }
 }
 
-void EnableDisableUpdateCommand::redo() {
-   if (m_isFirst) {
+void EnableDisableUpdateCommand::
+redo()
+{
+   if(m_isFirst)
+   {
      m_state = config.globalWarpUpdate();
      config.setGlobalWarpUpdate(false);
-  } else
-     config.setGlobalWarpUpdate(m_pair->state());
+  }
+  else
+  {
+    config.setGlobalWarpUpdate(m_pair->state());
+  }
 }
 
-LoadLandmarks::LoadLandmarks(LandmarkModel *model, QString filename, QUndoCommand * parent)
-         : QUndoCommand(parent), m_model(model), m_filename(filename) {}
+LoadLandmarks::
+LoadLandmarks(
+  LandmarkModel *model,
+  QString filename,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_model(model),
+m_filename(filename)
+{
+}
 
-void LoadLandmarks::undo() {
+void LoadLandmarks::
+undo()
+{
   m_model->removeAllLandmarks();
 }
 
-void LoadLandmarks::redo() {
+void LoadLandmarks::
+redo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
   m_model->removeAllLandmarks(); //make sure no landmarks are present
 
   QFile file(m_filename);
-  if (!file.open(QFile::ReadOnly | QFile::Text)) {
+  if(!file.open(QFile::ReadOnly | QFile::Text))
+  {
     QMessageBox::warning(NULL, "Load landmarks", "Cannot open landmark file.");
     QApplication::restoreOverrideCursor();
     return;
@@ -330,612 +545,1067 @@ void LoadLandmarks::redo() {
   QDomDocument doc;
   QString errorStr;
   int errorLine, errorColumn;
-  if (!doc.setContent(&file, false, &errorStr, &errorLine, &errorColumn)) {
-     QMessageBox::warning(NULL, "Load landmarks", QString("Parse error at line %1 column %2 :").arg(errorLine).arg(errorColumn) + errorStr);
-     QApplication::restoreOverrideCursor();
-     return;
+  if(!doc.setContent(&file, false, &errorStr, &errorLine, &errorColumn))
+  {
+    QMessageBox::warning(NULL, "Load landmarks",
+        QString("Parse error at line %1 column %2 :").
+	arg(errorLine).arg(errorColumn) + errorStr);
+    QApplication::restoreOverrideCursor();
+    return;
   }
 
   QDomElement root = doc.documentElement();
-  if (root.tagName() == LandmarkModel::xmlTag) {
-     m_model->parseDOM(root);
-  } else
-     QMessageBox::warning(NULL, "Load landmarks", QString("Not a landmark file."));
+  if(root.tagName() == LandmarkModel::xmlTag)
+  {
+    m_model->parseDOM(root);
+  }
+  else
+  {
+    QMessageBox::warning(NULL, "Load landmarks",
+        QString("Not a landmark file."));
+  }
   QApplication::restoreOverrideCursor();
 }
 
-RemoveLandmark ::RemoveLandmark (LandmarkModel *model, int index, QUndoCommand * parent)
-         : QUndoCommand(parent), m_model(model), m_index(index) { setText("remove landmark"); }
+RemoveLandmark::
+RemoveLandmark(
+  LandmarkModel *model,
+  int index,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_model(model),
+m_index(index)
+{
+  setText("remove landmark");
+}
 
-void RemoveLandmark::undo() {
+void RemoveLandmark::
+undo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
   m_model->insertLandmarkPair(m_index, m_pp);
   QApplication::restoreOverrideCursor();
 }
 
-void RemoveLandmark::redo() {
+void RemoveLandmark::
+redo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
   m_pp = *(m_model->getPointPair(m_index));
   m_model->removeLandmark(m_index);
   QApplication::restoreOverrideCursor();
 }
 
-AddLandmark::AddLandmark(LandmarkModel *model, PointPair &pp, QUndoCommand * parent)
-         : QUndoCommand(parent), m_model(model), m_pp(pp) { setText("add landmark"); }
+AddLandmark::
+AddLandmark(
+  LandmarkModel *model,
+  PointPair &pp,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_model(model),
+m_pp(pp)
+{
+  setText("add landmark");
+}
 
-void AddLandmark::undo() {
+void AddLandmark::
+undo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
   bool autoUpdate = config.globalAutoUpdate();
   config.setGlobalAutoUpdate(false);
   m_model->removeLast();
-  config.setGlobalAutoUpdate(autoUpdate);//TODO: forces update->do somehow else
+  config.setGlobalAutoUpdate(autoUpdate);  // forces update
   QApplication::restoreOverrideCursor();
 }
 
-void AddLandmark::redo() {
+void AddLandmark::
+redo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
   m_model->insertLandmarkPair(-1, m_pp);
   QApplication::restoreOverrideCursor();
 }
 
-MoveLandmark::MoveLandmark(LandmarkModel *model, int index, SbVec3f newpp, LandmarkModel::IndexType indexType, QUndoCommand * parent)
-         : QUndoCommand(parent), m_model(model), m_index(index), m_indexType(indexType), m_newpp(newpp) { setText("move landmark"); }
+MoveLandmark::
+MoveLandmark(
+  LandmarkModel *model,
+  int index,
+  SbVec3f newpp,
+  LandmarkModel::IndexType indexType,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_model(model),
+m_index(index),
+m_indexType(indexType),
+m_newpp(newpp)
+{
+  setText("move landmark");
+}
 
-void MoveLandmark::undo() {
+void MoveLandmark::
+undo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
   m_model->move(m_index, m_pp, m_indexType);
   QApplication::restoreOverrideCursor();
 }
 
-void MoveLandmark::redo() {
+void MoveLandmark::
+redo()
+{
   QApplication::setOverrideCursor(Qt::WaitCursor);
   m_pp = *(m_model->getPointPair(m_index));
   m_model->move(m_index, m_newpp, m_indexType);
   QApplication::restoreOverrideCursor();
 }
 
-bool MoveLandmark::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an MoveLandmark command
-    return false;
+bool MoveLandmark::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) // make sure other is also an MoveLandmark command
+  {
+    return(false);
+  }
   const MoveLandmark *moveCommand = static_cast<const MoveLandmark*>(command);
 
-  if (moveCommand->m_index != m_index || moveCommand->m_indexType != m_indexType) // make sure other is also referes the same landmark
-    return false;
+  if((moveCommand->m_index != m_index) ||
+     (moveCommand->m_indexType != m_indexType)) // make sure other also
+     					        // referes the same landmark
+  {
+    return(false);
+  }
 
   m_newpp = moveCommand->m_newpp;
-  return true;
+  return(true);
 }
 
-SetLowThreshold::SetLowThreshold(WoolzDynThresholdedObj *object, const unsigned char lowTh, QUndoCommand * parent) :
-        QUndoCommand(parent), m_object(object), m_lowTh(lowTh) { setText(QString("Threshold change to %1").arg(lowTh));}
-
-void SetLowThreshold::undo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_object->setLowThreshold(m_oldLowTh);
-   m_object->update();
-   setText(QString("Threshold change to %1").arg(m_lowTh));
-   QApplication::restoreOverrideCursor();
+SetLowThreshold::
+SetLowThreshold(
+  WoolzDynThresholdedObj *object,
+  const unsigned char lowTh,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_object(object),
+m_lowTh(lowTh)
+{
+  setText(QString("Threshold change to %1").arg(lowTh));
 }
 
-void SetLowThreshold::redo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_oldLowTh=m_object->lowTh();
-   m_object->setLowThreshold(m_lowTh);
-   m_object->update();
-   setText(QString("Threshold change to %1").arg(m_oldLowTh));
-   QApplication::restoreOverrideCursor();
+void SetLowThreshold::
+undo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_object->setLowThreshold(m_oldLowTh);
+  m_object->update();
+  setText(QString("Threshold change to %1").arg(m_lowTh));
+  QApplication::restoreOverrideCursor();
 }
 
-bool SetLowThreshold::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an SetLowThreshold command
-    return false;
-  const SetLowThreshold *setLowThresholdCommand = static_cast<const SetLowThreshold*>(command);
-  if (setLowThresholdCommand ->m_object != m_object) // make sure other is also referes the same object
-    return false;
+void SetLowThreshold::
+redo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_oldLowTh=m_object->lowTh();
+  m_object->setLowThreshold(m_lowTh);
+  m_object->update();
+  setText(QString("Threshold change to %1").arg(m_oldLowTh));
+  QApplication::restoreOverrideCursor();
+}
+
+bool SetLowThreshold::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other is also an SetLowThreshold
+  				// command
+  {
+    return(false);
+  }
+  const SetLowThreshold *setLowThresholdCommand =
+      static_cast<const SetLowThreshold*>(command);
+  if(setLowThresholdCommand ->m_object != m_object) // make sure other also
+  						    // referes the same object
+  {
+    return(false);
+  }
   m_lowTh = setLowThresholdCommand->m_lowTh;
-  return true;
+  return(true);
 }
 
-SetHighThreshold::SetHighThreshold(WoolzDynThresholdedObj *object, const unsigned char highTh, QUndoCommand * parent) :
-        QUndoCommand(parent), m_object(object), m_highTh(highTh) { }
-
-void SetHighThreshold::undo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_object->setHighThreshold(m_oldHighTh);
-   m_object->update();
-   setText(QString("Threshold change to %1").arg(m_highTh));
-   QApplication::restoreOverrideCursor();
+SetHighThreshold::
+SetHighThreshold(
+  WoolzDynThresholdedObj *object,
+  const unsigned char highTh,
+  QUndoCommand * parent) :
+QUndoCommand(parent),
+m_object(object),
+m_highTh(highTh)
+{
 }
 
-void SetHighThreshold::redo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_oldHighTh=m_object->highTh();
-   m_object->setHighThreshold(m_highTh);
-   m_object->update();
-   setText(QString("Threshold change to %1").arg(m_oldHighTh));
-   QApplication::restoreOverrideCursor();
+void SetHighThreshold::
+undo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_object->setHighThreshold(m_oldHighTh);
+  m_object->update();
+  setText(QString("Threshold change to %1").arg(m_highTh));
+  QApplication::restoreOverrideCursor();
 }
 
-bool SetHighThreshold::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an SetHighThreshold command
-    return false;
-  const SetHighThreshold *setHighThresholdCommand = static_cast<const SetHighThreshold*>(command);
-  if (setHighThresholdCommand ->m_object != m_object) // make sure other is also referes the same object
-    return false;
+void SetHighThreshold::
+redo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_oldHighTh=m_object->highTh();
+  m_object->setHighThreshold(m_highTh);
+  m_object->update();
+  setText(QString("Threshold change to %1").arg(m_oldHighTh));
+  QApplication::restoreOverrideCursor();
+}
+
+bool SetHighThreshold::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other is also an SetHighThreshold
+  				// command
+  {
+    return(false);
+  }
+  const SetHighThreshold *setHighThresholdCommand =
+      static_cast<const SetHighThreshold*>(command);
+  if(setHighThresholdCommand ->m_object != m_object)	// make sure other also
+  							// referes the same
+							// object
+  {
+    return(false);
+  }
   m_highTh = setHighThresholdCommand->m_highTh;
-  return true;
+  return(true);
 }
 
-WoolzDynThresholdedObjSetChannel::WoolzDynThresholdedObjSetChannel(WoolzDynThresholdedObj *object, const enum WoolzDynThresholdedObj::channelTypes channel, QUndoCommand * parent) :
-        QUndoCommand(parent), m_object(object), m_channel(channel) { setText(QString("Change segmentation channel")); }
-
-void WoolzDynThresholdedObjSetChannel::undo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_object->setChannel(m_oldChannel);
-   m_object->update();
-   QApplication::restoreOverrideCursor();
+WoolzDynThresholdedObjSetChannel::
+WoolzDynThresholdedObjSetChannel(
+  WoolzDynThresholdedObj *object,
+  const enum WoolzDynThresholdedObj::channelTypes channel,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_object(object),
+m_channel(channel)
+{ 
+  setText(QString("Change segmentation channel"));
 }
 
-void WoolzDynThresholdedObjSetChannel::redo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_oldChannel=m_object->channel();
-   m_object->setChannel(m_channel);
-   m_object->update();
-   QApplication::restoreOverrideCursor();
+void WoolzDynThresholdedObjSetChannel::
+undo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_object->setChannel(m_oldChannel);
+  m_object->update();
+  QApplication::restoreOverrideCursor();
 }
 
-bool WoolzDynThresholdedObjSetChannel::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an WoolzDynThresholdedObjSetChannel command
-    return false;
-  const WoolzDynThresholdedObjSetChannel *setChannelCommand = static_cast<const WoolzDynThresholdedObjSetChannel*>(command);
-  if (setChannelCommand ->m_object != m_object) // make sure other is also referes the same object
-    return false;
+void WoolzDynThresholdedObjSetChannel::
+redo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_oldChannel=m_object->channel();
+  m_object->setChannel(m_channel);
+  m_object->update();
+  QApplication::restoreOverrideCursor();
+}
+
+bool WoolzDynThresholdedObjSetChannel::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other is also a
+  				// WoolzDynThresholdedObjSetChannel command
+  {
+    return(false);
+  }
+  const WoolzDynThresholdedObjSetChannel *setChannelCommand =
+      static_cast<const WoolzDynThresholdedObjSetChannel*>(command);
+  if(setChannelCommand ->m_object != m_object) 	// make sure other also
+  						// referes the same object
+  {
+    return(false);
+  }
   m_channel = setChannelCommand->m_channel;
-  return true;
+  return(true);
 }
 
-WoolzDynObjectSetAutoUpdate::WoolzDynObjectSetAutoUpdate(WoolzDynObject *object, const bool enabled, QUndoCommand * parent) :
-        QUndoCommand(parent), m_object(object), m_enabled(enabled) { setText("Auto update change");}
-
-void WoolzDynObjectSetAutoUpdate::undo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_object->setAutoUpdate(m_oldEnabled);
-   if (m_oldEnabled)
-       m_object->update();
-   QApplication::restoreOverrideCursor();
+WoolzDynObjectSetAutoUpdate::
+WoolzDynObjectSetAutoUpdate(
+  WoolzDynObject *object,
+  const bool enabled,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_object(object),
+m_enabled(enabled)
+{
+  setText("Auto update change");
 }
 
-void WoolzDynObjectSetAutoUpdate::redo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_oldEnabled=m_object->autoUpdate();
-   m_object->setAutoUpdate(m_enabled);
-   if (m_enabled)
-       m_object->update();
-   QApplication::restoreOverrideCursor();
+void WoolzDynObjectSetAutoUpdate::
+undo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_object->setAutoUpdate(m_oldEnabled);
+  if(m_oldEnabled)
+  {
+    m_object->update();
+  }
+  QApplication::restoreOverrideCursor();
 }
 
-bool WoolzDynObjectSetAutoUpdate::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an WoolzDynObjectSetAutoUpdate command
-    return false;
-  const WoolzDynObjectSetAutoUpdate *visiblityCommand = static_cast<const WoolzDynObjectSetAutoUpdate*>(command);
-  if (visiblityCommand->m_object != m_object) // make sure other is also referes the same object
-    return false;
+void WoolzDynObjectSetAutoUpdate::
+redo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_oldEnabled=m_object->autoUpdate();
+  m_object->setAutoUpdate(m_enabled);
+  if(m_enabled)
+  {
+    m_object->update();
+  }
+  QApplication::restoreOverrideCursor();
+}
+
+bool WoolzDynObjectSetAutoUpdate::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other is also a
+  				// WoolzDynObjectSetAutoUpdate command
+  {
+    return(false);
+  }
+  const WoolzDynObjectSetAutoUpdate *visiblityCommand =
+      static_cast<const WoolzDynObjectSetAutoUpdate*>(command);
+  if(visiblityCommand->m_object != m_object) 	// make sure other also referes
+  						// the same object
+  {
+    return(false);
+  }
   m_enabled  = visiblityCommand->m_enabled;
-  return true;
+  return(true);
 }
 
-WoolzDynObjectSetSourceObj::WoolzDynObjectSetSourceObj(WoolzDynObject *object, WoolzObject *sourceObj, QUndoCommand * parent) :
-        QUndoCommand(parent), m_object(object) {
-    m_sourceObjID = sourceObj->ID();
-    setText("Select source");
-   }
-
-void WoolzDynObjectSetSourceObj::undo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_object->setSourceObj(m_oldSourceObjID);
-   m_object->update();
-   QApplication::restoreOverrideCursor();
+WoolzDynObjectSetSourceObj::
+WoolzDynObjectSetSourceObj(
+  WoolzDynObject *object,
+  WoolzObject *sourceObj,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_object(object)
+{
+  m_sourceObjID = sourceObj->ID();
+  setText("Select source");
 }
 
-void WoolzDynObjectSetSourceObj::redo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_oldSourceObjID=m_object->sourceObjID();
-   m_object->setSourceObj(m_sourceObjID);
-   m_object->update();
-   QApplication::restoreOverrideCursor();
+void WoolzDynObjectSetSourceObj::
+undo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_object->setSourceObj(m_oldSourceObjID);
+  m_object->update();
+  QApplication::restoreOverrideCursor();
 }
 
-bool WoolzDynObjectSetSourceObj::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an WoolzDynObjectSetSourceObj command
+void WoolzDynObjectSetSourceObj::
+redo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_oldSourceObjID=m_object->sourceObjID();
+  m_object->setSourceObj(m_sourceObjID);
+  m_object->update();
+  QApplication::restoreOverrideCursor();
+}
+
+bool WoolzDynObjectSetSourceObj::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other is also a
+  				// WoolzDynObjectSetSourceObj command
+  {
+    return(false);
+  }
+  const WoolzDynObjectSetSourceObj *setValue =
+      static_cast<const WoolzDynObjectSetSourceObj*>(command);
+  if(setValue->m_object != m_object)	// make sure other also referes the
+  					// same object
+  {
     return false;
-  const WoolzDynObjectSetSourceObj *setValue = static_cast<const WoolzDynObjectSetSourceObj*>(command);
-  if (setValue->m_object != m_object) // make sure other is also referes the same object
-    return false;
+  }
   m_sourceObjID  = setValue->m_sourceObjID;
-  return true;
+  return(true);
 }
 
 /// ISO
 
-WoolzDynISOObjSetValue::WoolzDynISOObjSetValue(WoolzDynContourISO *object, char value, QUndoCommand * parent ) :
-        QUndoCommand(parent), m_object(object), m_value(value) {
-    setText("Set ISO value");
-   }
-
-void WoolzDynISOObjSetValue::undo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_object->setValue(m_oldValue);
-   m_object->update();
-   QApplication::restoreOverrideCursor();
+WoolzDynISOObjSetValue::
+WoolzDynISOObjSetValue(
+  WoolzDynContourISO *object,
+  char value,
+  QUndoCommand * parent ):
+QUndoCommand(parent),
+m_object(object),
+m_value(value)
+{
+  setText("Set ISO value");
 }
 
-void WoolzDynISOObjSetValue::redo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_oldValue=m_object->value();
-   m_object->setValue(m_value);
-   m_object->update();
-   QApplication::restoreOverrideCursor();
+void WoolzDynISOObjSetValue::
+undo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_object->setValue(m_oldValue);
+  m_object->update();
+  QApplication::restoreOverrideCursor();
 }
 
-bool WoolzDynISOObjSetValue::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an WoolzDynISOObjSetValue command
-    return false;
-  const WoolzDynISOObjSetValue *setCommand = static_cast<const WoolzDynISOObjSetValue*>(command);
-  if (setCommand->m_object != m_object) // make sure other is also referes the same object
-    return false;
-  m_value  = setCommand->m_value;
-  return true;
+void WoolzDynISOObjSetValue::
+redo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_oldValue=m_object->value();
+  m_object->setValue(m_value);
+  m_object->update();
+  QApplication::restoreOverrideCursor();
 }
 
-WoolzDynISOObjSetBoundary::WoolzDynISOObjSetBoundary(WoolzDynContourISO *object, bool enabed, QUndoCommand * parent ) :
-        QUndoCommand(parent),  m_object(object), m_enabed(enabed) {
-    setText("Set ISO Boundary");
-   }
-
-void WoolzDynISOObjSetBoundary::undo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_object->setBoundary(m_oldEnabed);
-   m_object->update();
-   QApplication::restoreOverrideCursor();
+bool WoolzDynISOObjSetValue::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) // make sure other is also an WoolzDynISOObjSetValue command
+  {
+    return(false);
+  }
+  const WoolzDynISOObjSetValue *setCommand =
+      static_cast<const WoolzDynISOObjSetValue*>(command);
+  if(setCommand->m_object != m_object) // make sure other is also referes
+  				       // the same object
+  {
+    return(false);
+  }
+  m_value = setCommand->m_value;
+  return(true);
 }
 
-void WoolzDynISOObjSetBoundary::redo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_oldEnabed=m_object->boundary();
-   m_object->setBoundary(m_enabed);
-   m_object->update();
-   QApplication::restoreOverrideCursor();
+WoolzDynISOObjSetBoundary::
+WoolzDynISOObjSetBoundary(
+  WoolzDynContourISO *object,
+  bool enabed,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_object(object),
+m_enabed(enabed)
+{
+  setText("Set ISO Boundary");
 }
 
-bool WoolzDynISOObjSetBoundary::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an WoolzDynISOObjSetValue command
-    return false;
-  const WoolzDynISOObjSetBoundary *setCommand = static_cast<const WoolzDynISOObjSetBoundary*>(command);
-  if (setCommand->m_object != m_object) // make sure other is also referes the same object
-    return false;
+void WoolzDynISOObjSetBoundary::
+undo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_object->setBoundary(m_oldEnabed);
+  m_object->update();
+  QApplication::restoreOverrideCursor();
+}
+
+void WoolzDynISOObjSetBoundary::
+redo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_oldEnabed=m_object->boundary();
+  m_object->setBoundary(m_enabed);
+  m_object->update();
+  QApplication::restoreOverrideCursor();
+}
+
+bool WoolzDynISOObjSetBoundary::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id())	 // make sure other is also a
+  				// WoolzDynISOObjSetValue command
+  {
+    return(false);
+  }
+  const WoolzDynISOObjSetBoundary *setCommand =
+      static_cast<const WoolzDynISOObjSetBoundary*>(command);
+  if(setCommand->m_object != m_object) 	// make sure other also referes the
+  					// same object
+  {
+    return(false);
+  }
+  m_enabed = setCommand->m_enabed;
+  return(true);
+}
+
+WoolzDynISOObjSetSubsample::
+WoolzDynISOObjSetSubsample(
+  WoolzDynContourISO *object,
+  char subsample,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_object(object),
+m_subsample(subsample)
+{
+  setText("Set ISO subsample");
+}
+
+void WoolzDynISOObjSetSubsample::
+undo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_object->setSubsample(m_oldSubsample);
+  m_object->update();
+  QApplication::restoreOverrideCursor();
+}
+
+void WoolzDynISOObjSetSubsample::
+redo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_oldSubsample=m_object->subsample();
+  m_object->setSubsample(m_subsample);
+  m_object->update();
+  QApplication::restoreOverrideCursor();
+}
+
+bool WoolzDynISOObjSetSubsample::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other also a
+  				// WoolzDynISOObjSetValue command
+  {
+    return(false);
+  }
+  const WoolzDynISOObjSetSubsample *setCommand =
+      static_cast<const WoolzDynISOObjSetSubsample*>(command);
+  if(setCommand->m_object != m_object) 	// make sure other also referes the
+  					// same object
+  {
+    return(false);
+  }
+  m_subsample = setCommand->m_subsample;
+  return(true);
+}
+
+
+WoolzDynISOObjSetFilter::
+WoolzDynISOObjSetFilter(
+  WoolzDynContourISO *object,
+  bool enabed, QUndoCommand * parent):
+QUndoCommand(parent),
+m_object(object),
+m_enabed(enabed)
+{
+  setText("Set ISO Boundary");
+}
+
+void WoolzDynISOObjSetFilter::
+undo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_object->setFilter(m_oldEnabed);
+  m_object->update();
+  QApplication::restoreOverrideCursor();
+}
+
+void WoolzDynISOObjSetFilter::
+redo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_oldEnabed=m_object->filter();
+  m_object->setFilter(m_enabed);
+  m_object->update();
+  QApplication::restoreOverrideCursor();
+}
+
+bool WoolzDynISOObjSetFilter::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other is also a
+  				// WoolzDynISOObjSetValue command
+  {
+    return(false);
+  }
+  const WoolzDynISOObjSetFilter *setCommand =
+      static_cast<const WoolzDynISOObjSetFilter*>(command);
+  if(setCommand->m_object != m_object) 	// make sure other also referes the
+  					// same object
+  {
+    return(false);
+  }
   m_enabed  = setCommand->m_enabed;
-  return true;
-}
-
-WoolzDynISOObjSetSubsample::WoolzDynISOObjSetSubsample(WoolzDynContourISO *object, char subsample, QUndoCommand * parent ):
-        QUndoCommand(parent), m_object(object), m_subsample(subsample) {
-    setText("Set ISO subsample");
-   }
-
-void WoolzDynISOObjSetSubsample::undo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_object->setSubsample(m_oldSubsample);
-   m_object->update();
-   QApplication::restoreOverrideCursor();
-}
-
-void WoolzDynISOObjSetSubsample::redo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_oldSubsample=m_object->subsample();
-   m_object->setSubsample(m_subsample);
-   m_object->update();
-   QApplication::restoreOverrideCursor();
-}
-
-bool WoolzDynISOObjSetSubsample::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an WoolzDynISOObjSetValue command
-    return false;
-  const WoolzDynISOObjSetSubsample *setCommand = static_cast<const WoolzDynISOObjSetSubsample*>(command);
-  if (setCommand->m_object != m_object) // make sure other is also referes the same object
-    return false;
-  m_subsample  = setCommand->m_subsample;
-  return true;
+  return(true);
 }
 
 
-WoolzDynISOObjSetFilter::WoolzDynISOObjSetFilter(WoolzDynContourISO *object, bool enabed, QUndoCommand * parent ) :
-        QUndoCommand(parent),  m_object(object), m_enabed(enabed) {
-    setText("Set ISO Boundary");
-   }
-
-void WoolzDynISOObjSetFilter::undo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_object->setFilter(m_oldEnabed);
-   m_object->update();
-   QApplication::restoreOverrideCursor();
+WoolzDynISOObjSetShellSelection::
+WoolzDynISOObjSetShellSelection(
+  WoolzDynContourISO *object,
+  int selection,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_object(object),
+m_selection(selection)
+{
+  setText("Set ISO Boundary");
 }
 
-void WoolzDynISOObjSetFilter::redo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_oldEnabed=m_object->filter();
-   m_object->setFilter(m_enabed);
-   m_object->update();
-   QApplication::restoreOverrideCursor();
+void WoolzDynISOObjSetShellSelection::
+undo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_object->setSelection(m_oldSelection);
+  m_object->recomputeShells();
+  QApplication::restoreOverrideCursor();
 }
 
-bool WoolzDynISOObjSetFilter::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an WoolzDynISOObjSetValue command
-    return false;
-  const WoolzDynISOObjSetFilter *setCommand = static_cast<const WoolzDynISOObjSetFilter*>(command);
-  if (setCommand->m_object != m_object) // make sure other is also referes the same object
-    return false;
-  m_enabed  = setCommand->m_enabed;
-  return true;
+void WoolzDynISOObjSetShellSelection::
+redo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_oldSelection=m_object->selection();
+  m_object->setSelection(m_selection);
+  m_object->recomputeShells();
+  QApplication::restoreOverrideCursor();
 }
 
-
-WoolzDynISOObjSetShellSelection::WoolzDynISOObjSetShellSelection(WoolzDynContourISO *object, int selection, QUndoCommand * parent ) :
-        QUndoCommand(parent),  m_object(object), m_selection(selection) {
-    setText("Set ISO Boundary");
+bool WoolzDynISOObjSetShellSelection::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other is also a
+  				// WoolzDynISOObjSetValue command
+  {
+    return(false);
+  }
+  const WoolzDynISOObjSetShellSelection *setCommand =
+      static_cast<const WoolzDynISOObjSetShellSelection*>(command);
+  if(setCommand->m_object != m_object) 	// make sure other also referes
+  					// the same object
+  {
+    return(false);
+  }
+  m_selection = setCommand->m_selection;
+  return(true);
 }
 
-void WoolzDynISOObjSetShellSelection::undo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_object->setSelection(m_oldSelection);
-   m_object->recomputeShells();
-   QApplication::restoreOverrideCursor();
+//  Transfer function
+
+TransferFunctionMapUpdate::
+TransferFunctionMapUpdate(
+  ObjectListModel *objectListModel,
+  int objID,
+  SoMFFloat &colorMap,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_objectListModel(objectListModel),
+m_objID(objID)
+{
+  setText("Change Transfer Function");
+  m_colorMap.copyFrom(colorMap);
 }
 
-void WoolzDynISOObjSetShellSelection::redo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_oldSelection=m_object->selection();
-   m_object->setSelection(m_selection);
-   m_object->recomputeShells();
-   QApplication::restoreOverrideCursor();
-}
-
-bool WoolzDynISOObjSetShellSelection::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an WoolzDynISOObjSetValue command
-    return false;
-  const WoolzDynISOObjSetShellSelection *setCommand = static_cast<const WoolzDynISOObjSetShellSelection*>(command);
-  if (setCommand->m_object != m_object) // make sure other is also referes the same object
-    return false;
-  m_selection  = setCommand->m_selection;
-  return true;
-}
-
-///////////////////////////////////////////////////////////////////////////////////  Transfer function
-
-TransferFunctionMapUpdate::TransferFunctionMapUpdate(ObjectListModel *objectListModel, int objID, SoMFFloat &colorMap, QUndoCommand * parent ) :
-    QUndoCommand(parent),  m_objectListModel(objectListModel), m_objID(objID) {
-         setText("Change Transfer Function");
-         m_colorMap.copyFrom(colorMap);
-}
-
-void TransferFunctionMapUpdate::undo() {
-  WoolzObject *obj=   m_objectListModel->getObject(m_objID) ;
-  if (!obj)
+void TransferFunctionMapUpdate::
+undo()
+{
+  WoolzObject *obj = m_objectListModel->getObject(m_objID);
+  if(!obj)
+  {
     return;
+  }
   TransferFunction *transferFunction = obj->transferFunction();
-  if (!transferFunction)
+  if(!transferFunction)
+  {
     return;
+  }
   transferFunction->setColorMap(m_oldColorMap);
 }
 
-void TransferFunctionMapUpdate::redo() {
+void TransferFunctionMapUpdate::
+redo()
+{
   WoolzObject *obj=   m_objectListModel->getObject(m_objID) ;
-  if (!obj)
+  if(!obj)
+  {
     return;
+  }
   TransferFunction *transferFunction = obj->transferFunction();
-  if (!transferFunction)
+  if(!transferFunction)
+  {
     return;
+  }
   m_oldColorMap.copyFrom(transferFunction->getColorMap());
   transferFunction->setColorMap(m_colorMap);
 }
 
-bool TransferFunctionMapUpdate::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an TransferFunctionMapUpdate command
-    return false;
-  const TransferFunctionMapUpdate *setCommand = static_cast<const TransferFunctionMapUpdate*>(command);
-  if (setCommand->m_objID != m_objID) // make sure other is also referes the same object
-    return false;
-   m_colorMap.copyFrom(setCommand->m_colorMap);
-  return true;
+bool TransferFunctionMapUpdate::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other is also a
+  				// TransferFunctionMapUpdate command
+  {
+    return(false);
+  }
+  const TransferFunctionMapUpdate *setCommand =
+      static_cast<const TransferFunctionMapUpdate*>(command);
+  if(setCommand->m_objID != m_objID) 	// make sure other also referes the
+  					// same object
+  {
+    return(false);
+  }
+  m_colorMap.copyFrom(setCommand->m_colorMap);
+  return(true);
 }
 
-TransferFunctionSetLowCutOff::TransferFunctionSetLowCutOff(ObjectListModel *objectListModel, int objID, unsigned char cutOff, QUndoCommand * parent):
-    QUndoCommand(parent),  m_objectListModel(objectListModel), m_objID(objID), m_cutOff(cutOff) {
-         setText("Transfer Function set low cut off");
+TransferFunctionSetLowCutOff::
+TransferFunctionSetLowCutOff(
+  ObjectListModel *objectListModel,
+  int objID,
+  unsigned char cutOff,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_objectListModel(objectListModel),
+m_objID(objID),
+m_cutOff(cutOff)
+{
+  setText("Transfer Function set low cut off");
 }
 
-void TransferFunctionSetLowCutOff::undo() {
-  WoolzObject *obj=   m_objectListModel->getObject(m_objID) ;
-  if (!obj)
+void TransferFunctionSetLowCutOff::
+undo()
+{
+  WoolzObject *obj = m_objectListModel->getObject(m_objID) ;
+  if(!obj)
+  {
     return;
+  }
   TransferFunction *transferFunction = obj->transferFunction();
-  if (!transferFunction)
+  if(!transferFunction)
+  {
     return;
+  }
   transferFunction->setLowCutOff(m_oldCutOff);
 }
 
-void TransferFunctionSetLowCutOff::redo() {
-  WoolzObject *obj=   m_objectListModel->getObject(m_objID) ;
-  if (!obj)
+void TransferFunctionSetLowCutOff::
+redo()
+{
+  WoolzObject *obj = m_objectListModel->getObject(m_objID);
+  if(!obj)
+  {
     return;
-
+  }
   TransferFunction *transferFunction = obj->transferFunction();
-  if (!transferFunction)
+  if(!transferFunction)
+  {
     return;
-
+  }
   m_oldCutOff = transferFunction->lowCutOff();
   transferFunction->setLowCutOff(m_cutOff);
 }
 
-bool TransferFunctionSetLowCutOff::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an TransferFunctionSetLowCutOff command
-    return false;
-  const TransferFunctionSetLowCutOff *setCommand = static_cast<const TransferFunctionSetLowCutOff*>(command);
-  if (setCommand->m_objID != m_objID) // make sure other is also referes the same object
-    return false;
-   m_cutOff = setCommand->m_cutOff;
-  return true;
+bool TransferFunctionSetLowCutOff::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other is also a
+  				// TransferFunctionSetLowCutOff command
+  {
+    return(false);
+  }
+  const TransferFunctionSetLowCutOff *setCommand =
+      static_cast<const TransferFunctionSetLowCutOff*>(command);
+  if(setCommand->m_objID != m_objID) 	// make sure other also referes the
+  					// same object
+  {
+    return(false);
+  }
+  m_cutOff = setCommand->m_cutOff;
+  return(true);
 }
 
-TransferFunctionSetHighCutOff::TransferFunctionSetHighCutOff(ObjectListModel *objectListModel, int objID, unsigned char cutOff, QUndoCommand * parent):
-    QUndoCommand(parent),  m_objectListModel(objectListModel), m_objID(objID), m_cutOff(cutOff) {
-         setText("Transfer Function set high cut off");
+TransferFunctionSetHighCutOff::
+TransferFunctionSetHighCutOff(
+  ObjectListModel *objectListModel,
+  int objID,
+  unsigned char cutOff,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_objectListModel(objectListModel),
+m_objID(objID),
+m_cutOff(cutOff)
+{
+  setText("Transfer Function set high cut off");
 }
 
-void TransferFunctionSetHighCutOff::undo() {
-  WoolzObject *obj=   m_objectListModel->getObject(m_objID) ;
-  if (!obj)
+void TransferFunctionSetHighCutOff::
+undo()
+{
+  WoolzObject *obj = m_objectListModel->getObject(m_objID) ;
+  if(!obj)
+  {
     return;
+  }
   TransferFunction *transferFunction = obj->transferFunction();
-  if (!transferFunction)
+  if(!transferFunction)
+  {
     return;
+  }
   transferFunction->setHighCutOff(m_oldCutOff);
 }
 
-void TransferFunctionSetHighCutOff::redo() {
-  WoolzObject *obj=   m_objectListModel->getObject(m_objID) ;
-  if (!obj)
+void TransferFunctionSetHighCutOff::
+redo()
+{
+  WoolzObject *obj = m_objectListModel->getObject(m_objID) ;
+  if(!obj)
+  {
     return;
-
+  }
   TransferFunction *transferFunction = obj->transferFunction();
-  if (!transferFunction)
+  if(!transferFunction)
+  {
     return;
-
+  }
   m_oldCutOff = transferFunction->highCutOff();
   transferFunction->setHighCutOff(m_cutOff);
 }
 
-bool TransferFunctionSetHighCutOff::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an TransferFunctionSetHighCutOff command
-    return false;
-  const TransferFunctionSetHighCutOff *setCommand = static_cast<const TransferFunctionSetHighCutOff*>(command);
-  if (setCommand->m_objID != m_objID) // make sure other is also referes the same object
-    return false;
+bool TransferFunctionSetHighCutOff::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other is also a
+  				// TransferFunctionSetHighCutOff command
+  {
+    return(false);
+  }
+  const TransferFunctionSetHighCutOff *setCommand =
+      static_cast<const TransferFunctionSetHighCutOff*>(command);
+  if(setCommand->m_objID != m_objID) 	// make sure other also referes
+  					// the same object
+  {
+    return(false);
+  }
    m_cutOff = setCommand->m_cutOff;
-  return true;
+  return(true);
 }
 
 
-TransferFunctionLoad::TransferFunctionLoad(ObjectListModel *objectListModel, int objID, TransferFunction *transfFunc, QUndoCommand * parent):
-    QUndoCommand(parent),  m_objectListModel(objectListModel), m_objID(objID), m_transfFunc(transfFunc), m_oldTransfFunc(NULL) {
-         setText("Set transfer function");
+TransferFunctionLoad::
+TransferFunctionLoad(
+  ObjectListModel *objectListModel,
+  int objID,
+  TransferFunction *transfFunc,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_objectListModel(objectListModel),
+m_objID(objID),
+m_transfFunc(transfFunc),
+m_oldTransfFunc(NULL)
+{
+  setText("Set transfer function");
 }
 
-TransferFunctionLoad::~TransferFunctionLoad() {
+TransferFunctionLoad::
+~TransferFunctionLoad()
+{
    //remove unused transfer function
-  if (m_oldTransfFunc)
-         delete m_oldTransfFunc;
+  if(m_oldTransfFunc)
+  {
+    delete m_oldTransfFunc;
+  }
   m_oldTransfFunc = NULL;
 }
 
-void TransferFunctionLoad::undo() {
+void TransferFunctionLoad::
+undo()
+{
   WoolzObject *obj = m_objectListModel->getObject(m_objID) ;
-  if (!obj)
+  if(!obj)
+  {
     return;
+  }
   obj->transferFunction()->copyTF(m_oldTransfFunc);
   delete m_oldTransfFunc;
   m_oldTransfFunc = NULL;
 }
 
-void TransferFunctionLoad::redo() {
+void TransferFunctionLoad::
+redo()
+{
   WoolzObject *obj = m_objectListModel->getObject(m_objID) ;
-  if (!obj)
+  if(!obj)
+  {
     return;
+  }
   m_oldTransfFunc = new TransferFunction;
   m_oldTransfFunc->copyTF(obj->transferFunction());
   obj->transferFunction()->copyTF(m_transfFunc);
 }
 
 
-WarpingSetDelta::WarpingSetDelta(LandmarkModel *landmarkModel, double delta, QUndoCommand * parent):
-    QUndoCommand(parent),  m_landmarkModel(landmarkModel), m_delta(delta) {
-         setText("Set transform delta");
+WarpingSetDelta::
+WarpingSetDelta(
+  LandmarkModel *landmarkModel,
+  double delta,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_landmarkModel(landmarkModel),
+m_delta(delta)
+{
+  setText("Set transform delta");
 }
 
-void WarpingSetDelta::undo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_landmarkModel->setDelta(m_oldDelta);
-   QApplication::restoreOverrideCursor();
+void WarpingSetDelta::
+undo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_landmarkModel->setDelta(m_oldDelta);
+  QApplication::restoreOverrideCursor();
 }
 
-void WarpingSetDelta::redo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_oldDelta=m_landmarkModel->delta();
-   m_landmarkModel->setDelta(m_delta);
-   QApplication::restoreOverrideCursor();
+void WarpingSetDelta::
+redo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_oldDelta=m_landmarkModel->delta();
+  m_landmarkModel->setDelta(m_delta);
+  QApplication::restoreOverrideCursor();
 }
 
-bool WarpingSetDelta::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an WarpingSetDelta command
-    return false;
-  const WarpingSetDelta *setCommand = static_cast<const WarpingSetDelta*>(command);
-  if (setCommand->m_landmarkModel!= m_landmarkModel) // make sure other is also referes the same object
-    return false;
+bool WarpingSetDelta::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other is also a
+  				// WarpingSetDelta command
+  {
+    return(false);
+  }
+  const WarpingSetDelta *setCommand =
+      static_cast<const WarpingSetDelta*>(command);
+  if(setCommand->m_landmarkModel!= m_landmarkModel)	// make sure other also
+  							// referes the same
+							// object
+  {
+    return(false);
+  }
   m_delta = setCommand->m_delta;
-  return true;
+  return(true);
 }
 
-WarpingSetSnapToFitDist::WarpingSetSnapToFitDist(LandmarkModel *landmarkModel, double stfd, QUndoCommand * parent):
-    QUndoCommand(parent),  m_landmarkModel(landmarkModel), m_snapToFitDist(stfd) {
-         setText("Set landmark snap to fit distance");
+WarpingSetSnapToFitDist::
+WarpingSetSnapToFitDist(
+  LandmarkModel *landmarkModel,
+  double stfd,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_landmarkModel(landmarkModel),
+m_snapToFitDist(stfd)
+{
+  setText("Set landmark snap to fit distance");
 }
 
-void WarpingSetSnapToFitDist::undo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_landmarkModel->setSnapToFitDist(m_oldSnapToFitDist);
-   QApplication::restoreOverrideCursor();
+void WarpingSetSnapToFitDist::
+undo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_landmarkModel->setSnapToFitDist(m_oldSnapToFitDist);
+  QApplication::restoreOverrideCursor();
 }
 
-void WarpingSetSnapToFitDist::redo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_oldSnapToFitDist=m_landmarkModel->snapToFitDist();
-   m_landmarkModel->setSnapToFitDist(m_snapToFitDist);
-   QApplication::restoreOverrideCursor();
+void WarpingSetSnapToFitDist::
+redo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_oldSnapToFitDist=m_landmarkModel->snapToFitDist();
+  m_landmarkModel->setSnapToFitDist(m_snapToFitDist);
+  QApplication::restoreOverrideCursor();
 }
 
-bool WarpingSetSnapToFitDist::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an WarpingSetSnapToFitDist command
-    return false;
-  const WarpingSetSnapToFitDist *setCommand = static_cast<const WarpingSetSnapToFitDist*>(command);
-  if (setCommand->m_landmarkModel!= m_landmarkModel) // make sure other is also referes the same object
-    return false;
+bool WarpingSetSnapToFitDist::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id())	// make sure other is also a
+  				// WarpingSetSnapToFitDist command
+  {
+    return(false);
+  }
+  const WarpingSetSnapToFitDist *setCommand =
+      static_cast<const WarpingSetSnapToFitDist*>(command);
+  if(setCommand->m_landmarkModel!= m_landmarkModel) // make sure other also
+  						    // referes the same object
+  {
+    return(false);
+  }
   m_snapToFitDist = setCommand->m_snapToFitDist;
-  return true;
+  return(true);
 }
 
-WarpingtSetBasisFnType::WarpingtSetBasisFnType(LandmarkModel *landmarkModel, LandmarkModel::BasisFnType basisFnType, QUndoCommand * parent):
-    QUndoCommand(parent),  m_landmarkModel(landmarkModel), m_basisFnType(basisFnType) {
-         setText(QString("Set basis transform to") + ((basisFnType == LandmarkModel::basis_IMQ) ? "Inverse multiquadric" : "Multiquadric"));
+WarpingtSetBasisFnType::
+WarpingtSetBasisFnType(
+  LandmarkModel *landmarkModel,
+  LandmarkModel::BasisFnType basisFnType,
+  QUndoCommand * parent):
+QUndoCommand(parent),
+m_landmarkModel(landmarkModel),
+m_basisFnType(basisFnType)
+{
+  setText(QString("Set basis transform to") +
+          ((basisFnType == LandmarkModel::basis_IMQ)?
+	  "Inverse multiquadric": "Multiquadric"));
 }
 
-void WarpingtSetBasisFnType::undo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_landmarkModel->setBasisFnType(m_oldBasisFnType);
-   QApplication::restoreOverrideCursor();
+void WarpingtSetBasisFnType::
+undo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_landmarkModel->setBasisFnType(m_oldBasisFnType);
+  QApplication::restoreOverrideCursor();
 }
 
-void WarpingtSetBasisFnType::redo() {
-   QApplication::setOverrideCursor(Qt::WaitCursor);
-   m_oldBasisFnType=m_landmarkModel->basisFnType();
-   m_landmarkModel->setBasisFnType(m_basisFnType);
-   QApplication::restoreOverrideCursor();
+void WarpingtSetBasisFnType::
+redo()
+{
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  m_oldBasisFnType=m_landmarkModel->basisFnType();
+  m_landmarkModel->setBasisFnType(m_basisFnType);
+  QApplication::restoreOverrideCursor();
 }
 
-bool WarpingtSetBasisFnType::mergeWith ( const QUndoCommand * command ) {
-  if (command->id() != id()) // make sure other is also an WarpingtSetBasisFnType command
-    return false;
-  const WarpingtSetBasisFnType *setCommand = static_cast<const WarpingtSetBasisFnType*>(command);
-  if (setCommand->m_landmarkModel != m_landmarkModel) // make sure other is also referes the same object
-    return false;
+bool WarpingtSetBasisFnType::
+mergeWith(
+  const QUndoCommand * command)
+{
+  if(command->id() != id()) 	// make sure other is also a
+  				// WarpingtSetBasisFnType command
+  {
+    return(false);
+  }
+  const WarpingtSetBasisFnType *setCommand =
+      static_cast<const WarpingtSetBasisFnType*>(command);
+  if(setCommand->m_landmarkModel != m_landmarkModel) // make sure other also
+  						     // referes the same object
+  {
+    return(false);
+  }
   m_basisFnType = setCommand->m_basisFnType;
-  return true;
+  return(true);
 }

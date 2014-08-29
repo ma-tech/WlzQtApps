@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _WarperSourceViewer_cpp[] = "MRC HGU $Id$";
-#endif
+static char _WarperSourceViewer_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         WarperSourceViewer.cpp
@@ -15,11 +11,15 @@ static char _WarperSourceViewer_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _WarperSourceViewer_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Viewer displaying source objects 
 * \ingroup      UI
-*
 */
 
 #include "WarperSourceViewer.h"
@@ -48,33 +47,64 @@ static char _WarperSourceViewer_cpp[] = "MRC HGU $Id$";
 
 const char* WarperSourceViewer::xmlTag = "SourceViewer";
 
-WarperSourceViewer::WarperSourceViewer (ObjectViewerModel *objectViewerModel, bool is3D, LandmarkController* landmarkController, QAction * AddAction, QAction * DeleteAction, QAction * MoveAction, QAction * RemovelElemAction) : WarperViewer (objectViewerModel, is3D, landmarkController, AddAction, DeleteAction, MoveAction, RemovelElemAction) {
+WarperSourceViewer::
+WarperSourceViewer(
+  ObjectViewerModel *objectViewerModel,
+  bool is3D,
+  LandmarkController* landmarkController,
+  QAction * AddAction,
+  QAction * DeleteAction,
+  QAction * MoveAction,
+  QAction * RemovelElemAction):
+WarperViewer(
+  objectViewerModel,
+  is3D,
+  landmarkController,
+  AddAction,
+  DeleteAction,
+  MoveAction,
+  RemovelElemAction)
+{
 }
 
-QColor WarperSourceViewer::getBackgroundColour() {
+QColor WarperSourceViewer::
+getBackgroundColour()
+{
   QSettings settings;
-  return settings.value("viewer/source/color", QColor(0, 77, 51)).value<QColor>();
+  return(settings.value("viewer/source/color",
+	                QColor(0, 77, 51)).value<QColor>());
 }
 
-void WarperSourceViewer::init() {
+void WarperSourceViewer::
+init()
+{
   setupLandmarkView(LandmarkModel::sourceV);
   setBackgroundColour();
 }
 
-bool WarperSourceViewer::accepting(WoolzObject * object ) {
-   return (object && (object->type() & WoolzObject::source)); //accept source objects only
+bool WarperSourceViewer::
+accepting(
+  WoolzObject * object)
+{
+  //accept source objects only
+  return(object && (object->type() & WoolzObject::source));
 }
 
-void WarperSourceViewer::addLandmark(const WlzDVertex3 point) {
-  m_landmarkController->addSourceLandmark( point );
+void WarperSourceViewer::
+addLandmark(
+  const WlzDVertex3 point)
+{
+  m_landmarkController->addSourceLandmark(point);
 }
 
-bool WarperSourceViewer::saveAsXml(QXmlStreamWriter *xmlWriter) {
+bool WarperSourceViewer::
+saveAsXml(
+  QXmlStreamWriter *xmlWriter)
+{
   Q_ASSERT(xmlWriter);
   xmlWriter->writeStartElement(xmlTag);
   WarperViewer::saveAsXml(xmlWriter);
   xmlWriter->writeEndElement();
-
-  return true;
+  return(true);
 }
 

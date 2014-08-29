@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _WarperConfig_cpp[] = "MRC HGU $Id$";
-#endif
+static char _WarperConfig_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         WarperConfig.cpp
@@ -15,11 +11,15 @@ static char _WarperConfig_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2009 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _WarperConfig_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Class to store global data.
 * \ingroup      UI
-*
 */
 
 #include "WarperConfig.h"
@@ -45,35 +44,57 @@ static char _WarperConfig_cpp[] = "MRC HGU $Id$";
 #include <QFileInfo>
 #include "WoolzFileObject.h"
 
-WarperConfig::WarperConfig() : QObject(), m_globalAutoUpdate (true), m_globalWarpUpdate (true) {}
+WarperConfig::
+WarperConfig():
+QObject(),
+m_globalAutoUpdate(true),
+m_globalWarpUpdate(true)
+{
+}
 
-void WarperConfig::setGlobalAutoUpdate(bool newGlobalAutoUpdate) {
-    if (m_globalAutoUpdate!=newGlobalAutoUpdate) {
-      m_globalAutoUpdate=newGlobalAutoUpdate;
-      if (m_globalAutoUpdate) {
-          QApplication::setOverrideCursor(Qt::WaitCursor);
-          updateAll();
-          QApplication::restoreOverrideCursor();
-      }
+void WarperConfig::
+setGlobalAutoUpdate(
+  bool newGlobalAutoUpdate)
+{
+  if(m_globalAutoUpdate != newGlobalAutoUpdate)
+  {
+    m_globalAutoUpdate = newGlobalAutoUpdate;
+    if(m_globalAutoUpdate)
+    {
+      QApplication::setOverrideCursor(Qt::WaitCursor);
+      updateAll();
+      QApplication::restoreOverrideCursor();
+    }
   }
 }
 
-void WarperConfig::setGlobalWarpUpdate(bool newWarpAutoUpdate) {
-    if (m_globalWarpUpdate!=newWarpAutoUpdate) {
-      m_globalWarpUpdate=newWarpAutoUpdate;
-      if (m_globalWarpUpdate) {
-          QApplication::setOverrideCursor(Qt::WaitCursor);
-          updateAllWarped();
-          QApplication::restoreOverrideCursor();
-      }
+void WarperConfig::
+setGlobalWarpUpdate(
+  bool newWarpAutoUpdate)
+{
+  if(m_globalWarpUpdate != newWarpAutoUpdate)
+  {
+    m_globalWarpUpdate = newWarpAutoUpdate;
+    if(m_globalWarpUpdate)
+    {
+      QApplication::setOverrideCursor(Qt::WaitCursor);
+      updateAllWarped();
+      QApplication::restoreOverrideCursor();
+    }
   }
 }
 
-void WarperConfig::setProjectDir(QString dir) {
-    m_strProjectDir =  dir;
-    WoolzFileObject::setBaseDir(m_strProjectDir);
+void WarperConfig::
+setProjectDir(
+  QString dir)
+{
+  m_strProjectDir =  dir;
+  WoolzFileObject::setBaseDir(m_strProjectDir);
 }
 
-void WarperConfig::setProjectDirFromFile(QString filename) {
-    setProjectDir(QFileInfo(filename).canonicalPath());
+void WarperConfig::
+setProjectDirFromFile(
+  QString filename)
+{
+  setProjectDir(QFileInfo(filename).canonicalPath());
 }

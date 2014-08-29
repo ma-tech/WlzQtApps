@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _WarpingWidget_cpp[] = "MRC HGU $Id$";
-#endif
+static char _WarpingWidget_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         WarpingWidget.cpp
@@ -15,11 +11,15 @@ static char _WarpingWidget_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -35,9 +35,9 @@ static char _WarpingWidget_cpp[] = "MRC HGU $Id$";
 * License along with this program; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
-* \brief        Widget for manipulating warped woolz objects (see WoolzDynWarpedObject )
+* \brief        Widget for manipulating warped woolz objects
+* 		(see WoolzDynWarpedObject)
 * \ingroup      UI
-*
 */
 
 //project includes
@@ -45,60 +45,87 @@ static char _WarpingWidget_cpp[] = "MRC HGU $Id$";
 #include "LandmarkController.h"
 #include "Commands.h"
 
-WarpingWidget::WarpingWidget(QWidget *parent, LandmarkController *landmarkController):
-       QDockWidget(parent), m_landmarkController(landmarkController), m_enableUpdate(true)
-       {
-  setupUi( this );
+WarpingWidget::
+WarpingWidget(
+  QWidget *parent,
+  LandmarkController *landmarkController):
+QDockWidget(parent),
+m_landmarkController(landmarkController),
+ m_enableUpdate(true)
+{
+  setupUi(this);
 
-  setMinimumSize(200,0);
-  setMaximumSize(500,200);
-  resize(200,1);
+  setMinimumSize(200, 0);
+  setMaximumSize(500, 200);
+  resize(200, 1);
 
+  connect(radioButtonIMQ, SIGNAL(clicked(bool)),
+          this, SLOT(basisFnChanged()));
+  connect(radioButtonMQ, SIGNAL(clicked(bool)),
+          this, SLOT(basisFnChanged()));
+  connect(doubleSpinBoxDelta, SIGNAL(valueChanged(double)),
+          this, SLOT(deltaChanged()));
+  connect(pushButtonUpdate, SIGNAL(clicked(bool)),
+          this, SLOT(update()));
+  connect(checkBoxAutoUpdate, SIGNAL(clicked(bool)),
+          this, SLOT(setAutoUpdate(bool)));
 
-  connect( radioButtonIMQ, SIGNAL(clicked(bool)),
-           this, SLOT(basisFnChanged()));
-  connect( radioButtonMQ, SIGNAL(clicked(bool)),
-           this, SLOT(basisFnChanged()));
-
-  connect( doubleSpinBoxDelta, SIGNAL(valueChanged(double)),
-           this, SLOT(deltaChanged()));
-
-  connect( pushButtonUpdate, SIGNAL(clicked(bool)),
-           this, SLOT(update()));
-  connect( checkBoxAutoUpdate, SIGNAL(clicked(bool)),
-           this, SLOT(setAutoUpdate(bool)));
-
-  //not needed, these could be controled from global auto update
+  // not needed, these could be controled from global auto update
   checkBoxAutoUpdate->setVisible(false);
   pushButtonUpdate->setVisible(false);
   update();
 }
 
-WarpingWidget::~WarpingWidget() {
+WarpingWidget::
+~WarpingWidget()
+{
 }
 
 
-void WarpingWidget::setAutoUpdate(bool /*enabled*/) {
+void WarpingWidget::
+setAutoUpdate(
+  bool /*enabled*/)
+{
 }
 
-void WarpingWidget::deltaChanged() {
+void WarpingWidget::
+deltaChanged()
+{
   double delta = doubleSpinBoxDelta->value();
-  if (m_enableUpdate && m_landmarkController)
-     m_landmarkController->addCommand(new WarpingSetDelta(m_landmarkController->getModel(), delta));
+  if(m_enableUpdate && m_landmarkController)
+  {
+    m_landmarkController->addCommand(
+	new WarpingSetDelta(m_landmarkController->getModel(), delta));
+  }
 }
 
-void WarpingWidget::basisFnChanged() {
+void WarpingWidget::
+basisFnChanged()
+{
   bool useIMQ = radioButtonIMQ->isChecked();
-  if (m_enableUpdate && m_landmarkController)
-    m_landmarkController->addCommand(new WarpingtSetBasisFnType(m_landmarkController->getModel(), useIMQ ? LandmarkModel::basis_IMQ : LandmarkModel::basis_MQ));
+  if(m_enableUpdate && m_landmarkController)
+  {
+    m_landmarkController->addCommand(
+	new WarpingtSetBasisFnType(m_landmarkController->getModel(),
+	                           (useIMQ)?
+				   LandmarkModel::basis_IMQ:
+				   LandmarkModel::basis_MQ));
+  }
 }
 
-void WarpingWidget::update() {
+void WarpingWidget::
+update()
+{
   m_enableUpdate = false;
-  if (m_landmarkController->getModel()->basisFnType() == LandmarkModel::basis_IMQ)
-      radioButtonIMQ->setChecked(true);
+  if(m_landmarkController->getModel()->basisFnType() ==
+     LandmarkModel::basis_IMQ)
+  {
+    radioButtonIMQ->setChecked(true);
+  }
   else
-      radioButtonMQ->setChecked(true);
+  {
+    radioButtonMQ->setChecked(true);
+  }
   doubleSpinBoxDelta->setValue(m_landmarkController->getModel()->delta());
   m_enableUpdate = true;
 }

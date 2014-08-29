@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ViewToolDialog_h[] = "MRC HGU $Id$";
-#endif
+static char _ViewToolDialog_h[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         ViewToolDialog.h
@@ -15,11 +11,15 @@ static char _ViewToolDialog_h[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -35,10 +35,10 @@ static char _ViewToolDialog_h[] = "MRC HGU $Id$";
 * License along with this program; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
-* \brief        Viewer and view tool dialog
-* \ingroup      UI
-*
+* \brief	Viewer and view tool dialog
+* \ingroup	UI
 */
+
 #ifndef VIEWTOOLDIALOG_H
 #define VIEWTOOLDIALOG_H
 
@@ -50,51 +50,43 @@ class MainWindow;
 
 /*!
  * \brief	Controler class for view tool dialog
- * \ingroup      UI
+ * \ingroup	UI
  */
 class ViewToolDialog : public QDialog, public Ui::ViewToolDialog
 {
-Q_OBJECT
-public:
+  Q_OBJECT
+  public:
 
- /*!
-  * \ingroup      UI
-  * \brief        Constructor
-  * \param        model object viewer model
-  * \param        parent parent widget
-  * \par      Source:
-  *                ViewToolDialog.cpp
-  */
-  ViewToolDialog(ObjectViewerModel *objectViewerModel, MainWindow *parent);
+    /*!
+     * \ingroup	UI
+     * \brief	Constructor
+     * \param	model			object viewer model
+     * \param	parent			parent widget
+     */
+    ViewToolDialog(ObjectViewerModel *objectViewerModel, MainWindow *parent);
 
- /*!
-  * \ingroup      UI
-  * \brief        Destructor
-  * \par      Source:
-  *                ViewToolDialog.cpp
-  */
-  ~ViewToolDialog();
+    /*!
+     * \ingroup	UI
+     * \brief	Destructor
+     */
+    ~ViewToolDialog();
 
-private slots:
- /*!
-  * \ingroup      UI
-  * \brief        Processes the signal of edit button hit
-  * \par      Source:
-  *                ViewToolDialog.cpp
-  */
-  void EditView();
+  private slots:
+    /*!
+     * \ingroup	UI
+     * \brief	Processes the signal of edit button hit
+     */
+    void EditView();
 
- /*!
-  * \ingroup      UI
-  * \brief        Processes the signal of object selection change
-
-  *               It also changes the focus in the MDI window
-  * \param        current new selection
-  * \param        previous previous selection
-  * \par      Source:
-  *                ViewToolDialog.cpp
-  */
-  void currentChanged ( const QModelIndex & current, const QModelIndex & previous );
+    /*!
+     * \ingroup	UI
+     * \brief	Processes the signal of object selection change.
+     * 		It also changes the focus in the MDI window
+     * \param	current			new selection
+     * \param	previous			previous selection
+     */
+    void currentChanged(const QModelIndex & current,
+        const QModelIndex & previous );
 };
 
 #endif

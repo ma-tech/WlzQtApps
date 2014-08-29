@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _main_cpp[] = "MRC HGU $Id$";
-#endif
+static char _main_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         main.cpp
@@ -15,11 +11,15 @@ static char _main_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,8 +37,8 @@ static char _main_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Main project file
 * \ingroup      UI
-*
 */
+
 
 // Qt includes
 #include <QApplication>
@@ -47,38 +47,27 @@ static char _main_cpp[] = "MRC HGU $Id$";
 #include <Inventor/Qt/SoQt.h>
 
 #include "MainWindow.h"
-/**
-  * \ingroup      UI
-  * \brief        Main function of the project
-  * \param        argc number of command line arguments
-  * \param        argv command line arguments
-  * \return       error code
-  * \par      Source:
-  *                main.cpp
-  */
-int main(int argc, char *argv[])
+
+int 		main(int argc, char *argv[])
 {
-    QCoreApplication::setOrganizationName("HGU-MRC");
-    QCoreApplication::setOrganizationDomain("hgu.mrc.ac.uk");
-    QCoreApplication::setApplicationName("Warping Interface");
+  QCoreApplication::setOrganizationName("HGU-MRC");
+  QCoreApplication::setOrganizationDomain("hgu.mrc.ac.uk");
+  QCoreApplication::setApplicationName("Warping Interface");
 
-    QApplication app(argc, argv);
-/*
-    //set library search path: these might not work, since
-    //could not be tested applciationDirPath() - Zsolth
-    QString str=QApplication::applicationDirPath();
-    QCoreApplication::addLibraryPath("libs");
-    QCoreApplication::addLibraryPath(str+"/lib64");
-    QCoreApplication::addLibraryPath(str+"/libs");*/
-    {
-      MainWindow mainWindow;
+  QApplication app(argc, argv);
+  {
+    MainWindow mainWindow;
 
-      SoQt::show(&mainWindow);
-      SoQt::mainLoop();
-     }
+    SoQt::show(&mainWindow);
+    SoQt::mainLoop();
+  }
 
-    // this clears up the memmory, usefull for valgrind, but generates "context-bound resources not free'd" warning message
-    //    SoQt::done(); //must be called after MainWindow is distroyed, since MainWindow has SoQt/Coin objects
+  // this clears up the memmory, usefull for valgrind, but generates
+  // "context-bound resources not free'd" warning message
+  // Must be called after MainWindow is distroyed, since MainWindow
+  // has SoQt/Coin objects
+  // 
+  // SoQt::done();
 
-    return 0;
+  return(0);
 }

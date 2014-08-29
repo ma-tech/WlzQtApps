@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _TranslateRadialManip_cpp[] = "MRC HGU $Id$";
-#endif
+static char _TranslateRadialManip_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         TranslateRadialManip.cpp
@@ -15,11 +11,15 @@ static char _TranslateRadialManip_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -36,10 +36,9 @@ static char _TranslateRadialManip_cpp[] = "MRC HGU $Id$";
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
 * \brief        3D manipulator
+* 		This code is based on an example from the Inventor
+* 		Toolmaker, chapter 8.
 * \ingroup      Controls
-*
-* Code is based on an example from the
-* Inventor Toolmaker, chapter 8.
 */
 
 //project inlcudes
@@ -53,24 +52,32 @@ SO_NODE_SOURCE(TranslateRadialManip);
 //  Initializes the type ID for this manipulator node. This
 //  should be called once after SoInteraction::init().
 //  and after TranslateRadialDragger::initClass()
-void TranslateRadialManip::initClass() {
-   if (TranslateRadialDragger::getClassTypeId().isBad())
-        TranslateRadialDragger::initClass();
+void TranslateRadialManip::
+initClass()
+{
+  if(TranslateRadialDragger::getClassTypeId().isBad())
+  {
+    TranslateRadialDragger::initClass();
+  }
 
-   SO_NODE_INIT_CLASS(
+  SO_NODE_INIT_CLASS(
       TranslateRadialManip, SoTransformManip, "TranslateRadialManip");
 }
 
 //  Constructor
-TranslateRadialManip::TranslateRadialManip(PointPair *pp) :
-  LandmarkManip (pp) {
-   SO_NODE_CONSTRUCTOR(TranslateRadialManip);
+TranslateRadialManip::
+TranslateRadialManip(
+    PointPair *pp):
+LandmarkManip(pp)
+{
+  SO_NODE_CONSTRUCTOR(TranslateRadialManip);
 
-   TranslateRadialDragger *myDrag = new TranslateRadialDragger;
+  TranslateRadialDragger *myDrag = new TranslateRadialDragger;
 
-   initialiseCallback(myDrag);
-   setDragger(myDrag);
+  initialiseCallback(myDrag);
+  setDragger(myDrag);
 }
 
-TranslateRadialManip::~TranslateRadialManip() {
+TranslateRadialManip::~TranslateRadialManip()
+{
 }

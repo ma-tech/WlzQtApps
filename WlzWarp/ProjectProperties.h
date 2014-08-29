@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ProjectProperties_h[] = "MRC HGU $Id$";
-#endif
+static char _ProjectProperties_h[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         ProjectProperties.h
@@ -15,11 +11,15 @@ static char _ProjectProperties_h[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -35,9 +35,8 @@ static char _ProjectProperties_h[] = "MRC HGU $Id$";
 * License along with this program; if not, write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA  02110-1301, USA.
-* \brief        Managing project setting
-* \ingroup      Control
-*
+* \brief	Managing project setting
+* \ingroup	Control
 */
 
 #ifndef PREOJECTPROPERTIES_H
@@ -45,49 +44,40 @@ static char _ProjectProperties_h[] = "MRC HGU $Id$";
 
 #include <QString>
 /*!
- * \brief         Stores the setting related to the current project.
+ * \brief	Stores the setting related to the current project.
  *
  *                Setting include:
  *                     - mode (mesh editing or warping);
  *                     - opened files.
  */
-class ProjectProperties{
+class ProjectProperties
+{
 
-public:
-    typedef enum { noneProject = 0, mesheditProject = 1, warpingProject = 2 } ProjectTypes;
-                    /*!< project modes that define menu configuration*/
+  public:
+    typedef enum {noneProject = 0, mesheditProject = 1,
+        warpingProject = 2} ProjectTypes; 	/*!< project modes that define
+						     menu configuration*/
 
     ProjectTypes projectType;                   /*!< current project mode */
     QString      m_projectName;
     QString      m_fileName;
     bool         m_isNameSet;
- /*!
-  * \ingroup      Control
-  * \brief        Constructor
-  * \return       void
-  * \par      Source:
-  *                ProjectProperties.cpp
-  */
-  ProjectProperties();
+    /*!
+     * \ingroup	Control
+     * \brief	Constructor
+     */
+    ProjectProperties();
 
- /*!
-  * \ingroup      Control
-  * \brief        Resets property values
-  * \return       void
-  * \par      Source:
-  *                ProjectProperties.cpp
-  */
-  void reset();
+    /*!
+     * \ingroup	Control
+     * \brief	Resets property values
+     */
+    void reset();
 
-
- /*!
-  * \ingroup      Control
-  * \brief        Destructor
-  * \return       void
-  * \par      Source:
-  *                ProjectProperties.cpp
-  */
-   ~ProjectProperties();
-
+    /*!
+     * \ingroup	Control
+     * \brief	Destructor
+     */
+    ~ProjectProperties();
 };
 #endif  //PREOJECTPROPERTIES

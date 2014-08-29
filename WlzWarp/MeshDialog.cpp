@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _MeshDialog_cpp[] = "MRC HGU $Id$";
-#endif
+static char _MeshDialog_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         MeshDialog.cpp
@@ -15,11 +11,15 @@ static char _MeshDialog_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,36 +37,55 @@ static char _MeshDialog_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Mesh object generation dialog
 * \ingroup      UI
-*
 */
 
 //project includes:
 #include "MeshDialog.h"
 #include "ObjectListModel.h"
 
-MeshDialog::MeshDialog(QWidget *parent, ObjectListModel *objectListModel, bool useSource, bool is3D): QDialog(parent) {
+MeshDialog::
+MeshDialog(
+  QWidget *parent,
+  ObjectListModel *objectListModel,
+  bool useSource,
+  bool is3D):
+QDialog(parent)
+{
  setupUi( this );
  m_objects = objectListModel->getObjects(useSource, !useSource, true);
  int size= m_objects.size();
- for (int i=0; i<size; i++)
+ for(int i = 0; i < size; i++)
+ {
    comboSourceObject->addItem(m_objects.at(i)->name());
+ }
  colorpickerObject->setStandardColors();
-  if (is3D) {
+  if(is3D)
+  {
     minSpinBox->setValue(10.0);
     maxSpinBox->setValue(30.0);
-  } else {
+  }
+  else
+  {
     minSpinBox->setValue(2.0);
     maxSpinBox->setValue(8.0);
   }
 }
 
-WoolzObject * MeshDialog::getSelected() {
-  return m_objects.at(comboSourceObject->currentIndex());
+WoolzObject * MeshDialog::
+getSelected()
+{
+  return(m_objects.at(comboSourceObject->currentIndex()));
 }
 
-void MeshDialog::accept() {
-  if (comboSourceObject->currentIndex() != -1) {
+void MeshDialog::
+accept()
+{
+  if(comboSourceObject->currentIndex() != -1)
+  {
     QDialog::accept();
-  } else
+  }
+  else
+  {
     QDialog::reject();
+  }
 }

@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ProjectProperties_cpp[] = "MRC HGU $Id$";
-#endif
+static char _ProjectProperties_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         ProjectProperties.cpp
@@ -15,11 +11,15 @@ static char _ProjectProperties_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,21 +37,21 @@ static char _ProjectProperties_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Managing project setting
 * \ingroup      Control
-*
 */
 
 #include "ProjectProperties.h"
 
-ProjectProperties::ProjectProperties() {
-    reset();
+ProjectProperties::ProjectProperties()
+{
+  reset();
 }
 
 void ProjectProperties::reset()
 {
-    projectType = noneProject;
-    m_isNameSet = false;
-    m_projectName = "[new project]";
-    m_fileName = "";
+  projectType = noneProject;
+  m_isNameSet = false;
+  m_projectName = "[new project]";
+  m_fileName = "";
 }
 
 

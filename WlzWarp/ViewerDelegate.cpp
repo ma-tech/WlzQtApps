@@ -1,11 +1,7 @@
 #if defined(__GNUC__)
-#ident "MRC HGU $Id$"
+#ident "University of Edinburgh $Id$"
 #else
-#if defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#pragma ident "MRC HGU $Id$"
-#else
-static char _ViewerDelegate_cpp[] = "MRC HGU $Id$";
-#endif
+static char _ViewerDelegate_cpp[] = "University of Edinburgh $Id$";
 #endif
 /*!
 * \file         ViewerDelegate.cpp
@@ -15,11 +11,15 @@ static char _ViewerDelegate_cpp[] = "MRC HGU $Id$";
 * \par
 * Address:
 *               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
 *               Western General Hospital,
 *               Edinburgh, EH4 2XU, UK.
 * \par
-* Copyright (C) 2008 Medical research Council, UK.
-*
+* Copyright (C), [2014],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
@@ -37,7 +37,6 @@ static char _ViewerDelegate_cpp[] = "MRC HGU $Id$";
 * Boston, MA  02110-1301, USA.
 * \brief        Delegate for viewer tool tree view
 * \ingroup      UI
-*
 */
 
 //project includes
@@ -52,66 +51,105 @@ static char _ViewerDelegate_cpp[] = "MRC HGU $Id$";
 #include <QtGui>
 #include <QItemEditorCreatorBase>
 
-ViewerDelegate::ViewerDelegate(QMdiArea * mdiArea, QObject *parent) :
- QStyledItemDelegate(parent) {
+ViewerDelegate::
+ViewerDelegate(
+  QMdiArea * mdiArea,
+  QObject *parent):
+QStyledItemDelegate(parent)
+{
   // register ViewerListEditor
   QItemEditorFactory *factory = new QItemEditorFactory;
-  QItemEditorCreatorBase *viewerListCreator = new ViewerListEditorBase(mdiArea);
-  factory->registerEditor((QVariant::Type)QMetaType::QObjectStar, viewerListCreator);
+  QItemEditorCreatorBase *viewerListCreator =
+      new ViewerListEditorBase(mdiArea);
+  factory->registerEditor(
+      (QVariant::Type)QMetaType::QObjectStar, viewerListCreator);
   setItemEditorFactory(factory);
 }
 
 
-void ViewerDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
-                          const QModelIndex &index) const  {
+void ViewerDelegate::
+paint(
+  QPainter *painter,
+  const QStyleOptionViewItem &option,
+  const QModelIndex &index) const
+{
 
-    const int LeftRightBorder=2;
-    const int TopBottomBorder=2;
-    if (index.column() == 2 &&
-     qVariantCanConvert<QColor>(index.data())) {
-         QColor color = qVariantValue<QColor>(index.data());
+  const int LeftRightBorder = 2;
+  const int TopBottomBorder = 2;
+  if(index.column() == 2 && qVariantCanConvert<QColor>(index.data()))
+  {
+    QColor color = qVariantValue<QColor>(index.data());
 
-     painter->save();
-     QBrush brush(color, Qt::SolidPattern);
-     QRect rect(option.rect);
-     rect.adjust(-LeftRightBorder, -TopBottomBorder, -LeftRightBorder, -TopBottomBorder);
-     painter->fillRect(rect, brush);
-     painter->drawRect(rect);
-     painter->restore();
-   } else
-     QStyledItemDelegate::paint(painter, option, index);
- }
+    painter->save();
+    QBrush brush(color, Qt::SolidPattern);
+    QRect rect(option.rect);
+    rect.adjust(-LeftRightBorder, -TopBottomBorder,
+	        -LeftRightBorder, -TopBottomBorder);
+    painter->fillRect(rect, brush);
+    painter->drawRect(rect);
+    painter->restore();
+  }
+  else
+  {
+    QStyledItemDelegate::paint(painter, option, index);
+  }
+}
 
 
-QWidget * ViewerDelegate::createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
-  if (index.column() == 3) {
-   ObjectViewerModel *model=(ObjectViewerModel *)index.model();
-    if (model) {
+QWidget * ViewerDelegate::
+createEditor(
+  QWidget * parent,
+  const QStyleOptionViewItem & option,
+  const QModelIndex & index) const
+{
+  if(index.column() == 3)
+  {
+    ObjectViewerModel *model = (ObjectViewerModel *)index.model();
+    if(model)
+    {
       ObjectView* view = model->getView(index);
-      if (view) {
-        QComboBox *comboBox= new QComboBox(parent);
+      if(view)
+      {
+        QComboBox *comboBox = new QComboBox(parent);
         comboBox->addItems(view->getVisualisationTypes());
-        return comboBox;
+        return(comboBox);
       }
     }
   }
-  return QStyledItemDelegate::createEditor(parent, option, index);
+  return(QStyledItemDelegate::createEditor(parent, option, index));
 }
 
-void ViewerDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
-  if (index.column() == 3) {
+void ViewerDelegate::
+setEditorData(
+  QWidget *editor,
+  const QModelIndex &index) const
+{
+  if(index.column() == 3)
+  {
     QComboBox *combo = qobject_cast<QComboBox *> (editor);
     int type = index.model()->data(index, Qt::EditRole).toInt();
     combo->setCurrentIndex(type);
-  } else
+  }
+  else
+  {
     QStyledItemDelegate::setEditorData(editor, index);
+  }
 }
 
-void ViewerDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {
-  if (index.column() == 3) {
+void ViewerDelegate::
+setModelData(
+  QWidget *editor,
+  QAbstractItemModel *model,
+  const QModelIndex &index) const
+{
+  if(index.column() == 3)
+  {
     QComboBox *combo = qobject_cast<QComboBox *> (editor);
     int type = combo->currentIndex();
     model->setData(index, type);
-  } else
+  }
+  else
+  {
     QStyledItemDelegate::setModelData(editor, model, index);
+  }
 }
