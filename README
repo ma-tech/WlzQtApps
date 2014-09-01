@@ -3,10 +3,13 @@ Woolz Qt Applications
 
 ($Id$)
 
-Bill.Hill@igmm.mrc.ac.uk 2013
+ma-tech@igmm.mrc.ac.uk 2014
 
 Woolz applications with user interfaces written using SIMVoleon, Coin
 and Qt. These include WlzViewer and WlzWarp.
 
-* WlzViewer - a voxel image viewer for Woolz images.
-* WlzWarp   - an interactive voxel image warping tool.
+* WlzViewer - a 3D viewer for Woolz objects (and other supported formats).
+	      This allows the volume rendering, surface rendering and
+	      arbitrary sectioning of voxel domain objects (with or without
+	      image values), contour surfaces, meshes and convex hulls.
+* WlzWarp   - an interactive warping tool for Woolz objects.
