@@ -4,23 +4,28 @@ CONFIG += opengl
 CONFIG += openmp
 QT += xml
 
+DEFINES += PACKAGE_VERSION=\\\"1.0.0\\\"
+
 HEADERS = MainWindow.h \
     ObjectToolDialog.h \
     ObjectDelegate.h \
     TransferFunctionWidget.h \
-    ObjectListModel.h
+    ObjectListModel.h \
+    WlzViewerVersion.h
+
 SOURCES = MainWindow.cpp \
     main.cpp \
     ObjectToolDialog.cpp \
     ObjectDelegate.cpp \
     TransferFunctionWidget.cpp \
-    ObjectListModel.cpp
+    ObjectListModel.cpp \
+    WlzViewerVersion.cpp
+
 FORMS = MainWindow.ui \
     ObjectToolDialog.ui \
     TransferFunctionWidget.ui
 
 TEMPLATE = app
-VERSION = 1.0.0
 
 TYPE =
 openmp { 

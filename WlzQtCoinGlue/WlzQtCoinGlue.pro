@@ -1,6 +1,9 @@
 CONFIG += release build_all
 #CONFIG += debug
 CONFIG += QtOpenGL
+
+DEFINES += PACKAGE_VERSION=\\\"1.0.0\\\"
+
 HEADERS = WoolzObject.h \
     TransferFunction.h \
     ObjectListModelAbstract.h \
@@ -25,7 +28,8 @@ HEADERS = WoolzObject.h \
     ClipPlaneButton.h \
     QFunctionEditor.h \
     ClipPlaneButtonBiDirection.h \
-    BinaryTransferFunction.h
+    BinaryTransferFunction.h \
+    WlzQtCoinVersion.h
 SOURCES = Mesh3DView.cpp \
     TransferFunction.cpp \
     ObjectListModelAbstract.cpp \
@@ -49,9 +53,10 @@ SOURCES = Mesh3DView.cpp \
     ClipPlaneButton.cpp \
     QFunctionEditor.cpp \
     ClipPlaneButtonBiDirection.cpp \
-    BinaryTransferFunction.cpp
+    BinaryTransferFunction.cpp \
+    WlzQtCoinVersion.cpp
+
 TEMPLATE = lib
-VERSION = 1.0.0
 TYPE =
 contains( QMAKE_CFLAGS, -m64):TYPE = 
 contains( QMAKE_LIBDIR_X11, /usr/X11R6/lib64):TYPE =

@@ -62,6 +62,9 @@ static char _MainWindow_cpp[] = "University of Edinburgh $Id$";
 #include <VolumeViz/nodes/SoVolumeRendering.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 
+#include <WlzQtCoinVersion.h>
+#include <WlzWarpVersion.h>
+
 MainWindow::
 MainWindow():
 controler(NULL),
@@ -429,7 +432,13 @@ void MainWindow::
 about()
 {
   QMessageBox::about(this, "About Woolz Warp",
-      "<h3>Woolz Warp Interface</h3>"
+      "<h3>WlzWarp</h3>"
+      "<p>An interactive Woolz object warping interface. "
+      "Version numbers are:<p>"
+      "<p>WlzWarp " + QString(WlzWarpVersion()) + "<p>"
+      "<p>WlzQtCoinGlue " + QString(WlzQtCoinVersion()) + "<p>"
+      "<p>Woolz " + QString(WlzVersion()) + "<p>"
+      "<p><p>"
       "<p>ma-tech@hgu.mrc.ac.uk<p>"
       "<p>Copyright (C) 2014 University of Edinburgh<p>");
 }

@@ -3,6 +3,9 @@ CONFIG += release build_all
 CONFIG += opengl
 CONFIG += openmp
 QT += xml
+
+DEFINES += PACKAGE_VERSION=\\\"1.0.0\\\"
+
 HEADERS = WarperConfig.h \
     WarperController.h \
     SnapSurfaceManip.h \
@@ -54,7 +57,9 @@ HEADERS = WarperConfig.h \
     ViewToolWidget.h \
     LandmarkWidget.h \
     WoolzTransform.h \
-    SectioningPlaneWidget.h
+    SectioningPlaneWidget.h \
+    WlzWarpVersion.h
+
 SOURCES = WarperConfig.cpp \
     SnapSurfaceManip.cpp \
     SnapSurfaceDragger.cpp \
@@ -104,7 +109,9 @@ SOURCES = WarperConfig.cpp \
     ViewToolWidget.cpp \
     LandmarkWidget.cpp \
     WoolzTransform.cpp \
-    SectioningPlaneWidget.cpp
+    SectioningPlaneWidget.cpp \
+    WlzWarpVersion.cpp
+
 FORMS = MainWindow.ui \
     ViewToolDialog.ui \
     ObjectToolDialog.ui \
@@ -122,8 +129,8 @@ FORMS = MainWindow.ui \
     ViewToolWidget.ui \
     LandmarkWidget.ui \
     SectioningPlaneWidget.ui
+
 TEMPLATE = app
-VERSION = 1.0.0
 TYPE = 
 openmp { 
     contains( QMAKE_CC, icc):LIBS *= -openmp # for icc

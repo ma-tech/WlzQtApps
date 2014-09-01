@@ -60,6 +60,9 @@ static char _MainWindow_cpp[] = "University of Edinburgh $Id$";
 #include <ObjectSimpleViewer.h>
 #include <WoolzFileObject.h>
 
+#include <WlzQtCoinVersion.h>
+#include <WlzViewerVersion.h>
+
 
 #include "ObjectListModel.h"
 #include <ObjectSimpleViewer.h>
@@ -172,9 +175,16 @@ openObject(
 void MainWindow::
 about()
 {
-  QMessageBox::about(this, "About Woolz viewing",
-      "<h3>Woolz viewing Interface</h3>"
-      "<p>Copyright (C) 2009 MRC Human Genetcs Unit<p>");
+  QMessageBox::about(this, "About WlzViewer",
+      "<h3>WlzViewer</h3>"
+      "<p>A Woolz object viewing interface for viewing 2 and 3D "
+      "Woolz objects. Version numbers are:<p>"
+      "<p>WlzViewer " + QString(WlzViewerVersion()) + "<p>"
+      "<p>WlzQtCoinGlue " + QString(WlzQtCoinVersion()) + "<p>"
+      "<p>Woolz " + QString(WlzVersion()) + "<p>"
+      "<p><p>"
+      "<p>ma-tech@hgu.mrc.ac.uk<p>"
+      "<p>Copyright (C) 2014 University of Edinburgh<p>");
 }
 
 
