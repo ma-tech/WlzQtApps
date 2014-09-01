@@ -248,6 +248,7 @@ recomputeFullContour()
 
   WlzDomain     dom;
   WlzValues     val;
+  dom.core = NULL;
   val.core = NULL;
   if(errNum == WLZ_ERR_NONE)
   {
