@@ -2,7 +2,7 @@ CONFIG += release build_all
 #CONFIG += debug
 CONFIG += QtOpenGL
 
-DEFINES += PACKAGE_VERSION=\\\"1.0.0\\\"
+DEFINES += PACKAGE_VERSION=\\\"1.1.0\\\"
 
 HEADERS = WoolzObject.h \
     TransferFunction.h \
