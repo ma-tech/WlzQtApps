@@ -20,11 +20,11 @@ cd ..
 cd WlzViewer
 qmake
 make
-cp linux/bin/Viewer "$MA"/bin/WlzViewer
+cp linux/bin/WlzViewer "$MA"/bin/WlzViewer
 cd ..
 
 cd WlzWarp
 qmake
 make
-cp linux/bin/Warping "$MA"/bin/WlzWarp
+cp linux/bin/WlzWarp "$MA"/bin/WlzWarp
 cd ..
