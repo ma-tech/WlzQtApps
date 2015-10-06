@@ -439,8 +439,8 @@ about()
       "<p>WlzQtCoinGlue " + QString(WlzQtCoinVersion()) + "<p>"
       "<p>Woolz " + QString(WlzVersion()) + "<p>"
       "<p><p>"
-      "<p>ma-tech@hgu.mrc.ac.uk<p>"
-      "<p>Copyright (C) 2014 University of Edinburgh<p>");
+      "<p>ma-tech@igmm.ed.ac.uk<p>"
+      "<p>Copyright (C) 2015 University of Edinburgh<p>");
 }
 
 void MainWindow::
