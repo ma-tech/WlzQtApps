@@ -198,12 +198,11 @@ generateSceneGraph(
 	//do subsampling
 	m_scaleFactor = ceil(pow(((double)sz.vtX * sz.vtY * sz.vtZ) / maxVoxels,
 				 1.0f/3.0f));
+	// make scale factor even
 	if((m_scaleFactor % 2) == 1)
 	{
-	  m_scaleFactor++; // make scale factor even
+	  m_scaleFactor++;
 	}
-	//TODO: the above line fixes some crashes, however is not understood why
-	//other memory allocation problems may exists that cause the above crash
 
 	Q_ASSERT(m_scaleFactor > 1);
 	double scale = 1.0 / m_scaleFactor;
@@ -242,9 +241,26 @@ generateSceneGraph(
     if(errNum == WLZ_ERR_NONE)
     {
       WlzGreyType greyType = obj->getWoolzGreyType();
-      bool isUBYTE = (greyType == WLZ_GREY_UBYTE);
 
-      if(isUBYTE || (sampledObj->values.core == NULL))
+      if(sampledObj->values.core == NULL)
+      {
+	WlzPixelV bgd,
+		  fgd;
+	WlzObjectType gtt;
+	WlzObject *cpyobj = NULL;
+
+	bgd.type = WLZ_GREY_UBYTE;
+	bgd.v.ubv = 0;
+	fgd.type = WLZ_GREY_UBYTE;
+	fgd.v.ubv = 255;
+	gtt = WlzGreyTableType(WLZ_GREY_TAB_RAGR, WLZ_GREY_UBYTE, NULL);
+	cpyobj = WlzNewObjectValues(sampledObj, gtt, bgd, 1, fgd, &errNum);
+	if(errNum == WLZ_ERR_NONE) {
+	  errNum = WlzToArray3D(&m_data, cpyobj, sz, org, 0, WLZ_GREY_UBYTE);
+	}
+	WlzFreeObj(cpyobj);
+      }
+      else if(greyType == WLZ_GREY_UBYTE)
       {
 	errNum = WlzToArray3D(&m_data, sampledObj, sz, org, 0, WLZ_GREY_UBYTE);
       }
@@ -277,10 +293,7 @@ generateSceneGraph(
 	{
 	  errNum = WlzToArray3D(&m_data, cpyobj, sz, org, 0, WLZ_GREY_UBYTE );
 	}
-	if(cpyobj)
-	{
-	  WlzFreeObj(cpyobj);
-	}
+	WlzFreeObj(cpyobj);
       }
     }
     if(sampledObj)
@@ -295,6 +308,7 @@ generateSceneGraph(
       // Add SoVolumeData to scene graph
       SoVolumeData *volData;
       volData = new SoVolumeData();
+      volData->storageHint = SoVolumeData::TEX3D;
       volData->setVolumeData(dim, voxData, SoVolumeData::UNSIGNED_BYTE);
       //sets volume location and size
       SbBox3f box(SbVec3f(bBox.xMin, bBox.yMin, bBox.zMin),
