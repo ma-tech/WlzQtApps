@@ -210,41 +210,48 @@ class WoolzObject: public QObject
     /*!
      * \return	true if is a 2D or 3D mesh
      * \ingroup	Control
-     * \brief	Checkes if the object is a Mesh
+     * \brief	Checks if the object is a Mesh
      */
     virtual bool isMesh();
 
     /*!
      * \return	true if is a 2D or 3D contour
      * \ingroup	Control
-     * \brief	Checkes if the object is a contour
+     * \brief	Checks if the object is a contour
      */
     virtual bool isContour();
 
     /*!
      * \return	true if is a 2D or 3D convex hull
      * \ingroup	Control
-     * \brief	Checkes if the object is a contour
+     * \brief	Checks if the object is a contour
      */
     virtual bool isConvHull();
 
     /*!
+     * \return	true if is a 2D or 3D points
+     * \ingroup	Control
+     * \brief	Checks if the object is a contour
+     */
+    virtual bool isPoints();
+
+    /*!
      * \return	true if is a value object
      * \ingroup	Control
-     * \brief	Checkes if the object is a value object
+     * \brief	Checks if the object is a value object
      */
     virtual bool isValue();
 
     /*!
      * \return	true if is a value object with values set
      * \ingroup	Control
-     * \brief	Checkes if the object is a value object and has values
+     * \brief	Checks if the object is a value object and has values
      */
     virtual bool isValueSet();
 
     /*!
      * \ingroup	Control
-     * \brief	Checkes if the object is a colour value object
+     * \brief	Checks if the object is a colour value object
      * \return	true if is a colour value object 
      */
     virtual bool isColour();
@@ -295,14 +302,14 @@ class WoolzObject: public QObject
 
     /*!
      * \ingroup	Control
-     * \brief	Checkes if the object is  3D
+     * \brief	Checks if the object is  3D
      * \return	true if is a 3D and false if not
      */
     virtual bool is3D();
 
     /*!
      * \ingroup	Control
-     * \brief	Checkes if the object is 2D
+     * \brief	Checks if the object is 2D
      * \return	true if is a 2D and false if not
      */
     virtual bool is2D();
@@ -323,7 +330,7 @@ class WoolzObject: public QObject
 
     /*!
      * \ingroup	Control
-     * \brief	Checkes if the object is set
+     * \brief	Checks if the object is set
      * \return	true if the object is empty, false if is set
      */
     virtual bool isEmpty() {return(m_obj == NULL);}
@@ -433,14 +440,14 @@ class WoolzObject: public QObject
 
     /*!
      * \ingroup	Control
-     * \brief	Checkes if the object is a source object
+     * \brief	Checks if the object is a source object
      * \return	true if is source
      */
     virtual bool isSource() {return((m_type & source) !=0);}
 
     /*!
      * \ingroup	Control
-     * \brief	Checkes if the object is a target object
+     * \brief	Checks if the object is a target object
      * \return	true if is target
      */
     virtual bool isTarget() { return(m_type & target);}
