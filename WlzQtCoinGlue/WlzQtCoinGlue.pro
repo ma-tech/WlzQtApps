@@ -1,6 +1,7 @@
 CONFIG += release build_all
 #CONFIG += debug
 CONFIG += QtOpenGL
+CONFIG += openmp
 
 DEFINES += PACKAGE_VERSION=\\\"1.1.2\\\"
 
