@@ -240,6 +240,8 @@ addViewer()
 
   addMDIWindows(m_viewer);
 
+  connect(actionEnableAlpha, SIGNAL(toggled(bool)),
+          m_viewer, SLOT(alphaChanged(bool)));
   connect(m_objectListModel, SIGNAL(addObjectSignal(WoolzObject*)),
           m_viewer, SLOT(addObject(WoolzObject*)));
   connect(m_objectListModel, SIGNAL(removedObjectSignal(WoolzObject*)),
