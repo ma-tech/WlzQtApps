@@ -50,29 +50,42 @@ BinaryTransferFunction(
 TransferFunction(
   parent)
 {
-  for(int ir=0; ir<256; ++ir)
+  int		ir;
+
+  predefColorMap = SoTransferFunction::NONE;
+  colorMapType = SoTransferFunction::RGBA;
+  m_lowCutOff  = 254;
+  m_highCutOff = 255;
+  for(ir = 0; ir < 254; ++ir)
   {
-    m_colorMap.set1Value(ir*4+3, 0.10f);
+    m_colorMap.set1Value(ir*4 + 0, 0.0f);
+    m_colorMap.set1Value(ir*4 + 1, 0.0f);
+    m_colorMap.set1Value(ir*4 + 2, 0.0f);
+    m_colorMap.set1Value(ir*4 + 3, 0.0f);
   }
-  if(m_highCutOff == 255)
+  for(ir = 254; ir < 256; ++ir)
   {
-    colorMap.setValues(4, 4, m_colorMap.getValues(255*4));
+    m_colorMap.set1Value(ir*4 + 0, 1.0f);
+    m_colorMap.set1Value(ir*4 + 1, 1.0f);
+    m_colorMap.set1Value(ir*4 + 2, 1.0f);
+    m_colorMap.set1Value(ir*4 + 3, 0.1f);
   }
-  m_lowCutOff = 0;
 }
 
 
 void BinaryTransferFunction::
 update()
 {
+  int 		ir;
+
   colorMap.copyFrom(m_colorMap);
-  for(int ir = 0; ir < 256; ++ir)
+  for(ir = 0; ir < m_lowCutOff; ++ir)
   {
-    colorMap.set1Value(ir*4+3, 0.0f);
+    colorMap.set1Value(ir * 4 + 3, 0.0f);
   }
-  if(m_highCutOff == 255)
+  for(ir = m_highCutOff+1; ir < 256; ++ir)
   {
-    colorMap.setValues(4, 4, m_colorMap.getValues(255*4));
+    colorMap.set1Value(ir * 4 + 3, 0.0f);
   }
   emit updated();
 }
