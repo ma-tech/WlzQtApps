@@ -172,6 +172,12 @@ isConvHullPreRead ( )
   return(m_fileObjType == WLZ_CONV_HULL);
 }
 
+bool WoolzFileObject::
+isPointsPreRead ( )
+{
+  return(m_fileObjType == WLZ_POINTS);
+}
+
 void WoolzFileObject::
 update(
   bool /*force*/)
@@ -268,6 +274,13 @@ isConvHull()
 {
   return((m_obj && WoolzObject::isConvHull()) ||
          (!m_obj && isConvHullPreRead()));
+}
+
+bool WoolzFileObject::
+isPoints()
+{
+  return((m_obj && WoolzObject::isPoints()) ||
+         (!m_obj && isPointsPreRead()));
 }
 
 void WoolzFileObject::

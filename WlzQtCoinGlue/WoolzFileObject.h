@@ -109,28 +109,35 @@ class WoolzFileObject: public WoolzObject
     /*!
      * \return	true if is a 2D or 3D mesh
      * \ingroup	Control
-     * \brief	Checkes if the object is a Mesh
+     * \brief	Checks if the object is a Mesh
      */
     virtual bool isMesh() ;
 
     /*!
      * \return	true if is a 2D or 3D contour
      * \ingroup	Control
-     * \brief	Checkes if the object is a contour
+     * \brief	Checks if the object is a contour
      */
     virtual bool isContour() ;
 
     /*!
      * \return	true if is a 2D or 3D convex hull
      * \ingroup	Control
-     * \brief	Checkes if the object is a convex hull
+     * \brief	Checks if the object is a convex hull
      */
     virtual bool isConvHull() ;
 
     /*!
+     * \return	true if is a 2D or 3D points object
+     * \ingroup	Control
+     * \brief	Checks if the object is a points object
+     */
+    virtual bool isPoints() ;
+
+    /*!
      * \return	true if is a value object
      * \ingroup	Control
-     * \brief	Checkes if the object is a value object
+     * \brief	Checks if the object is a value object
      */
     virtual bool isValue() ;
 
@@ -164,6 +171,14 @@ class WoolzFileObject: public WoolzObject
      * 		a convex hull
      */
     virtual bool isConvHullPreRead();
+
+    /*!
+     * \return	true if is a 2D or 3D points object
+     * \ingroup	Control
+     * \brief	Checks without reading the whole file if the object is
+     * 		a points object
+     */
+    virtual bool isPointsPreRead();
 
     /*!
      * \return	string of formats for QFileDialog
