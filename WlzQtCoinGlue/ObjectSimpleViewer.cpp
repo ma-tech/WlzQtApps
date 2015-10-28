@@ -53,6 +53,8 @@ static char _ObjectSimpleViewer_cpp[] = "University of Edinburgh $Id$";
 #include "Contour3DView.h"
 #include "ConvHull2DView.h"
 #include "ConvHull3DView.h"
+#include "Points2DView.h"
+#include "Points3DView.h"
 #include "VolumeView.h"
 #include "Mesh2DView.h"
 #include "ImageView.h"
@@ -590,6 +592,28 @@ Factory(
       view = new ConvHull2DView(parent, object);
     }
   }
+  else if (object->isPoints())
+  {
+    if(object->is3D())
+    {
+      Points3DView * points = new Points3DView(parent, object);
+      if(m_clipManipulatorButtonBi->state() == ClipPlaneButton::ClipOnly)
+      {
+	Q_ASSERT(m_clipPlane);
+	points->addedClipPlane(m_clipPlane);
+      }
+      else if(m_clipManipulatorButtonBi->state() == ClipPlaneButton::ClipOn)
+      {
+	Q_ASSERT(m_clipPlaneManip);
+	points->addedClipPlane(m_clipPlaneManip);
+      }
+      view = points;
+    }
+    else
+    {
+      view = new Points2DView(parent, object);
+    }
+  }
   else if (object->isValue())
   {
     if(object->is3D())
@@ -887,3 +911,21 @@ setFlashSourceTarget(
 {
   blinker_root->whichChild = (on)? 1 : 0;
 }
+
+void ObjectSimpleViewer::
+alphaChanged(bool alpha)
+{
+  if(m_viewer)
+  {
+    if(alpha)
+    {
+      m_viewer->setTransparencyType(SoGLRenderAction::SORTED_LAYERS_BLEND);
+    }
+    else
+    {
+      m_viewer->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
+    }
+    m_viewer->setAlphaChannel(alpha);
+  }
+}
+

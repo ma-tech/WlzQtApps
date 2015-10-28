@@ -225,6 +225,13 @@ class ObjectSimpleViewer: public QWidget
     */
     void removedObject (WoolzObject * object);
 
+    /*!
+     * \ingroup UI
+     * \brief   Sets alpha
+     *
+     */
+    void alphaChanged(bool alpha);
+
    /*!
     * \ingroup	UI
     * \brief	Forwards object property change signals.
