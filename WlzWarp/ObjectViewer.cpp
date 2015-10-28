@@ -286,20 +286,3 @@ bool ObjectViewer::parseDOMLine(const QDomElement &element)
   else return(ObjectSimpleViewer::parseDOMLine(element));
 }
 
-void ObjectViewer::alphaChanged(bool alpha)
-{
-  if(!m_viewer)
-  {
-    return;
-  }
-  if(alpha)
-  {
-    m_viewer->setTransparencyType(SoGLRenderAction::SORTED_LAYERS_BLEND);
-  }
-  else
-  {
-    m_viewer->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
-  }
-
-  m_viewer->setAlphaChannel(alpha);
-}

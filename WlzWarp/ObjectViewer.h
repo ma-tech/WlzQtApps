@@ -209,13 +209,6 @@ class ObjectViewer : public ObjectSimpleViewer
      */
     void cameraChangedIn();
 
-    /*!
-     * \ingroup	UI
-     * \brief	Sets alpha
-     *
-     */
-    void alphaChanged(bool alpha);
-
   protected:
     /*!
      * \ingroup	UI
