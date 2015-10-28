@@ -22,6 +22,8 @@ HEADERS = WoolzObject.h \
     Contour2DView.h \
     ConvHull2DView.h \
     ConvHull3DView.h \
+    Points2DView.h \
+    Points3DView.h \
     VolumeView.h \
     ImageView.h \
     WoolzFileObject.h \
@@ -45,6 +47,8 @@ SOURCES = Mesh3DView.cpp \
     Contour2DView.cpp \
     ConvHull2DView.cpp \
     ConvHull3DView.cpp \
+    Points2DView.cpp \
+    Points3DView.cpp \
     VolumeView.cpp \
     ImageView.cpp \
     WoolzFileObject.cpp \
@@ -55,6 +59,8 @@ SOURCES = Mesh3DView.cpp \
     ClipPlaneButtonBiDirection.cpp \
     BinaryTransferFunction.cpp \
     WlzQtCoinVersion.cpp
+
+
 
 TEMPLATE = lib
 TYPE =
