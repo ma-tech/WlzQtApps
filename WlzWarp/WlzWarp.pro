@@ -145,7 +145,7 @@ CONFIG(debug, debug|release):TARGET = WlzWarp_d
 else:TARGET = WlzWarp
 
 # Coin-Qt-Wlz glue libraries
-CONFIG(debug, debug|release):LIBS += -lWlzQtCoinGlue_d
+CONFIG(debug, debug|release):LIBS *= -lWlzQtCoinGlue_d
 else {
     LIBS += -lWlzQtCoinGlue
     INCLUDEPATH *= $$(MA)/include/WlzQtCoinGlue
