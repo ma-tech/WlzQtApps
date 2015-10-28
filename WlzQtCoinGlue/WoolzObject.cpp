@@ -164,6 +164,27 @@ isConvHull()
 }
 
 bool WoolzObject::
+isPoints()
+{
+  bool is = false;
+
+  if(m_obj && (m_obj->type == WLZ_POINTS))
+  {
+    WlzDomain dom;
+
+    dom = m_obj->domain;
+    if(dom.core)
+    {
+      is = (dom.core->type ==  WLZ_POINTS_2I) ||
+           (dom.core->type ==  WLZ_POINTS_2D) ||
+	   (dom.core->type ==  WLZ_POINTS_3I) ||
+	   (dom.core->type ==  WLZ_POINTS_3D);
+    }
+  }
+  return(is);
+}
+
+bool WoolzObject::
 isValueSet()
 {
   return(m_obj && ((m_obj->type == WLZ_3D_DOMAINOBJ) ||
@@ -223,6 +244,11 @@ is2D()
       case WLZ_CONV_HULL:
 	is = dom.core && (dom.core->type == WLZ_CONVHULL_DOMAIN_2D);
 	break;
+      case WLZ_POINTS:
+        is = dom.core && 
+	     ((dom.core->type == WLZ_POINTS_2I) ||
+	      (dom.core->type == WLZ_POINTS_2D));
+        break;
       default:
 	break;
     }
@@ -256,6 +282,11 @@ is3D()
         break;
       case WLZ_CONV_HULL:
 	is = dom.core && (dom.core->type == WLZ_CONVHULL_DOMAIN_3D);
+        break;
+      case WLZ_POINTS:
+        is = dom.core && 
+	     ((dom.core->type == WLZ_POINTS_3I) ||
+	      (dom.core->type == WLZ_POINTS_3D));
         break;
       default:
         break;
