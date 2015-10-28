@@ -45,9 +45,9 @@ else {
 
 
 # Coin-Qt-Wlz glue libraries
-CONFIG(debug, debug|release):LIBS += -lWlzQtCoinGlue_d
+CONFIG(debug, debug|release):LIBS *= -lWlzQtCoinGlue_d
 else {
-    LIBS += -lWlzQtCoinGlue
+    LIBS *= -lWlzQtCoinGlue
     INCLUDEPATH *= $$(MA)/include/WlzQtCoinGlue
 }
 LIBS *= -L/$(MA)/lib
