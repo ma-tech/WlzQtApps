@@ -90,7 +90,11 @@ class TransferFunction: public QObject, public SoTransferFunction
      * \brief	Sets new low cut off value
      * \param	newCutOff			cut off value
      */
-    virtual void setLowCutOff(unsigned char newCutOff) {m_lowCutOff=newCutOff;update();}
+    virtual void setLowCutOff(unsigned char newCutOff)
+    {
+      m_lowCutOff=newCutOff;
+      this->update();
+    }
 
     /*!
      * \return	low cut off value
@@ -107,7 +111,7 @@ class TransferFunction: public QObject, public SoTransferFunction
     virtual void setHighCutOff(unsigned char newCutOff)
     {
       m_highCutOff=newCutOff;
-      update();
+      this->update();
     }
 
     /*!
