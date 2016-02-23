@@ -134,7 +134,7 @@ generateSceneGraph(
     SoDrawStyle *ds = new SoDrawStyle;
     Q_ASSERT(ds);
     ds->style=SoDrawStyle::POINTS;
-    ds->pointSize=2.0;
+    ds->pointSize=1.0;
     cache->addChild(ds);
     cache->addChild(nodes);
     obj->setVisualisation(cache);

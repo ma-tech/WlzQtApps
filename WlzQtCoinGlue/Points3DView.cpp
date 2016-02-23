@@ -60,7 +60,9 @@ Points3DView::
 Points3DView(
   QObject * parent,
   WoolzObject * object):
-ObjectView(parent, object)
+ObjectView(parent, object),
+m_clipOn(false),
+m_clipPlane(NULL)
 {
   Q_ASSERT(obj->isPoints() && obj->is3D());
 
@@ -70,7 +72,8 @@ ObjectView(parent, object)
   m_transparency = 0;
   connect(object, SIGNAL(objectVisualisationChange()),
           this, SLOT(objectColourChanged()));
-
+  connect(parent, SIGNAL(addedClipPlane(SoClipPlane *)),
+          this, SLOT(addedClipPlane(SoClipPlane *)));
 }
 
 Points3DView::
@@ -92,8 +95,6 @@ void Points3DView::
 generateSceneGraph(
   bool /*bForce*/)
 {
-  m_material->diffuseColor.setValue(obj->sbColour());
-  root->addChild(m_material);
 
   SoGroup *cache;
   if(obj->isCachedVisualisation())
@@ -102,9 +103,10 @@ generateSceneGraph(
   }
   else 
   {
-    WlzPoints		*pd;
-    SoCoordinate3 *	nodes;
-    SoDrawStyle *       drawStyle;
+    WlzPoints		*pd = NULL;
+    WlzPointValues	*pv = NULL;
+    SoCoordinate3 *	nodes = NULL;
+    SoDrawStyle *       ds;
     WlzErrorNum 	errNum = WLZ_ERR_NONE;
 
     if(!this->compatible())
@@ -130,27 +132,43 @@ generateSceneGraph(
     }
     if(errNum == WLZ_ERR_NONE)
     {
-      drawStyle = new SoDrawStyle();
+      ds = new SoDrawStyle();
       nodes = Points3DView::Vertices3D(pd, new SoCoordinate3, errNum);
     }
-    if(errNum != WLZ_ERR_NONE || nodes == NULL || drawStyle == NULL)
+    if(errNum == WLZ_ERR_NONE)
+    {
+      pv = obj->getObj()->values.pts;
+    }
+    if(errNum != WLZ_ERR_NONE || nodes == NULL || ds == NULL)
         return ;
 
-    drawStyle->style = SoDrawStyle::POINTS;
-    m_points = new SoMarkerSet();
-    Q_ASSERT(m_points);
-    SoMFInt32 markerIndex;
-    markerIndex.setValue(SoMarkerSet::CIRCLE_FILLED_5_5);
-    m_points->markerIndex = markerIndex;
-    m_points->vertexProperty.setValue(nodes);
-    m_points->numPoints.setValue(pd->nPoints);
-    cache->addChild(drawStyle);
+    SoMaterialBinding * mb = new SoMaterialBinding;
+    if(pv)
+    {
+      mb->value.setValue(SoMaterialBinding::PER_VERTEX);
+      Points3DView::SetGreyValues(pd, pv);
+    }
+    else
+    {
+      mb->value.setValue(SoMaterialBinding::OVERALL);
+      m_material->diffuseColor.setValue(obj->sbColour());
+    }
+    root->addChild(m_material);
+
+    ds->style = SoDrawStyle::POINTS;
+    ds->pointSize=1.0;
+    cache->addChild(ds);
+    cache->addChild(mb);
     cache->addChild(nodes);
     cache->addChild(new SoLineSet());
-    cache->addChild(m_points);
     obj->setVisualisation(cache);
+
   }
   root->addChild(cache);
+  if(m_clipPlane)
+  {
+    root->insertChild(m_clipPlane, 1);
+  }
 }
 
 SoCoordinate3 * Points3DView::
@@ -161,39 +179,82 @@ Vertices3D(
 {
   int           i;
 
-  if(errNum == WLZ_ERR_NONE)
+  /* Get the vertices. */
+  switch(pd->type)
   {
-    /* Get the vertices. */
-    switch(pd->type)
-    {
-      case WLZ_POINTS_3I:
-	{
-	  WlzIVertex3 *vtx;
+    case WLZ_POINTS_3I:
+      {
+	WlzIVertex3 *vtx;
 
-	  vtx = pd->points.i3;
-	  for(i = 0; i < pd->nPoints; ++i)
-	  {
-	    vertices->point.set1Value(i, vtx[i].vtX, vtx[i].vtY, vtx[i].vtZ);
-	  }
-	}
-	break;
-      case WLZ_POINTS_3D:
+	vtx = pd->points.i3;
+	for(i = 0; i < pd->nPoints; ++i)
 	{
-	  WlzDVertex3 *vtx;
-
-	  vtx = pd->points.d3;
-	  for(i = 0; i < pd->nPoints; ++i)
-	  {
-	    vertices->point.set1Value(i, vtx[i].vtX, vtx[i].vtY, vtx[i].vtZ);
-	  }
+	  vertices->point.set1Value(i, vtx[i].vtX, vtx[i].vtY, vtx[i].vtZ);
 	}
-	break;
-      default:
-        errNum = WLZ_ERR_DOMAIN_DATA;
-	break;
-    }
+      }
+      break;
+    case WLZ_POINTS_3D:
+      {
+	WlzDVertex3 *vtx;
+
+	vtx = pd->points.d3;
+	for(i = 0; i < pd->nPoints; ++i)
+	{
+	  vertices->point.set1Value(i, vtx[i].vtX, vtx[i].vtY, vtx[i].vtZ);
+	}
+      }
+      break;
+    default:
+      errNum = WLZ_ERR_DOMAIN_DATA;
+      break;
   }
   return(vertices);
+}
+
+void Points3DView::
+SetGreyValues(
+  WlzPoints *pd,
+  WlzPointValues *pv)
+{
+  int           i;
+  QColor 	g;
+  
+  g = obj->qColour();
+  for(i = 0; i < pd->nPoints; ++i)
+  {
+    float f = 0.0f;
+
+    switch(pv->vType)
+    {
+      case WLZ_GREY_INT:
+	f = pv->values.inp[i] / 255.0;
+	break;
+      case WLZ_GREY_SHORT:
+	f = pv->values.shp[i] / 255.0;
+	break;
+      case WLZ_GREY_UBYTE:
+	f = pv->values.ubp[i] / 255.0;
+	break;
+      case WLZ_GREY_FLOAT:
+	f = pv->values.flp[i];
+	break;
+      case WLZ_GREY_DOUBLE:
+	f = pv->values.dbp[i];
+	break;
+      default:
+	break;
+    }
+    if(f < 0.0)
+    {
+      f = 0.0;
+    }
+    else if(f > 1.0)
+    {
+      f = 1.0;
+    }
+    m_material->diffuseColor.set1Value(i,
+        SbColor(f * g.redF(), f * g.greenF(), f * g.blueF()));
+  }
 }
 
 void Points3DView::
@@ -216,8 +277,23 @@ setTransparency(
 void Points3DView::
 objectColourChanged()
 {
+   WlzPoints	*pd;
+   WlzPointValues *pv;
+
    m_material->transparency = 0;
-   m_material->diffuseColor.setValue(obj->sbColour());
+   pd = obj->getObj()->domain.pts;
+   if(pd)
+   {
+     pv = obj->getObj()->values.pts;
+     if(pv)
+     {
+       Points3DView::SetGreyValues(pd, pv);
+     }
+     else
+     {
+       m_material->diffuseColor.setValue(obj->sbColour());
+     }
+   }
 }
 
 void Points3DView::

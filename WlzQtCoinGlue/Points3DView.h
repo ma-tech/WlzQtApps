@@ -162,12 +162,24 @@ class Points3DView: public ObjectView
     * \ingroup	Visualisation
     * \brief	Generates vertices of the points.
     *
+    * \param    pd			Woolz points domain.
     * \param	vertices		previous (empty) list of vertices
     * \param	errNum			result error number
     * \return	SoCoordinate3 object with added new vertices.
     */
     SoCoordinate3 * Vertices3D(WlzPoints *pd,
 			       SoCoordinate3 * vertices, WlzErrorNum& errNum);
+
+    /*!
+    * \ingroup	Visualisation
+    * \brief	Generates colour values for points.
+    *
+    * \param    pd			Woolz points domain.
+    * \param    pv                      Woolz point values.
+    * \param	errNum			result error number
+    * \return	SoCoordinate3 object with added new vertices.
+    */
+    void SetGreyValues(WlzPoints *pd, WlzPointValues *pv);
 
   public slots:
 
