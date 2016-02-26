@@ -67,6 +67,10 @@ inUpdate(false)
 {
 
   setupUi(this);
+  comboBoxScale->addItem(QString("Scale N"));
+  comboBoxScale->addItem(QString("Scale N^2"));
+  comboBoxScale->addItem(QString("Scale N^3"));
+  comboBoxScale->setCurrentIndex(0);
   connect(horizontalHighSlider, SIGNAL(valueChanged(int)),
           this, SLOT(highCutOffChanged()));
   connect(horizontalLowSlider, SIGNAL(valueChanged(int)),
@@ -89,10 +93,12 @@ inUpdate(false)
           this, SLOT(load(bool)));
   connect(pushButtonSave, SIGNAL(clicked(bool)),
           this, SLOT(save(bool)));
-  connect(pushButtonUpdate, SIGNAL(clicked(bool)),
-          this, SLOT(apply()));
   connect(pushButtonGamma, SIGNAL(clicked(bool)),
           this, SLOT(setGamma()));
+  connect(pushButtonInvert, SIGNAL(clicked(bool)),
+          this, SLOT(invert()));
+  connect(comboBoxScale, SIGNAL(currentIndexChanged(int)),
+          SLOT(scaleSelected(int)));
   connect(objectListModel, SIGNAL(removedObjectSignal(WoolzObject*)),
           this, SLOT(removedObjectSignal(WoolzObject*)));
   connect(objectListModel, SIGNAL(addObjectSignal(WoolzObject*)),
@@ -121,14 +127,11 @@ inUpdate(false)
   horizontalLowSlider->setEnabled(false);
   spinBoxLowCutOff->setEnabled(false);
   labelLowCutOff->setEnabled(false);
-  pushButtonUpdate->setEnabled(false);
   pushButtonGamma->setEnabled(false);
   doubleSpinBoxGamma->setEnabled(false);
-  checkBoxAutoUpdate->setEnabled(false);
   groupBoxComponents->setEnabled(false);
   groupBoxGroups->setEnabled(false);
   m_functionEditor->setEnabled(false);
-  checkBoxAutoUpdate->setEnabled(false);
   pushButtonLoad->setEnabled(false);
   pushButtonSave->setEnabled(false);
 
@@ -194,10 +197,6 @@ lowCutOffChanged()
   }
   unsigned char cutOff=spinBoxLowCutOff->value();
   m_functionEditor->setLowCutoff(cutOff);
-  if(!checkBoxAutoUpdate->isChecked())
-  {
-    return ;
-  }
   m_object->transferFunction()->setLowCutOff(spinBoxLowCutOff->value());
 }
 
@@ -210,10 +209,6 @@ highCutOffChanged()
   }
   unsigned char cutOff=spinBoxHighCutOff->value();
   m_functionEditor->setHighCutoff(cutOff);
-  if(!checkBoxAutoUpdate->isChecked())
-  {
-    return ;
-  }
   m_object->transferFunction()->setHighCutOff(spinBoxHighCutOff->value());
 }
 
@@ -265,14 +260,11 @@ objectSelected(
   horizontalLowSlider->setEnabled(visible);
   spinBoxLowCutOff->setEnabled(visible);
   labelLowCutOff->setEnabled(visible);
-  pushButtonUpdate->setEnabled(visible);
   pushButtonGamma->setEnabled(visible);
   doubleSpinBoxGamma->setEnabled(visible);
-  checkBoxAutoUpdate->setEnabled(visible);
   groupBoxComponents->setEnabled(visible);
   groupBoxGroups->setEnabled(visible);
   m_functionEditor->setEnabled(visible);
-  checkBoxAutoUpdate->setEnabled(visible);
   pushButtonLoad->setEnabled(visible);
   pushButtonSave->setEnabled(visible);
   resize(150,0);
@@ -378,10 +370,12 @@ selectChannels(bool)
   updateGroups();
 }
 
-void TransferFunctionWidget::tableChanged() {
-  if (m_object)
-      if (checkBoxAutoUpdate->isChecked())
-           m_object->transferFunction()->setColorMap(m_colorMap);
+void TransferFunctionWidget::tableChanged()
+{
+  if(m_object)
+  {
+    m_object->transferFunction()->setColorMap(m_colorMap);
+  }
 
 }
 
@@ -593,25 +587,25 @@ load(
     return;
   }
 
-  if(ext.toUpper()=="ICOL")
+  if(ext.toUpper() == "ICOL")
   {
     QTextStream in(&file);
     SoMFFloat colorMap;
-    colorMap.setNum(256*4);
-    float *f=colorMap.startEditing();
-    memset(f, sizeof(*f)*4*256, 0);
+    colorMap.setNum(256 * 4);
+    float *f = colorMap.startEditing();
+    memset(f, sizeof(*f) * 4 * 256, 0);
     int index;
-    int r,g,b,a;
+    int r, g, b, a;
     for(index = 0; index < 256; ++index)
     {
-      in >> r>>g>>b>>a;
-      colorMap.set1Value(index*4  , r/255.0f);
-      colorMap.set1Value(index*4+1, g/255.0f);
-      colorMap.set1Value(index*4+2, b/255.0f);
-      colorMap.set1Value(index*4+3, a/255.0f);
+      in >> r >> g >> b >> a;
+      colorMap.set1Value(index * 4,     r / 255.0f);
+      colorMap.set1Value(index * 4 + 1, g / 255.0f);
+      colorMap.set1Value(index * 4 + 2, b / 255.0f);
+      colorMap.set1Value(index * 4 + 3, a / 255.0f);
     }
     int low, high;
-    in >>low>>high;
+    in >> low >> high;
     m_object->transferFunction()->setHighCutOff((double )high * 255.0);
     m_object->transferFunction()->setLowCutOff((double )low * 255.0);
     m_object->transferFunction()->setColorMap(colorMap);
@@ -737,10 +731,75 @@ setGamma()
       }
     }
     m_functionEditor->update();
-    if(!checkBoxAutoUpdate->isChecked())
-    {
-      return ;
-    }
     m_object->transferFunction()->setColorMap(m_colorMap);
   }
+}
+
+void TransferFunctionWidget::
+invert()
+{
+  if(!m_object)
+  {
+    return ;
+  }
+  int index;
+  bool r = checkBoxRed->isChecked();
+  bool g = checkBoxGreen->isChecked();
+  bool b = checkBoxBlue->isChecked();
+  bool a = checkBoxAlpha->isChecked();
+  int low = spinBoxLowCutOff->value();
+  int high = spinBoxHighCutOff->value();
+  double range = (high-low);
+  if(range  > 0)
+  {
+    for(index = low; index <= high; ++index)
+    {
+      int	i4;
+      float	val;
+
+      i4 = index * 4;
+      if(r)
+      {
+	val = 1.0 - m_colorMap[i4 + 0];
+        m_colorMap.set1Value(i4 + 0, val);
+      }
+      if(g)
+      {
+	val = 1.0 - (m_colorMap)[i4 + 1];
+        m_colorMap.set1Value(i4 + 1, val);
+      }
+      if(b)
+      {
+	val = 1.0 - (m_colorMap)[i4 + 2];
+        m_colorMap.set1Value(i4 + 2, val);
+      }
+      if(a)
+      {
+	val = 1.0 - (m_colorMap)[i4 + 3];
+        m_colorMap.set1Value(i4 + 3, val);
+      }
+    }
+    m_functionEditor->update();
+    m_object->transferFunction()->setColorMap(m_colorMap);
+  }
+}
+
+void TransferFunctionWidget::
+scaleSelected(int index)
+{
+  switch(index)
+  {
+    case 0:
+      m_functionEditor->setGraphMode(QFunctionEditor::GRAPH_IDENTITY);
+      break;
+    case 1:
+      m_functionEditor->setGraphMode(QFunctionEditor::GRAPH_SQUARE);
+      break;
+    case 2:
+      m_functionEditor->setGraphMode(QFunctionEditor::GRAPH_CUBE);
+      break;
+    default:
+      break;
+  }
+  m_functionEditor->update();
 }

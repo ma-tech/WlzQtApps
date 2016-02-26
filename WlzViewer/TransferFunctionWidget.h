@@ -98,9 +98,21 @@ class TransferFunctionWidget : public QDockWidget, public Ui::TransferFunctionWi
 
     /*!
      * \ingroup	UI
-     * \brief	Creates a gama curve between the low and high tresholds
+     * \brief	Creates a gamma curve between the low and high tresholds
      */
      void setGamma();
+
+    /*!
+     * \ingroup	UI
+     * \brief	Inverts curve between the low and high tresholds
+     */
+     void invert();
+
+    /*!
+     * \ingroup	UI
+     * \brief	Histogram scale selection event handler
+     */
+     void scaleSelected(int);
 
    /*!
     * \ingroup	UI
