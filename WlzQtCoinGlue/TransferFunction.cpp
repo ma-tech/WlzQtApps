@@ -195,10 +195,11 @@ parseDOM(
       }
       if((index >= 0) && (index < 256))
       {
-	m_colorMap.set1Value(index*4  , R);
-	m_colorMap.set1Value(index*4+1, G);
-	m_colorMap.set1Value(index*4+2, B);
-	m_colorMap.set1Value(index*4+3, A);
+	int	i4 = index * 4;
+	m_colorMap.set1Value(i4  , R);
+	m_colorMap.set1Value(i4 + 1, G);
+	m_colorMap.set1Value(i4 + 2, B);
+	m_colorMap.set1Value(i4 + 3, A);
       }
     }
     child = child.nextSibling();
