@@ -5,63 +5,69 @@ CONFIG += openmp
 
 DEFINES += PACKAGE_VERSION=\\\"1.1.2\\\"
 
-HEADERS = WoolzObject.h \
-    TransferFunction.h \
-    ObjectListModelAbstract.h \
-    Camera2D.h \
-    Viewer2D.h \
-    Viewer3D.h \
-    Viewer2D3D.h \
-    View.h \
-    ObjectView.h \
-    EmptyView.h \
-    Mesh3DView.h \
-    Mesh2DView.h \
-    WoolzFileObject.h \
-    ObjectSimpleViewer.h \
-    Contour3DView.h \
-    Contour2DView.h \
-    ConvHull2DView.h \
-    ConvHull3DView.h \
-    Points2DView.h \
-    Points3DView.h \
-    VolumeView.h \
-    ImageView.h \
-    WoolzFileObject.h \
-    ClipPlaneButton.h \
-    QFunctionEditor.h \
-    ClipPlaneButtonBiDirection.h \
-    BinaryTransferFunction.h \
-    WlzQtCoinVersion.h
-SOURCES = Mesh3DView.cpp \
-    TransferFunction.cpp \
-    ObjectListModelAbstract.cpp \
-    Camera2D.cpp \
-    Viewer2D.cpp \
-    Viewer3D.cpp \
-    Viewer2D3D.cpp \
-    View.cpp \
-    ObjectView.cpp \
-    EmptyView.cpp \
-    Mesh2DView.cpp \
-    Contour3DView.cpp \
-    Contour2DView.cpp \
-    ConvHull2DView.cpp \
-    ConvHull3DView.cpp \
-    Points2DView.cpp \
-    Points3DView.cpp \
-    VolumeView.cpp \
-    ImageView.cpp \
-    WoolzFileObject.cpp \
-    WoolzObject.cpp \
-    ObjectSimpleViewer.cpp \
-    ClipPlaneButton.cpp \
-    QFunctionEditor.cpp \
-    ClipPlaneButtonBiDirection.cpp \
-    BinaryTransferFunction.cpp \
-    WlzQtCoinVersion.cpp
+HEADERS = \
+  WoolzObject.h \
+  TransferFunction.h \
+  ObjectListModelAbstract.h \
+  Camera2D.h \
+  Viewer2D.h \
+  Viewer3D.h \
+  Viewer2D3D.h \
+  View.h \
+  ObjectView.h \
+  EmptyView.h \
+  Mesh3DView.h \
+  Mesh2DView.h \
+  WoolzFileObject.h \
+  ObjectSimpleViewer.h \
+  Contour3DView.h \
+  Contour2DView.h \
+  ConvHull2DView.h \
+  ConvHull3DView.h \
+  Points2DView.h \
+  Points3DView.h \
+  VolumeView.h \
+  ImageView.h \
+  WoolzFileObject.h \
+  ClipPlaneButton.h \
+  QFunctionEditor.h \
+  ClipPlaneButtonBiDirection.h \
+  BinaryTransferFunction.h \
+  TransferFunctionWidget.h \
+  WlzQtCoinVersion.h
 
+SOURCES =  \
+  Mesh3DView.cpp \
+  TransferFunction.cpp \
+  ObjectListModelAbstract.cpp \
+  Camera2D.cpp \
+  Viewer2D.cpp \
+  Viewer3D.cpp \
+  Viewer2D3D.cpp \
+  View.cpp \
+  ObjectView.cpp \
+  EmptyView.cpp \
+  Mesh2DView.cpp \
+  Contour3DView.cpp \
+  Contour2DView.cpp \
+  ConvHull2DView.cpp \
+  ConvHull3DView.cpp \
+  Points2DView.cpp \
+  Points3DView.cpp \
+  VolumeView.cpp \
+  ImageView.cpp \
+  WoolzFileObject.cpp \
+  WoolzObject.cpp \
+  ObjectSimpleViewer.cpp \
+  ClipPlaneButton.cpp \
+  QFunctionEditor.cpp \
+  ClipPlaneButtonBiDirection.cpp \
+  BinaryTransferFunction.cpp \
+  TransferFunctionWidget.cpp \
+  WlzQtCoinVersion.cpp
 
+FORMS = \
+  TransferFunctionWidget.ui
 
 TEMPLATE = lib
 TYPE =
@@ -132,7 +138,8 @@ LIBS *= -lWlzExtFF \
     -ljpeg \
     -ltiff
 
-# must precede win32 otherwise cross-compiling causes problems (both win32 and unix are defined)
+# must precede win32 otherwise cross-compiling causes problems (both win32
+# and unix are defined)
 unix { 
     CONFIG += staticlib
     OUTDIR = linux$$TYPE
@@ -154,10 +161,10 @@ contains( QMAKE_CC, icc) {
 CONFIG(debug, debug|release):OUTDIR = $${OUTDIR}_debug
 message( Output directory $$OUTDIR)
 OBJECTS_DIR = $$OUTDIR
-DESTDIR = $$OUTDIR/bin
-MOC_DIR = $$OUTDIR/moc
-UI_DIR = $$OUTDIR/ui
-RCC_DIR = $$OUTDIR/rcc
+DESTDIR     = $$OUTDIR/bin
+MOC_DIR     = moc
+UI_DIR      = ui
+RCC_DIR     = $$OUTDIR/rcc
 
 # install
 target.path = $$(MA)/lib
@@ -166,9 +173,9 @@ sources.files = $$SOURCES \
     $$RESOURCES \
     $$FORMS \
     *.pro
-sources.path = .
+sources.path  = .
 headers.files = ./$$HEADERS
-headers.path = $$(MA)/include/WlzQtCoinGlue
+headers.path  = $$(MA)/include/WlzQtCoinGlue
 win32 { 
   target.path = $$(MA)\lib
 }

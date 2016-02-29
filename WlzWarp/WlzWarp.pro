@@ -45,7 +45,6 @@ HEADERS = WarperConfig.h \
     ContourISOSurfaceWidget.h \
     WoolzDynContourISO.h \
     ObjectViewer.h \
-    TransferFunctionWidget.h \
     draggers/CrossHairDraggerGeom.h \
     draggers/TranslateRadialDraggerGeom.h \
     draggers/SnapSurfaceDraggerGeom.h \
@@ -100,7 +99,6 @@ SOURCES = WarperConfig.cpp \
     ContourISOSurfaceWidget.cpp \
     WoolzDynContourISO.cpp \
     ObjectViewer.cpp \
-    TransferFunctionWidget.cpp \
     PreferencesDialog.cpp \
     ProjectPropertiesDialog.cpp \
     ObjectViewerController.cpp \
@@ -121,7 +119,6 @@ FORMS = MainWindow.ui \
     ObjectPropertyWidget.ui \
     TransformWidget.ui \
     ContourISOSurfaceWidget.ui \
-    TransferFunctionWidget.ui \
     PreferencesDialog.ui \
     ProjectPropertiesDialog.ui \
     WarpingWidget.ui \
@@ -224,10 +221,12 @@ CONFIG(debug, debug|release) {
 }
 message( Output directory $$OUTDIR)
 OBJECTS_DIR = $$OUTDIR
-DESTDIR = $$OUTDIR/bin
-MOC_DIR = $$OUTDIR/moc
-UI_DIR = $$OUTDIR/ui
-RCC_DIR = $$OUTDIR/rcc
+DESTDIR     = $$OUTDIR/bin
+MOC_DIR     = moc
+UI_DIR      = ui
+RCC_DIR     = $$OUTDIR/rcc
+
+INCLUDEPATH *= ../WlzQtCoinGlue/ui
 
 # install
 RESOURCES += resource.qrc

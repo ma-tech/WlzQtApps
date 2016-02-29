@@ -7,23 +7,20 @@ QT += xml
 DEFINES += PACKAGE_VERSION=\\\"1.1.2\\\"
 
 HEADERS = MainWindow.h \
-    ObjectToolDialog.h \
-    ObjectDelegate.h \
-    TransferFunctionWidget.h \
-    ObjectListModel.h \
-    WlzViewerVersion.h
+  ObjectToolDialog.h \
+  ObjectDelegate.h \
+  ObjectListModel.h \
+  WlzViewerVersion.h
 
 SOURCES = MainWindow.cpp \
-    main.cpp \
-    ObjectToolDialog.cpp \
-    ObjectDelegate.cpp \
-    TransferFunctionWidget.cpp \
-    ObjectListModel.cpp \
-    WlzViewerVersion.cpp
+  main.cpp \
+  ObjectToolDialog.cpp \
+  ObjectDelegate.cpp \
+  ObjectListModel.cpp \
+  WlzViewerVersion.cpp
 
 FORMS = MainWindow.ui \
-    ObjectToolDialog.ui \
-    TransferFunctionWidget.ui
+  ObjectToolDialog.ui
 
 TEMPLATE = app
 
@@ -136,10 +133,12 @@ CONFIG(debug, debug|release) {
 }
 message( Output directory $$OUTDIR)
 OBJECTS_DIR = $$OUTDIR
-DESTDIR = $$OUTDIR/bin
-MOC_DIR = $$OUTDIR/moc
-UI_DIR = $$OUTDIR/ui
-RCC_DIR = $$OUTDIR/rcc
+DESTDIR     = $$OUTDIR/bin
+MOC_DIR     = moc
+UI_DIR      = ui
+RCC_DIR     = $$OUTDIR/rcc
+
+INCLUDEPATH *= ../WlzQtCoinGlue/ui
 
 target.path = $$(MA)/bin
 INSTALLS += target

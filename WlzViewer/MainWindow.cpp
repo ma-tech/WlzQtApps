@@ -67,11 +67,11 @@ static char _MainWindow_cpp[] = "University of Edinburgh $Id$";
 #include "ObjectListModel.h"
 #include <ObjectSimpleViewer.h>
 
+//widgets
+#include <TransferFunctionWidget.h>
+
 //dialogs
 #include "ObjectToolDialog.h"
-
-//widgets
-#include "TransferFunctionWidget.h"
 
 MainWindow::
 MainWindow():
