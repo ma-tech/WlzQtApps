@@ -64,7 +64,6 @@ class QString;
 
 #include <Inventor/fields/SoMFFloat.h>
 
-
 /*!
  * \ingroup
  * \brief A widget class that provides a transfer function editor.
@@ -90,6 +89,19 @@ class QFunctionEditor: public QWidget
     typedef QFlags<_EditMode> EditMode;
 
     /*!
+     * An enumeration of different vertical graph scales for the function
+     * editor. The aim here is to allow drawing low valued regions of
+     * transfer functions more easily.
+     */
+    enum _GraphMode
+    {
+      GRAPH_IDENTITY = 0,  //!< Identity/linear scaling. */
+      GRAPH_SQUARE   = 1,  //!< Vertical scale represents square of value.
+      GRAPH_CUBE     = 2   //!< Vertical scale represents cube of value.
+    };
+    typedef QFlags<_GraphMode> GraphMode;
+
+    /*!
      * \brief constructor
      * \param parent 			If parent is 0, the new widget becomes
      *  				a top-level window. If parent is
@@ -109,12 +121,18 @@ class QFunctionEditor: public QWidget
      */
     inline EditMode getMode() { return m_nMode; }
 
-    public slots:
-      /*!
-       * \brief	slot function for setting the active edit mode
-       * \param nMode 			the edit mode to be used
-       */
-      void setMode(EditMode nMode) { m_nMode = nMode;}
+  public slots:
+    /*!
+     * \brief	slot function for setting the active edit mode
+     * \param nMode 			the edit mode to be used
+     */
+    void setMode(EditMode nMode) { m_nMode = nMode;}
+
+    /*!
+     * \brief	slot function for setting the vertical graph scale.
+     * \param   mode			the new vertical scale mode.
+     * */
+    void setGraphMode(GraphMode mode) { m_graphmode = mode;}
 
     /*! \brief	slot function for setting the color table to be edited
      *  \param 	pTable 			pointer an array of 2*256 char values,
@@ -206,14 +224,6 @@ signals:
      */
     void drawHistogram(QPainter *pPainter, int start, int end);
 
-    /*! \brief	draws the color table
-     *  \param	pPainter 		pointer to a QPainter class, that
-     *  				represents the drawing area.
-     *  \param	start 			start x-coordinate for drawing
-     *  \param	end 			end x-coordinate for drawing
-     */
-    void drawColorTable(QPainter *pPainter, int start, int end);
-
     /*! \brief	draws the component maps
      *  \param	pPainter 		pointer to a QPainter class, that
      *  				represents the drawing area.
@@ -235,7 +245,7 @@ signals:
      *  \param	end_y 			y-coordinate of the end point of the
      *  				line
      */
-    bool ClipLine(int &start_x, int &start_y, int &end_x, int &end_y);
+    void ClipLine(int &start_x, int &start_y, int &end_x, int &end_y);
 
     /*! \brief	helper functions that writes a line into the color table
      *  \param	start_x 		x-coordinate of the starting point of
@@ -248,6 +258,22 @@ signals:
      *  				line
      */
     void DoLine(int &start_x, int &start_y, int &end_x, int &end_y);
+
+    /*! \brief  sets the given value for each channel in the channel mask
+     * 		at the given index.
+     *  \param	chan			channel mask.
+     *  \param  idx			index into table.
+     *  \param  value 			the value to set.
+     *  */
+    void setTableEntry(EditMode chan, int idx, int val);
+
+    /*!
+     * \brief  gets a table value given a channel and index.
+     * \param  chan                     Channel mask. If more than one bit
+     * 					is set then the lowest bit is used.
+     * \param idx                       Index into a channel.
+     */
+    int getTableEntry(EditMode chan, int idx);
 
     /** @name Event handlers
      * functions that handle Qt events
@@ -319,6 +345,7 @@ signals:
     int m_nStart_y;
     //! set to true if the drag is valid
     bool m_bIsDragValid;
+    GraphMode m_graphmode;
 
     // the current edit mode
     EditMode       m_nMode;
@@ -353,5 +380,6 @@ signals:
     int m_lowCutoff;	   		/*!< low cut off value */
     int m_highCutoff;	   		/*!< high cut off value */
     //@}
+
 };
 #endif
