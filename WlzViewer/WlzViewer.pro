@@ -58,8 +58,10 @@ LIBS *= -lWlzExtFF \
         -lAlg \
         -ljpeg \
         -ltiff \
+	-llzma \
 	-lniftiio \
 	-lznz \
+	-lbz2 \
 	-lz
 
 

@@ -136,7 +136,8 @@ LIBS *= -lWlzExtFF \
     -lAlc \
     -lAlg \
     -ljpeg \
-    -ltiff
+    -ltiff \
+    -llzma
 
 # must precede win32 otherwise cross-compiling causes problems (both win32
 # and unix are defined)
