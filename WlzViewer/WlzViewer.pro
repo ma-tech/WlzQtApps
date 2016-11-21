@@ -1,5 +1,12 @@
-CONFIG += release build_all
-#CONFIG += debug
+BUILD_TYPE = $$(BUILD_TYPE)
+isEmpty( BUILD_TYPE ) {
+  CONFIG += Release
+} else {
+  message(Setting CONFIG from environment with $$(BUILD_TYPE))
+  CONFIG += $$(BUILD_TYPE)
+}
+
+CONFIG += build_all
 CONFIG += opengl
 CONFIG += openmp
 QT += xml
@@ -21,6 +28,19 @@ SOURCES = MainWindow.cpp \
 
 FORMS = MainWindow.ui \
   ObjectToolDialog.ui
+
+BUILD_CFLAGS = $$(BUILD_CFLAGS)
+isEmpty( BUILD_CFLAGS ) {
+  message(Using default CFLAGS (set from environment with BUILD_CFLAGS))
+} else {
+  message(Setting CFLAGS from environment with $$(BUILD_CFLAGS))
+  QMAKE_CFLAGS_DEBUG -= -O2
+  QMAKE_CXXFLAGS_DEBUG -= -O2
+  QMAKE_CFLAGS_RELEASE -= -O2
+  QMAKE_CXXFLAGS_RELEASE -= -O2
+  QMAKE_CFLAGS += $$(BUILD_CFLAGS)
+  QMAKE_CXXFLAGS += $$(BUILD_CFLAGS)
+}
 
 TEMPLATE = app
 

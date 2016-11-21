@@ -1,5 +1,12 @@
-CONFIG += release build_all
-#CONFIG += debug
+BUILD_TYPE = $$(BUILD_TYPE)
+isEmpty( BUILD_TYPE ) {
+  CONFIG += Release
+} else {
+  message(Setting CONFIG from environment with $$(BUILD_TYPE))
+  CONFIG += $$(BUILD_TYPE)
+}
+
+CONFIG += build_all
 CONFIG += QtOpenGL
 CONFIG += openmp
 
@@ -69,12 +76,25 @@ SOURCES =  \
 FORMS = \
   TransferFunctionWidget.ui
 
+BUILD_CFLAGS = $$(BUILD_CFLAGS)
+isEmpty( BUILD_CFLAGS ) {
+  message(Using default CFLAGS (set from environment with BUILD_CFLAGS))
+} else {
+  message(Setting CFLAGS from environment with $$(BUILD_CFLAGS))
+  QMAKE_CFLAGS_DEBUG -= -O2
+  QMAKE_CXXFLAGS_DEBUG -= -O2
+  QMAKE_CFLAGS_RELEASE -= -O2
+  QMAKE_CXXFLAGS_RELEASE -= -O2
+  QMAKE_CFLAGS += $$(BUILD_CFLAGS)
+  QMAKE_CXXFLAGS += $$(BUILD_CFLAGS)
+}
+
 TEMPLATE = lib
 TYPE =
 contains( QMAKE_CFLAGS, -m64):TYPE = 
 contains( QMAKE_LIBDIR_X11, /usr/X11R6/lib64):TYPE =
 
-isEmpty( TYPE) {
+isEmpty( TYPE ) {
   DEFINES+= _64BITWARP
 } else {
   DEFINES+= _32BITWARP
@@ -126,9 +146,9 @@ LIBS *= -lSimVoleon \
 # static libraries for Woolz
 INCLUDEPATH *= $$(MA)/include
 
-message($$INCLUDEPATH)
+message(Setting include path $$INCLUDEPATH)
 a=$$(MA)
-message($$a)
+message(Setting prefix $$a)
 
 LIBS *= -L$$(MA)/lib
 LIBS *= -lWlzExtFF \
@@ -160,7 +180,6 @@ contains( QMAKE_CC, icc) {
 }
 
 CONFIG(debug, debug|release):OUTDIR = $${OUTDIR}_debug
-message( Output directory $$OUTDIR)
 OBJECTS_DIR = $$OUTDIR
 DESTDIR     = $$OUTDIR/bin
 MOC_DIR     = moc
