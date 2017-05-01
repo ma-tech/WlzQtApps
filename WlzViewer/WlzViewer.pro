@@ -76,6 +76,8 @@ LIBS *= -lWlzExtFF \
         -lWlz \
         -lAlc \
         -lAlg \
+	-lbibfile \
+   	-lhguDlpList \
         -ljpeg \
         -ltiff \
 	-llzma \

@@ -253,7 +253,7 @@ generateSceneGraph(
 	bgd.v.ubv = 0;
 	fgd.type = WLZ_GREY_UBYTE;
 	fgd.v.ubv = 255;
-	gtt = WlzGreyTableType(WLZ_GREY_TAB_RAGR, WLZ_GREY_UBYTE, NULL);
+	gtt = WlzGreyValueTableType(0, WLZ_GREY_TAB_RAGR, WLZ_GREY_UBYTE, NULL);
 	cpyobj = WlzNewObjectValues(sampledObj, gtt, bgd, 1, fgd, &errNum);
 	if(errNum == WLZ_ERR_NONE) {
 	  errNum = WlzToArray3D(&m_data, cpyobj, sz, org, 0, WLZ_GREY_UBYTE);

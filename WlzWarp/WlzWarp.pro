@@ -201,6 +201,8 @@ LIBS *= -lWlzExtFF \
     -lWlz \
     -lAlc \
     -lAlg \
+    -lhguDlpList \
+    -lbibfile \
     -ljpeg \
     -ltiff \
     -llzma \
