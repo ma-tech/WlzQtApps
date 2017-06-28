@@ -11,7 +11,7 @@ CONFIG += opengl
 CONFIG += openmp
 QT += xml
 
-DEFINES += PACKAGE_VERSION=\\\"1.1.2\\\"
+DEFINES += PACKAGE_VERSION=\\\"1.1.3\\\"
 
 HEADERS = MainWindow.h \
   ObjectToolDialog.h \

@@ -10,7 +10,7 @@ CONFIG += build_all
 CONFIG += QtOpenGL
 CONFIG += openmp
 
-DEFINES += PACKAGE_VERSION=\\\"1.1.2\\\"
+DEFINES += PACKAGE_VERSION=\\\"1.1.3\\\"
 
 HEADERS = \
   WoolzObject.h \
