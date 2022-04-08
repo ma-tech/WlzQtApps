@@ -10,7 +10,7 @@ CONFIG += build_all
 CONFIG += QtOpenGL
 CONFIG += openmp
 
-DEFINES += PACKAGE_VERSION=\\\"1.1.3\\\"
+DEFINES += PACKAGE_VERSION=\\\"1.1.4\\\"
 
 HEADERS = \
   WoolzObject.h \
@@ -159,6 +159,7 @@ LIBS *= -lWlzExtFF \
     -lbibfile \
     -ljpeg \
     -ltiff \
+    -lcjson \
     -llzma
 
 # must precede win32 otherwise cross-compiling causes problems (both win32

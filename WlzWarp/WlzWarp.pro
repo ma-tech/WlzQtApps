@@ -11,7 +11,7 @@ CONFIG += opengl
 CONFIG += openmp
 QT += xml
 
-DEFINES += PACKAGE_VERSION=\\\"1.1.3\\\"
+DEFINES += PACKAGE_VERSION=\\\"1.1.4\\\"
 
 HEADERS = WarperConfig.h \
     WarperController.h \
@@ -207,6 +207,7 @@ LIBS *= -lWlzExtFF \
     -ltiff \
     -llzma \
     -lniftiio \
+    -lcjson \
     -lznz \
     -lbz2 \
     -lz
